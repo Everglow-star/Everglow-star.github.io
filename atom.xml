@@ -125,21 +125,25 @@
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T11:50:54.417Z</updated>
+    <updated>2021-07-12T12:49:54.848Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot; title=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;/a&gt;无锁的原子操作：Redis如何应对并发访问？&lt;/h1&gt;&lt;p&gt;为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;加锁：&lt;/strong&gt; 加锁是一种常用的方法，在读取数据前，客户端需要先获得锁，否则就无法进行操作。当一个客户端获得锁后，就会一直持有这把锁，直到客户端完成数据更新，才释放这把锁。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;弊端：&lt;/strong&gt; 1. 如果加锁操作多，会降低系统的并发访问性能；&lt;/p&gt;
+&lt;p&gt;​             2. 第二个是，Redis 客户端要加锁时，需要用到分布式锁，而分布式锁实现复杂，需要用额外的存储系统来提供加解锁操作&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;原子操作：&lt;/strong&gt; 原子操作是指执行过程保持原子性的操作，而且原子操作执行时并不需要再加锁，实现了无锁操作。这样一来，既能保证并发控制，还能减少对系统并发性能的影响。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
     
     
     <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
+    
+    <category term="Redis并发控制" scheme="http://example.com/tags/Redis%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/"/>
     
   </entry>
   
