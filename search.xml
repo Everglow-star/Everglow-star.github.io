@@ -3,12 +3,12 @@
   <entry>
     <title>二叉树</title>
     <url>/2021/07/12/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg" alt="img"></p>
+    <content><![CDATA[<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg" alt="img"></p>
 <p>这里面每个元素我们叫做“节点”；用来连接相邻节点之间的关系，我们叫做“父子关系”。</p>
 <p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/220043e683ea33b9912425ef759556ae.jpg" alt="img"></p>
 <p>A 节点就是 B 节点的父节点，B 节点是 A 节点的子节点。B、C、D 这三个节点的父节点是同一个节点，所以它们之间互称为兄弟节点。我们把没有父节点的节点叫做根节点，也就是图中的节点 E。我们把没有子节点的节点叫做叶子节点或者叶节点，比如图中的 G、H、I、J、K、L 都是叶子节点。</p>
+<span id="more"></span>
+
 <p><strong>高度（Height）、深度（Depth）、层（Level</strong>）：</p>
 <p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/4094a733986073fedb6b9d03f877d71e.jpg" alt="img"></p>
 <p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/50f89510ad1f7570791dd12f4e9adeb4.jpg" alt="img"></p>
