@@ -63,7 +63,7 @@
 <li><code>Redis</code> 的持久化模块能支持两种方式：日志（<code>AOF</code>）和快照（<code>RDB</code>），这两种持久化方式具有不同的优劣势，影响到 <code>Redis</code> 的访问性能和可靠性。</li>
 <li><code>SimpleKV</code> 是个简单的单机键值数据库，但是，<code>Redis</code> 支持高可靠集群和高可扩展集群，因此，<code>Redis</code> 中包含了相应的集群功能支撑模块。</li>
 </ul>
-<h1 id="02-数据结构：快速的Redis有哪些慢操作？"><a href="#02-数据结构：快速的Redis有哪些慢操作？" class="headerlink" title="02 | 数据结构：快速的Redis有哪些慢操作？"></a>02 | 数据结构：快速的<code>Redis</code>有哪些慢操作？</h1>]]></content>
+]]></content>
       <categories>
         <category>数据库</category>
       </categories>
