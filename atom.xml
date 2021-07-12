@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-12T05:43:44.409Z</updated>
+  <updated>2021-07-12T06:20:10.677Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis基础</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E7%A1%80/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E7%A1%80/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-12T06:20:10.677Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/79da7093ed998a99d9abe91e610b74e7.jpg&quot; alt=&quot;img&quot; style=&quot;zoom: 25%;&quot; /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;高性能主线：&lt;/strong&gt; 包括线程模型、数据结构、持久化、网络框架；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可靠主线：&lt;/strong&gt;包括主从复制、哨兵机制；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可扩展主线：&lt;/strong&gt;包括数据分片、负载均衡。&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>二叉树</title>
