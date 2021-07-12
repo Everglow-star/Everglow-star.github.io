@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-12T12:15:36.681Z</updated>
+  <updated>2021-07-12T07:17:19.205Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,55 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>基本架构：一个键值数据库包含什么？</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-12T07:17:19.205Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/79da7093ed998a99d9abe91e610b74e7.jpg&quot; alt=&quot;img&quot; style=&quot;zoom: 25%;&quot; /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;高性能主线：&lt;/strong&gt; 包括线程模型、数据结构、持久化、网络框架；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可靠主线：&lt;/strong&gt;包括主从复制、哨兵机制；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可扩展主线：&lt;/strong&gt;包括数据分片、负载均衡。&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>数据结构：快速的Redis有哪些慢操作？</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%BF%AB%E9%80%9F%E7%9A%84Redis%E6%9C%89%E5%93%AA%E4%BA%9B%E6%85%A2%E6%93%8D%E4%BD%9C%EF%BC%9F/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%BF%AB%E9%80%9F%E7%9A%84Redis%E6%9C%89%E5%93%AA%E4%BA%9B%E6%85%A2%E6%93%8D%E4%BD%9C%EF%BC%9F/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-12T07:16:45.803Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;a href=&quot;#数据结构：快速的Redis有哪些慢操作？&quot; class=&quot;headerlink&quot; title=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;/a&gt;数据结构：快速的&lt;code&gt;Redis&lt;/code&gt;有哪些慢操作？&lt;/h1&gt;&lt;p&gt;底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/8219f7yy651e566d47cc9f661b399f01.jpg&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
+
+&lt;p&gt;可以看到，String 类型的底层实现只有一种数据结构，也就是简单动态字符串。而 List、Hash、Set 和 Sorted Set 这四种数据类型，都有两种底层实现结构。通常情况下，我们会把这四种类型称为集合类型， &lt;strong&gt;它们的特点是一个键对应了一个集合的数据。&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这些数据结构都是值的底层实现，键和值本身之间用什么结构组织？&lt;/li&gt;
+&lt;li&gt;为什么集合类型有那么多的底层结构，它们都是怎么组织数据的，都很快吗？&lt;/li&gt;
+&lt;li&gt;什么是简单动态字符串，和常用的字符串是一回事吗？&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>二叉树</title>
@@ -72,46 +121,20 @@
   </entry>
   
   <entry>
-    <title>基本架构：一个键值数据库包含什么？</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/</id>
+    <title>Redis并发问题</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T07:17:19.205Z</updated>
+    <updated>2021-07-12T11:50:54.417Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/79da7093ed998a99d9abe91e610b74e7.jpg&quot; alt=&quot;img&quot; style=&quot;zoom: 25%;&quot; /&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;高性能主线：&lt;/strong&gt; 包括线程模型、数据结构、持久化、网络框架；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;高可靠主线：&lt;/strong&gt;包括主从复制、哨兵机制；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;高可扩展主线：&lt;/strong&gt;包括数据分片、负载均衡。&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>数据结构：快速的Redis有哪些慢操作？</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%BF%AB%E9%80%9F%E7%9A%84Redis%E6%9C%89%E5%93%AA%E4%BA%9B%E6%85%A2%E6%93%8D%E4%BD%9C%EF%BC%9F/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%BF%AB%E9%80%9F%E7%9A%84Redis%E6%9C%89%E5%93%AA%E4%BA%9B%E6%85%A2%E6%93%8D%E4%BD%9C%EF%BC%9F/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T07:16:45.803Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;a href=&quot;#数据结构：快速的Redis有哪些慢操作？&quot; class=&quot;headerlink&quot; title=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;/a&gt;数据结构：快速的&lt;code&gt;Redis&lt;/code&gt;有哪些慢操作？&lt;/h1&gt;&lt;p&gt;底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/8219f7yy651e566d47cc9f661b399f01.jpg&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
-
-&lt;p&gt;可以看到，String 类型的底层实现只有一种数据结构，也就是简单动态字符串。而 List、Hash、Set 和 Sorted Set 这四种数据类型，都有两种底层实现结构。通常情况下，我们会把这四种类型称为集合类型， &lt;strong&gt;它们的特点是一个键对应了一个集合的数据。&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;这些数据结构都是值的底层实现，键和值本身之间用什么结构组织？&lt;/li&gt;
-&lt;li&gt;为什么集合类型有那么多的底层结构，它们都是怎么组织数据的，都很快吗？&lt;/li&gt;
-&lt;li&gt;什么是简单动态字符串，和常用的字符串是一回事吗？&lt;/li&gt;
-&lt;/ul&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot;</summary>
+        
+      
     
     
     
@@ -173,29 +196,6 @@
     
     
     <category term="数据结构与算法" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Redis并发问题</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T11:50:54.417Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
   </entry>
