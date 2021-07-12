@@ -3,7 +3,7 @@
   <entry>
     <title>二叉树</title>
     <url>/2021/07/12/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/</url>
-    <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;!--more--&gt;</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<span id="more"></span>
 
 <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg" alt="img"></p>
 <p>这里面每个元素我们叫做“节点”；用来连接相邻节点之间的关系，我们叫做“父子关系”。</p>
