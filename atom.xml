@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-12T07:17:19.205Z</updated>
+  <updated>2021-07-12T07:16:45.803Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,30 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>基本架构：一个键值数据库包含什么？</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T07:17:19.205Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/79da7093ed998a99d9abe91e610b74e7.jpg&quot; alt=&quot;img&quot; style=&quot;zoom: 25%;&quot; /&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;高性能主线：&lt;/strong&gt; 包括线程模型、数据结构、持久化、网络框架；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;高可靠主线：&lt;/strong&gt;包括主从复制、哨兵机制；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;高可扩展主线：&lt;/strong&gt;包括数据分片、负载均衡。&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-  </entry>
   
   <entry>
     <title>数据结构：快速的Redis有哪些慢操作？</title>
@@ -56,6 +32,30 @@
 &lt;li&gt;这些数据结构都是值的底层实现，键和值本身之间用什么结构组织？&lt;/li&gt;
 &lt;li&gt;为什么集合类型有那么多的底层结构，它们都是怎么组织数据的，都很快吗？&lt;/li&gt;
 &lt;li&gt;什么是简单动态字符串，和常用的字符串是一回事吗？&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>基本架构：一个键值数据库包含什么？</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-12T07:17:19.205Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/79da7093ed998a99d9abe91e610b74e7.jpg&quot; alt=&quot;img&quot; style=&quot;zoom: 25%;&quot; /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;高性能主线：&lt;/strong&gt; 包括线程模型、数据结构、持久化、网络框架；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可靠主线：&lt;/strong&gt;包括主从复制、哨兵机制；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可扩展主线：&lt;/strong&gt;包括数据分片、负载均衡。&lt;/li&gt;
 &lt;/ul&gt;</summary>
     
     
@@ -85,24 +85,6 @@
   </entry>
   
   <entry>
-    <title>栈</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%A0%88%E4%B8%93%E9%A2%98/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%A0%88%E4%B8%93%E9%A2%98/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T05:44:00.146Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;栈的结构&quot;&gt;&lt;a href=&quot;#栈的结构&quot; class=&quot;headerlink&quot; title=&quot;栈的结构&quot;&gt;&lt;/a&gt;栈的结构&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;后进者先出，先进者后出，这就是典型的“栈”结构。&lt;/strong&gt;栈是一种&lt;strong&gt;“操作受限”&lt;/strong&gt;的线性表，只允许在一端插入和删除数据。&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313172646.jpeg&quot; alt=&quot;img&quot; style=&quot;zoom:50%;&quot; /&gt;</summary>
-    
-    
-    
-    <category term="数据结构与算法" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>链表</title>
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E9%93%BE%E8%A1%A8%E4%B8%93%E9%A2%98/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E9%93%BE%E8%A1%A8%E4%B8%93%E9%A2%98/</id>
@@ -112,6 +94,24 @@
     
     <summary type="html">&lt;h1 id=&quot;链表（上）&quot;&gt;&lt;a href=&quot;#链表（上）&quot; class=&quot;headerlink&quot; title=&quot;链表（上）&quot;&gt;&lt;/a&gt;链表（上）&lt;/h1&gt;&lt;h2 id=&quot;链表结构&quot;&gt;&lt;a href=&quot;#链表结构&quot; class=&quot;headerlink&quot; title=&quot;链表结构&quot;&gt;&lt;/a&gt;链表结构&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;p&gt;数组需要一块 &lt;strong&gt;连续&lt;/strong&gt; 的内存空间来存储，链表恰恰相反，它并 &lt;strong&gt;不需要一块连续&lt;/strong&gt; 的内存空间，它通过“指针”将一组零散的内存块串联起来使用。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据结构与算法" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>栈</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%A0%88%E4%B8%93%E9%A2%98/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%A0%88%E4%B8%93%E9%A2%98/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-12T05:44:00.146Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;栈的结构&quot;&gt;&lt;a href=&quot;#栈的结构&quot; class=&quot;headerlink&quot; title=&quot;栈的结构&quot;&gt;&lt;/a&gt;栈的结构&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;后进者先出，先进者后出，这就是典型的“栈”结构。&lt;/strong&gt;栈是一种&lt;strong&gt;“操作受限”&lt;/strong&gt;的线性表，只允许在一端插入和删除数据。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313172646.jpeg&quot; alt=&quot;img&quot; style=&quot;zoom:50%;&quot; /&gt;</summary>
     
     
     
@@ -161,6 +161,23 @@
   </entry>
   
   <entry>
+    <title>散列表</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%95%A3%E5%88%97%E8%A1%A8%E4%B8%93%E9%A2%98/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%95%A3%E5%88%97%E8%A1%A8%E4%B8%93%E9%A2%98/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-12T05:43:09.790Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;散列表&quot;&gt;&lt;a href=&quot;#散列表&quot; class=&quot;headerlink&quot; title=&quot;散列表&quot;&gt;&lt;/a&gt;散列表&lt;/h1&gt;&lt;h2 id=&quot;散列表（上）&quot;&gt;&lt;a href=&quot;#散列表（上）&quot; class=&quot;headerlink&quot; title=&quot;散列表（上）&quot;&gt;&lt;/a&gt;散列表（上）&lt;/h2&gt;&lt;h3 id=&quot;1-散列思想：&quot;&gt;&lt;a href=&quot;#1-散列思想：&quot; class=&quot;headerlink&quot; title=&quot;1.散列思想：&quot;&gt;&lt;/a&gt;1.散列思想：&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;散列表(Hash Table)用的是数组支持按照下标随机访问数据的特性，所以散列表其实就是数组的一种扩展，由数组演化而来。可以说，如果没有数组，就没有散列表。&lt;/strong&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据结构与算法" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>堆</title>
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%A0%86%E4%B8%93%E9%A2%98/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E5%A0%86%E4%B8%93%E9%A2%98/</id>
@@ -175,23 +192,6 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;对于每个节点的值都大于等于子树中每个节点值的堆，我们叫做“大顶堆”。对于每个节点的值都小于等于子树中每个节点值的堆，我们叫做“小顶堆”。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="数据结构与算法" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>散列表</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%95%A3%E5%88%97%E8%A1%A8%E4%B8%93%E9%A2%98/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%95%A3%E5%88%97%E8%A1%A8%E4%B8%93%E9%A2%98/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T05:43:09.790Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;散列表&quot;&gt;&lt;a href=&quot;#散列表&quot; class=&quot;headerlink&quot; title=&quot;散列表&quot;&gt;&lt;/a&gt;散列表&lt;/h1&gt;&lt;h2 id=&quot;散列表（上）&quot;&gt;&lt;a href=&quot;#散列表（上）&quot; class=&quot;headerlink&quot; title=&quot;散列表（上）&quot;&gt;&lt;/a&gt;散列表（上）&lt;/h2&gt;&lt;h3 id=&quot;1-散列思想：&quot;&gt;&lt;a href=&quot;#1-散列思想：&quot; class=&quot;headerlink&quot; title=&quot;1.散列思想：&quot;&gt;&lt;/a&gt;1.散列思想：&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;散列表(Hash Table)用的是数组支持按照下标随机访问数据的特性，所以散列表其实就是数组的一种扩展，由数组演化而来。可以说，如果没有数组，就没有散列表。&lt;/strong&gt;&lt;/p&gt;</summary>
     
     
     
