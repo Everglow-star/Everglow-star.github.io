@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-12T07:17:19.205Z</updated>
+  <updated>2021-07-12T14:01:25.460Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>基本架构：一个键值数据库包含什么？</title>
+    <title>Redis基本架构</title>
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T07:17:19.205Z</updated>
+    <updated>2021-07-12T14:01:25.460Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
@@ -41,11 +41,11 @@
   </entry>
   
   <entry>
-    <title>数据结构：快速的Redis有哪些慢操作？</title>
+    <title>Redis数据结构</title>
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T07:16:45.803Z</updated>
+    <updated>2021-07-12T14:00:52.507Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;a href=&quot;#数据结构：快速的Redis有哪些慢操作？&quot; class=&quot;headerlink&quot; title=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;/a&gt;数据结构：快速的&lt;code&gt;Redis&lt;/code&gt;有哪些慢操作？&lt;/h1&gt;&lt;p&gt;底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。&lt;/p&gt;
@@ -124,6 +124,25 @@
     <title>Redis持久化</title>
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-12T13:58:13.001Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;AOF-日志是如何实现的？&quot;&gt;&lt;a href=&quot;#AOF-日志是如何实现的？&quot; class=&quot;headerlink&quot; title=&quot;AOF 日志是如何实现的？&quot;&gt;&lt;/a&gt;AOF 日志是如何实现的？&lt;/h1&gt;&lt;p&gt;说到日志，我们比较熟悉的是数据库的写前日志（Write Ahead Log, WAL），也就是说，在实际写数据前，先把修改的数据记到日志文件中，以便故障时进行恢复。不过，AOF 日志正好相反，它是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志，如下图所示：&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis持久化</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%8C%81%E4%B9%85%E5%8C%96/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%8C%81%E4%B9%85%E5%8C%96/</id>
     <published>2021-07-11T16:00:00.000Z</published>
     <updated>2021-07-12T13:58:13.001Z</updated>
     
