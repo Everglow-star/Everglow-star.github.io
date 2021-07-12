@@ -81,12 +81,12 @@
 
 
 
-<meta name="description" content="基本概念树 这里面每个元素我们叫做“节点”；用来连接相邻节点之间的关系，我们叫做“父子关系”。  A 节点就是 B 节点的父节点，B 节点是 A 节点的子节点。B、C、D 这三个节点的父节点是同一个节点，所以它们之间互称为兄弟节点。我们把没有父节点的节点叫做根节点，也就是图中的节点 E。我们把没有子节点的节点叫做叶子节点或者叶节点，比如图中的 G、H、I、J、K、L 都是叶子节点。">
+<meta name="description" content="基本概念树">
 <meta property="og:type" content="article">
 <meta property="og:title" content="二叉树">
 <meta property="og:url" content="http://example.com/2021/07/12/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/index.html">
 <meta property="og:site_name" content="奋斗的🐖">
-<meta property="og:description" content="基本概念树 这里面每个元素我们叫做“节点”；用来连接相邻节点之间的关系，我们叫做“父子关系”。  A 节点就是 B 节点的父节点，B 节点是 A 节点的子节点。B、C、D 这三个节点的父节点是同一个节点，所以它们之间互称为兄弟节点。我们把没有父节点的节点叫做根节点，也就是图中的节点 E。我们把没有子节点的节点叫做叶子节点或者叶节点，比如图中的 G、H、I、J、K、L 都是叶子节点。">
+<meta property="og:description" content="基本概念树">
 <meta property="og:locale">
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg">
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/220043e683ea33b9912425ef759556ae.jpg">
@@ -110,7 +110,7 @@
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/dd/9b/dd9f5a4525f5029a8339c89ad1c8159b.jpg">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/90/9a/903ee0dcb62bce2f5b47819541f9069a.jpg">
 <meta property="article:published_time" content="2021-07-12T04:52:32.000Z">
-<meta property="article:modified_time" content="2021-07-12T05:10:55.779Z">
+<meta property="article:modified_time" content="2021-07-12T05:22:35.602Z">
 <meta property="article:author" content="英伦82年雪碧">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg">
@@ -171,6 +171,8 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
+    <a target="_blank" rel="noopener" href="https://github.com/Everglow-star"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
@@ -410,11 +412,11 @@
 
       
         <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg" alt="img"></p>
+<span id="more"></span>
+
 <p>这里面每个元素我们叫做“节点”；用来连接相邻节点之间的关系，我们叫做“父子关系”。</p>
 <p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/220043e683ea33b9912425ef759556ae.jpg" alt="img"></p>
 <p>A 节点就是 B 节点的父节点，B 节点是 A 节点的子节点。B、C、D 这三个节点的父节点是同一个节点，所以它们之间互称为兄弟节点。我们把没有父节点的节点叫做根节点，也就是图中的节点 E。我们把没有子节点的节点叫做叶子节点或者叶节点，比如图中的 G、H、I、J、K、L 都是叶子节点。</p>
-<span id="more"></span>
-
 <p><strong>高度（Height）、深度（Depth）、层（Level</strong>）：</p>
 <p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/4094a733986073fedb6b9d03f877d71e.jpg" alt="img"></p>
 <p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/50f89510ad1f7570791dd12f4e9adeb4.jpg" alt="img"></p>
@@ -720,6 +722,17 @@
 
 
 
+
+<div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
 
         
 

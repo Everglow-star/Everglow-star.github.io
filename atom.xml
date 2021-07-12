@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-12T05:10:55.779Z</updated>
+  <updated>2021-07-12T05:22:35.602Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,13 +21,10 @@
     <link href="http://example.com/2021/07/12/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/"/>
     <id>http://example.com/2021/07/12/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/</id>
     <published>2021-07-12T04:52:32.000Z</published>
-    <updated>2021-07-12T05:10:55.779Z</updated>
+    <updated>2021-07-12T05:22:35.602Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;基本概念&quot;&gt;&lt;a href=&quot;#基本概念&quot; class=&quot;headerlink&quot; title=&quot;基本概念&quot;&gt;&lt;/a&gt;基本概念&lt;/h1&gt;&lt;h2 id=&quot;树&quot;&gt;&lt;a href=&quot;#树&quot; class=&quot;headerlink&quot; title=&quot;树&quot;&gt;&lt;/a&gt;树&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
-&lt;p&gt;这里面每个元素我们叫做“节点”；用来连接相邻节点之间的关系，我们叫做“父子关系”。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/220043e683ea33b9912425ef759556ae.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
-&lt;p&gt;A 节点就是 B 节点的父节点，B 节点是 A 节点的子节点。B、C、D 这三个节点的父节点是同一个节点，所以它们之间互称为兄弟节点。我们把没有父节点的节点叫做根节点，也就是图中的节点 E。我们把没有子节点的节点叫做叶子节点或者叶节点，比如图中的 G、H、I、J、K、L 都是叶子节点。&lt;/p&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;基本概念&quot;&gt;&lt;a href=&quot;#基本概念&quot; class=&quot;headerlink&quot; title=&quot;基本概念&quot;&gt;&lt;/a&gt;基本概念&lt;/h1&gt;&lt;h2 id=&quot;树&quot;&gt;&lt;a href=&quot;#树&quot; class=&quot;headerlink&quot; title=&quot;树&quot;&gt;&lt;/a&gt;树&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;</summary>
     
     
     
