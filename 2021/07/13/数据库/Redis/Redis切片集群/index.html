@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Redis," />
 
 
 
@@ -81,27 +81,23 @@
 
 
 
-<meta name="description" content="链表（上）链表结构 数组需要一块 连续 的内存空间来存储，链表恰恰相反，它并 不需要一块连续 的内存空间，它通过“指针”将一组零散的内存块串联起来使用。">
+<meta name="description" content="切片集群：数据增多了，是该加内存还是加实例？切片集群，也叫分片集群，就是指启动多个 Redis 实例组成一个集群，然后按照一定的规则，把收到的数据划分成多份，每一份用一个实例来保存。   好处：在切片集群中，实例在为 5GB 数据生成 RDB 时，数据量就小了很多，fork 子进程一般不会给主线程带来较长时间的阻塞。采用多个实例保存数据切片后，我们既能保存 25GB 数据，又避免了 fork 子进">
 <meta property="og:type" content="article">
-<meta property="og:title" content="链表">
-<meta property="og:url" content="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E9%93%BE%E8%A1%A8%E4%B8%93%E9%A2%98/index.html">
+<meta property="og:title" content="Redis切片集群">
+<meta property="og:url" content="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%88%87%E7%89%87%E9%9B%86%E7%BE%A4/index.html">
 <meta property="og:site_name" content="英伦82年雪碧">
-<meta property="og:description" content="链表（上）链表结构 数组需要一块 连续 的内存空间来存储，链表恰恰相反，它并 不需要一块连续 的内存空间，它通过“指针”将一组零散的内存块串联起来使用。">
+<meta property="og:description" content="切片集群：数据增多了，是该加内存还是加实例？切片集群，也叫分片集群，就是指启动多个 Redis 实例组成一个集群，然后按照一定的规则，把收到的数据划分成多份，每一份用一个实例来保存。   好处：在切片集群中，实例在为 5GB 数据生成 RDB 时，数据量就小了很多，fork 子进程一般不会给主线程带来较长时间的阻塞。采用多个实例保存数据切片后，我们既能保存 25GB 数据，又避免了 fork 子进">
 <meta property="og:locale">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/image-20210324155924249.png">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b93e7ade9bb927baad1348d9a806ddeb.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/452e943788bdeea462d364389bd08a17.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/86cb7dc331ea958b0a108b911f38d155.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/cbc8ab20276e2f9312030c313a9ef70b.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104205.jpeg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104247.jpeg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104919.jpeg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313105116.jpeg">
-<meta property="article:published_time" content="2021-07-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-07-12T05:41:49.342Z">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/793251ca784yyf6ac37fe46389094b26.jpg">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/7a512fec7eba789c6d098b834929701a.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/7d/ab/7d070c8b19730b308bfaabbe82c2f1ab.jpg">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/350abedefcdbc39d6a8a8f1874eb0809.jpg">
+<meta property="article:published_time" content="2021-07-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-13T02:41:18.658Z">
 <meta property="article:author" content="英伦82年雪碧">
+<meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/image-20210324155924249.png">
+<meta name="twitter:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/793251ca784yyf6ac37fe46389094b26.jpg">
 
 
 
@@ -131,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/07/12/数据结构与算法/链表专题/"/>
+  <link rel="canonical" href="http://example.com/2021/07/13/数据库/Redis/Redis切片集群/"/>
 
 
 
 
 
-  <title>链表 | 英伦82年雪碧</title>
+  <title>Redis切片集群 | 英伦82年雪碧</title>
   
 
 
@@ -308,7 +304,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E9%93%BE%E8%A1%A8%E4%B8%93%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%88%87%E7%89%87%E9%9B%86%E7%BE%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -325,7 +321,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">链表</h1>
+          <h1 class="post-title" itemprop="name headline">Redis切片集群</h1>
         
 
         <div class="post-meta">
@@ -337,8 +333,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-12T00:00:00+08:00">
-                2021-07-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-13T00:00:00+08:00">
+                2021-07-13
               </time>
             
 
@@ -360,8 +356,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构与算法</span>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -391,7 +387,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.3k words
+                  2.3k words
                 </span>
               
 
@@ -407,7 +403,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4 min
+                  8 min
                 </span>
               
             </div>
@@ -428,97 +424,80 @@
       
 
       
-        <h1 id="链表（上）"><a href="#链表（上）" class="headerlink" title="链表（上）"></a>链表（上）</h1><h2 id="链表结构"><a href="#链表结构" class="headerlink" title="链表结构"></a>链表结构</h2><ul>
-<li><p>数组需要一块 <strong>连续</strong> 的内存空间来存储，链表恰恰相反，它并 <strong>不需要一块连续</strong> 的内存空间，它通过“指针”将一组零散的内存块串联起来使用。</p>
+        <h1 id="切片集群：数据增多了，是该加内存还是加实例？"><a href="#切片集群：数据增多了，是该加内存还是加实例？" class="headerlink" title="切片集群：数据增多了，是该加内存还是加实例？"></a>切片集群：数据增多了，是该加内存还是加实例？</h1><p>切片集群，也叫分片集群，就是指启动多个 Redis 实例组成一个集群，然后按照一定的规则，把收到的数据划分成多份，每一份用一个实例来保存。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/793251ca784yyf6ac37fe46389094b26.jpg" alt="img" style="zoom:20%;" />
+
+<p>好处：在切片集群中，实例在为 5GB 数据生成 RDB 时，数据量就小了很多，fork 子进程一般不会给主线程带来较长时间的阻塞。采用多个实例保存数据切片后，<strong>我们既能保存 25GB 数据，又避免了 fork 子进程阻塞主线程而导致的响应突然变慢。</strong></p>
 <span id="more"></span>
 
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/image-20210324155924249.png" alt="image-20210324155924249" style="zoom: 50%;" /></li>
-<li><p> <strong>链表类型：</strong> 单链表、双向链表和循环链表。</p>
+<h2 id="如何保存更多数据？"><a href="#如何保存更多数据？" class="headerlink" title="如何保存更多数据？"></a>如何保存更多数据？</h2><ul>
+<li><strong>纵向扩展：</strong>升级单个 Redis 实例的资源配置，包括增加内存容量、增加磁盘容量、使用更高配置的 CPU。就像下图中，原来的实例内存是 8GB，硬盘是 50GB，纵向扩展后，内存增加到 24GB，磁盘增加到 150GB。<ul>
+<li>好处：实施起来简单、直接</li>
+<li>坏处：<ul>
+<li>当使用 RDB 对数据进行持久化时，如果数据量增加，需要的内存也会增加，主线程 fork 子进程时就可能会阻塞（比如刚刚的例子中的情况）。</li>
+<li>纵向扩展会受到硬件和成本的限制。</li>
+</ul>
 </li>
-<li><p><strong>单链表：</strong> 链表通过指针将一组零散的内存块串联在一起。其中，我们把内存块称为链表的<strong>“结点”</strong>。为了将所有的结点串起来，每个链表的结点除了存储数据之外，还需要记录链上的下一个结点的地址。如图所示，我们把这个记录下个结点地址的指针叫作<strong>后继指针 next</strong>。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b93e7ade9bb927baad1348d9a806ddeb.jpg" alt="img" style="zoom:50%;" />
+</ul>
+</li>
+<li><strong>横向扩展：</strong>横向增加当前 Redis 实例的个数，就像下图中，原来使用 1 个 8GB 内存、50GB 磁盘的实例，现在使用三个相同配置的实例。<ul>
+<li>好处：只用增加 Redis 的实例个数就行了，不用担心单个实例的硬件和成本限制。<strong>在面向百万、千万级别的用户规模时，横向扩展的 Redis 切片集群会是一个非常好的选择。</strong></li>
+<li>坏处：切片集群不可避免地涉及到多个实例的分布式管理问题。</li>
+</ul>
+</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/7a512fec7eba789c6d098b834929701a.jpg" alt="img" style="zoom:20%;" />
 
+<h2 id="数据切片和实例的对应分布关系"><a href="#数据切片和实例的对应分布关系" class="headerlink" title="数据切片和实例的对应分布关系"></a>数据切片和实例的对应分布关系</h2><p>Redis Cluster 方案采用哈希槽（Hash Slot，接下来我会直接称之为 Slot），来处理数据和实例之间的映射关系。在 Redis Cluster 方案中，一个切片集群共有 16384 个哈希槽，这些哈希槽类似于数据分区，每个键值对都会根据它的 key，被映射到一个哈希槽中。</p>
+<p><strong>映射过程：</strong></p>
 <ul>
-<li><strong>插入，删除：</strong> 只需要考虑相邻结点的指针改变，所以对应的时间复杂度是 O(1)。</li>
+<li>首先根据键值对的 key，按照CRC16 算法计算一个 16 bit 的值；</li>
+<li>然后，再用这个 16bit 值对 16384 取模，得到 0~16383 范围内的模数，每个模数代表一个相应编号的哈希槽。</li>
 </ul>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/452e943788bdeea462d364389bd08a17.jpg" alt="img" style="zoom: 50%;" />
+<p><strong>哈希槽又是如何被映射到具体的 Redis 实例上的呢？</strong></p>
+<ul>
+<li><p>可以使用 cluster create 命令创建集群，此时，Redis 会自动把这些槽平均分布在集群实例上。例如，如果集群中有 N 个实例，那么，每个实例上的槽个数为 16384/N 个。</p>
+</li>
+<li><p>也可以使用 cluster meet 命令手动建立实例间的连接，形成集群，再使用 cluster addslots 命令，指定每个实例上的哈希槽个数。</p>
+</li>
+</ul>
+<img src="https://static001.geekbang.org/resource/image/7d/ab/7d070c8b19730b308bfaabbe82c2f1ab.jpg" alt="img" style="zoom:20%;" />
 
-<ul>
-<li><strong>查找：</strong> 根据指针一个结点一个结点地依次遍历，直到找到相应的结点，<strong>需要 O(n) 的时间复杂度。</strong></li>
-</ul>
-</li>
-<li><p><strong>循环链表：</strong> 循环链表的尾结点指针是指向链表的头结点。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/86cb7dc331ea958b0a108b911f38d155.jpg" alt="img" style="zoom:50%;" />
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis<span class="operator">-</span>cli <span class="operator">-</span>h <span class="number">172.16</span><span class="number">.19</span><span class="number">.3</span> –p <span class="number">6379</span> cluster addslots <span class="number">0</span>,<span class="number">1</span></span><br><span class="line">redis<span class="operator">-</span>cli <span class="operator">-</span>h <span class="number">172.16</span><span class="number">.19</span><span class="number">.4</span> –p <span class="number">6379</span> cluster addslots <span class="number">2</span>,<span class="number">3</span></span><br><span class="line">redis<span class="operator">-</span>cli <span class="operator">-</span>h <span class="number">172.16</span><span class="number">.19</span><span class="number">.5</span> –p <span class="number">6379</span> cluster addslots <span class="number">4</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>优点：循环链表的优点是从链尾到链头比较方便。当要处理的数据<strong>具有环型结构特点</strong>时，就特别适合采用循环链表。</li>
-</ul>
+<p><strong>在手动分配哈希槽时，需要把 16384 个槽都分配完，否则 Redis 集群无法正常工作。</strong></p>
+<h2 id="客户端如何定位数据？"><a href="#客户端如何定位数据？" class="headerlink" title="客户端如何定位数据？"></a>客户端如何定位数据？</h2><ul>
+<li><p>Redis 实例会把自己的哈希槽信息发给和它相连接的其它实例，来完成哈希槽分配信息的扩散。当实例之间相互连接后，每个实例就有所有哈希槽的映射关系了。</p>
 </li>
-<li><p><strong>双向链表：</strong> 支持两个方向，每个结点不止有一个后继指针 next 指向后面的结点，还有一个前驱指针 <code>prev</code> 指向前面的结点。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/cbc8ab20276e2f9312030c313a9ef70b.jpg" alt="img" style="zoom:50%;" />
+<li><p>客户端收到哈希槽信息后，会把哈希槽信息缓存在本地。当客户端请求键值对时，会先计算键所对应的哈希槽，然后就可以给相应的实例发送请求了。</p>
+</li>
+</ul>
+<p>在集群中，实例和哈希槽的对应关系<strong>并不是一成不变的</strong>，最常见的变化有两个：</p>
+<ul>
+<li>在集群中，实例有新增或删除，Redis 需要重新分配哈希槽；</li>
+<li>为了负载均衡，Redis 需要把哈希槽在所有实例上重新分布一遍。</li>
+</ul>
+<p>实例之间还可以通过相互传递消息，获得最新的哈希槽分配信息，但是，客户端是无法主动感知这些变化的。这就会导致，它缓存的分配信息和最新的分配信息就不一致了，那该怎么办呢？</p>
+<p>Redis Cluster 方案提供了一种 <strong>重定向机制</strong> ，所谓的“重定向”，就是指，客户端给一个实例发送数据读写操作时，这个实例上并没有相应的数据，客户端要再给一个新实例发送操作命令。</p>
+<p>当客户端把一个键值对的操作请求发给一个实例时，如果这个实例上并没有这个键值对映射的哈希槽，那么，这个实例就会给客户端返回下面的 MOVED 命令响应结果，这个结果中就包含了新实例的访问地址。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET hello:<span class="built_in">key</span></span><br><span class="line">(error) MOVED <span class="number">13320</span> <span class="number">172.16</span><span class="number">.19</span><span class="number">.5</span>:<span class="number">6379</span></span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>如果存储同样多的数据，双向链表要比单链表占用更多的内存空间。虽然两个指针比较浪费存储空间，但可以支持双向遍历，这样也带来了双向链表操作的灵活性，<strong>双向链表可以支持 O(1) 时间复杂度的情况下找到前驱结点</strong>，正是这样的特点，也使双向链表在某些情况下的插入、删除等操作都要比单链表简单、高效。</li>
-</ul>
-</li>
-<li><p><strong>双向循环链表：</strong></p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104205.jpeg" alt="img" style="zoom: 50%;" /></li>
-<li><p><strong>链表的删除操作：</strong>双向链表的优势</p>
-<ul>
-<li>删除结点中“值等于某个给定值”的结点：<ul>
-<li>不管是单链表还是双向链表，为了查找到值等于给定值的结点，都需要从头结点开始一个一个依次遍历对比，直到找到值等于给定值的结点，然后再通过我前面讲的指针操作将其删除。<strong>删除O(1)，查找O(n)，总时间复杂度为O(n)</strong></li>
-</ul>
-</li>
-<li>删除给定指针指向的结点：<ul>
-<li>我们已经找到了要删除的结点，但是删除某个结点 q 需要知道其前驱结点，而单链表并不支持直接获取前驱结点，所以，为了找到前驱结点，我们还是要从头结点开始遍历链表，直到 p-&gt;next=q，说明 p 是 q 的前驱结点。</li>
-<li>因为双向链表中的结点已经保存了前驱结点的指针，不需要像单链表那样遍历。所以，针对第二种情况，单链表删除操作需要 O(n) 的时间复杂度，而双向链表只需要在 O(1) 的时间复杂度内就搞定了！</li>
-<li>插入、删除操作有优势之外，对于一个有序链表，双向链表的按值查询的效率也要比单链表高一些。因为，我们可以记录上次查找的位置 p，每次查询时，根据要查找的值与 p 的大小关系，决定是往前还是往后查找，所以平均只需要查找一半的数据。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="链表-VS-数组性能大比拼"><a href="#链表-VS-数组性能大比拼" class="headerlink" title="链表 VS 数组性能大比拼"></a>链表 VS 数组性能大比拼</h2><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104247.jpeg" alt="img" style="zoom:50%;" />
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/350abedefcdbc39d6a8a8f1874eb0809.jpg" alt="img" style="zoom:15%;" />
 
-<h1 id="链表（下）"><a href="#链表（下）" class="headerlink" title="链表（下）"></a>链表（下）</h1><p>写链表代码注意的问题：</p>
-<ul>
-<li><p><strong>理解指针或引用的含义</strong></p>
-</li>
-<li><p><strong>将某个变量赋值给指针，实际上就是将这个变量的地址赋值给指针，或者反过来说，指针中存储了这个变量的内存地址，指向了这个变量，通过指针就能找到这个变量。</strong></p>
-</li>
-<li><p><strong>警惕指针丢失和内存泄漏</strong></p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104919.jpeg" alt="img" style="zoom:50%;" /></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x-&gt;next = b;</span><br><span class="line">a-&gt;next = x;</span><br></pre></td></tr></table></figure>
+<p>在实际应用时，如果 Slot 2 中的数据比较多，就可能会出现一种情况：客户端向实例 2 发送请求，但此时，Slot 2 中的数据只有一部分迁移到了实例 3，还有部分数据没有迁移。在这种迁移部分完成的情况下，客户端就会收到一条 ASK 报错信息，如下所示：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> hello:key</span><br><span class="line">(error) ASK <span class="number">13320</span> <span class="number">172.16</span><span class="number">.19</span><span class="number">.5</span>:<span class="number">6379</span></span><br></pre></td></tr></table></figure>
 
-<p>删除链表结点时，也一定要记得手动释放内存空间。</p>
-<ul>
-<li><p><strong>利用哨兵简化实现难度</strong></p>
-<ul>
-<li><p>针对链表的插入、删除操作，需要对插入第一个结点和删除最后一个结点的情况进行特殊处理。</p>
-</li>
-<li><p>如果我们引入 <strong>哨兵结点</strong> ，在任何时候，不管链表是不是空，head 指针都会一直指向这个哨兵结点。我们也把这种有哨兵结点的链表叫带头链表。相反，没有哨兵结点的链表就叫作不带头链表。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313105116.jpeg" alt="img" style="zoom:50%;" /></li>
-</ul>
-</li>
-<li><p><strong>重点留意边界条件处理</strong></p>
-<ul>
-<li>如果链表为空时，代码是否能正常工作？</li>
-<li>如果链表只包含一个结点时，代码是否能正常工作？</li>
-<li>如果链表只包含两个结点时，代码是否能正常工作？</li>
-<li>代码逻辑在处理头结点和尾结点的时候，是否能正常工作？</li>
-</ul>
-</li>
-</ul>
-<p><strong>必会代码：</strong></p>
-<ul>
-<li>实现单链表、循环链表、双向链表，支持增删操作</li>
-<li>实现单链表反转</li>
-<li>实现两个有序的链表合并为一个有序链表</li>
-<li>实现求链表的中间结点</li>
-<li>链表中环的检测</li>
-<li>删除链表倒数第 n 个结点</li>
-</ul>
+<p>这个结果中的 ASK 命令就表示，客户端请求的键值对所在的哈希槽 13320，在 172.16.19.5 这个实例上，但是这个哈希槽正在迁移。此时，客户端需要先给 172.16.19.5 这个实例发送一个 ASKING 命令。这个命令的意思是，<strong>让这个实例允许执行客户端接下来发送的命令。然后，客户端再向这个实例发送 GET 命令，以读取数据。</strong></p>
+<p>和 MOVED 命令不同，<strong>ASK 命令并不会更新客户端缓存的哈希槽分配信息。</strong></p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Redis Cluster 方案通过哈希槽的方式把键值对分配到不同的实例上，这个过程需要对键值对的 key 做 CRC 计算，然后再和哈希槽做映射，这样做有什么好处吗？如果用一个表直接把键值对和实例的对应关系记录下来（例如键值对 1 在实例 2 上，键值对 2 在实例 1 上），这样就不用计算 key 和哈希槽的对应关系了，<strong>只用查表就行了，Redis 为什么不这么做呢？</strong></p>
+<p>1、整个集群存储key的数量是无法预估的，key的数量非常多时，直接记录每个key对应的实例映射关系，这个映射表会非常庞大，这个映射表无论是存储在服务端还是客户端都占用了非常大的内存空间。</p>
+<p>2、Redis Cluster采用无中心化的模式（无proxy，客户端与服务端直连），客户端在某个节点访问一个key，如果这个key不在这个节点上，这个节点需要有纠正客户端路由到正确节点的能力（MOVED响应），这就需要节点之间互相交换路由表，每个节点拥有整个集群完整的路由关系。如果存储的都是key与实例的对应关系，节点之间交换信息也会变得非常庞大，消耗过多的网络资源，而且就算交换完成，相当于每个节点都需要额外存储其他节点的路由表，内存占用过大造成资源浪费。</p>
+<p>3、当集群在扩容、缩容、数据均衡时，节点之间会发生数据迁移，迁移时需要修改每个key的映射关系，维护成本高。</p>
+<p>4、而在中间增加一层哈希槽，可以把数据和节点解耦，key通过Hash计算，只需要关心映射到了哪个哈希槽，然后再通过哈希槽和节点的映射表找到节点，相当于消耗了很少的CPU资源，不但让数据分布更均匀，还可以让这个映射表变得很小，利于客户端和服务端保存，节点之间交换信息时也变得轻量。</p>
+<p>5、当集群在扩容、缩容、数据均衡时，节点之间的操作例如数据迁移，都以哈希槽为基本单位进行操作，简化了节点扩容、缩容的难度，便于集群的维护和管理。</p>
+<p><strong>Redis集群方案的两个关键问题：</strong></p>
+<p>1、请求路由：一般都是采用哈希槽的映射关系表找到指定节点，然后在这个节点上操作的方案。</p>
+<p>2、数据迁移：当集群节点不足以支撑业务需求时，就需要扩容节点，扩容就意味着节点之间的数据需要做迁移，而迁移过程中是否会影响到业务，这也是判定一个集群方案是否成熟的标准。</p>
 
       
     </div>
@@ -534,6 +513,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+        </div>
+      
 
       
       
@@ -543,8 +528,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/" rel="next" title="Redis基本架构">
-                <i class="fa fa-chevron-left"></i> Redis基本架构
+              <a href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%AE%9E%E6%88%98%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="next" title="Redis数据结构如何选择？">
+                <i class="fa fa-chevron-left"></i> Redis数据结构如何选择？
               </a>
             
           </div>
@@ -553,8 +538,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%A0%88%E4%B8%93%E9%A2%98/" rel="prev" title="栈">
-                栈 <i class="fa fa-chevron-right"></i>
+              <a href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/RedisIO%E6%A8%A1%E5%9E%8B/" rel="prev" title="Redis为什么那么快？">
+                Redis为什么那么快？ <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -696,7 +681,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%EF%BC%88%E4%B8%8A%EF%BC%89"><span class="nav-text">链表（上）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="nav-text">链表结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8-VS-%E6%95%B0%E7%BB%84%E6%80%A7%E8%83%BD%E5%A4%A7%E6%AF%94%E6%8B%BC"><span class="nav-text">链表 VS 数组性能大比拼</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%EF%BC%88%E4%B8%8B%EF%BC%89"><span class="nav-text">链表（下）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%87%E7%89%87%E9%9B%86%E7%BE%A4%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%A4%9A%E4%BA%86%EF%BC%8C%E6%98%AF%E8%AF%A5%E5%8A%A0%E5%86%85%E5%AD%98%E8%BF%98%E6%98%AF%E5%8A%A0%E5%AE%9E%E4%BE%8B%EF%BC%9F"><span class="nav-text">切片集群：数据增多了，是该加内存还是加实例？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98%E6%9B%B4%E5%A4%9A%E6%95%B0%E6%8D%AE%EF%BC%9F"><span class="nav-text">如何保存更多数据？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%87%E7%89%87%E5%92%8C%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%AF%B9%E5%BA%94%E5%88%86%E5%B8%83%E5%85%B3%E7%B3%BB"><span class="nav-text">数据切片和实例的对应分布关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%A6%82%E4%BD%95%E5%AE%9A%E4%BD%8D%E6%95%B0%E6%8D%AE%EF%BC%9F"><span class="nav-text">客户端如何定位数据？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li></ol></li></ol></div>
             
 
           </div>

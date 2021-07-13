@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-13T02:16:47.006Z</updated>
+  <updated>2021-07-13T07:50:27.423Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,135 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Redis为什么那么快？</title>
-    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/"/>
-    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/</id>
+    <title>基础架构：一条SQL语句查询过程</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/</id>
     <published>2021-07-12T16:00:00.000Z</published>
-    <updated>2021-07-13T02:16:47.006Z</updated>
+    <updated>2021-07-13T07:50:27.423Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;基础架构-一条SQL语句查询过程&quot;&gt;&lt;a href=&quot;#基础架构-一条SQL语句查询过程&quot; class=&quot;headerlink&quot; title=&quot;基础架构:一条SQL语句查询过程&quot;&gt;&lt;/a&gt;基础架构:一条&lt;code&gt;SQL&lt;/code&gt;语句查询过程&lt;/h1&gt;&lt;p&gt;&lt;code&gt;SQL&lt;/code&gt; 语句在 &lt;code&gt;MySQL&lt;/code&gt; 的各个功能模块中的执行过程。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png&quot; alt=&quot;img&quot; style=&quot;zoom: 20%;&quot; /&gt;
+
+&lt;p&gt;&lt;code&gt;MySQL&lt;/code&gt; 可以分为 Server 层和存储引擎层两部分。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Server 层&lt;/strong&gt;包括连接器、查询缓存、分析器、优化器、执行器等，涵盖 &lt;code&gt;MySQL&lt;/code&gt; 的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;存储引擎层&lt;/strong&gt;负责数据的存储和提取。其架构模式是插件式的，支持 &lt;code&gt;InnoDB、MyISAM、Memory&lt;/code&gt; 等多个存储引擎。现在最常用的存储引擎是&lt;code&gt; InnoDB&lt;/code&gt;，它从 &lt;code&gt;MySQL&lt;/code&gt; 5.5.5 版本开始成为了默认存储引擎。&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>事务隔离：为什么你改了我还看不见？</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T14:41:34.776Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;事务隔离：为什么你改了我还看不见？&quot;&gt;&lt;a href=&quot;#事务隔离：为什么你改了我还看不见？&quot; class=&quot;headerlink&quot; title=&quot;事务隔离：为什么你改了我还看不见？&quot;&gt;&lt;/a&gt;事务隔离：为什么你改了我还看不见？&lt;/h1&gt;&lt;h2 id=&quot;隔离性与隔离级别&quot;&gt;&lt;a href=&quot;#隔离性与隔离级别&quot; class=&quot;headerlink&quot; title=&quot;隔离性与隔离级别&quot;&gt;&lt;/a&gt;隔离性与隔离级别&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;读未提交&lt;/strong&gt;是指，一个事务还没提交时，它做的变更就能被别的事务看到。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;读提交&lt;/strong&gt;是指，一个事务提交之后，它做的变更才会被其他事务看到。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可重复读&lt;/strong&gt;是指，一个事务执行过程中看到的数据，总是跟这个事务在启动时看到的数据是一致的。当然在可重复读隔离级别下，未提交变更对其他事务也是不可见的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;串行化&lt;/strong&gt;，顾名思义是对于同一行记录，“写”会加“写锁”，“读”会加“读锁”。当出现读写锁冲突的时候，后访问的事务必须等前一个事务执行完成，才能继续执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在实现上，数据库里面会创建一个&lt;strong&gt;视图&lt;/strong&gt;，访问的时候以视图的逻辑结果为准。在“可重复读”隔离级别下，这个视图是在事务启动时创建的，整个事务存在期间都用这个视图。在“读提交”隔离级别下，这个视图是在每个 SQL 语句开始执行的时候创建的。这里需要注意的是，&lt;strong&gt;“读未提交”隔离级别下直接返回记录上的最新值，没有视图概念；而“串行化”隔离级别下直接用加锁的方式来避免并行访问。&lt;/strong&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>日志系统：一条SQL更新语句执行过程</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T08:08:52.602Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;日志系统：一条SQL更新语句是如何执行的？&quot;&gt;&lt;a href=&quot;#日志系统：一条SQL更新语句是如何执行的？&quot; class=&quot;headerlink&quot; title=&quot;日志系统：一条SQL更新语句是如何执行的？&quot;&gt;&lt;/a&gt;日志系统：一条SQL更新语句是如何执行的？&lt;/h1&gt;&lt;p&gt;更新语句流程首先和查询语句流程是相似的。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
+
+&lt;p&gt;与查询流程不一样的是，更新流程还涉及两个重要的日志模块，&lt;strong&gt;redo log（重做日志）和 binlog（归档日志）。&lt;/strong&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL的锁</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%9A%84%E9%94%81/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%9A%84%E9%94%81/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T14:22:58.719Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;全局锁和表锁-：给表加个字段怎么有这么多阻碍？&quot;&gt;&lt;a href=&quot;#全局锁和表锁-：给表加个字段怎么有这么多阻碍？&quot; class=&quot;headerlink&quot; title=&quot;全局锁和表锁 ：给表加个字段怎么有这么多阻碍？&quot;&gt;&lt;/a&gt;全局锁和表锁</summary>
+        
+      
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>深入浅出索引</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T14:57:58.686Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。&lt;/p&gt;
+&lt;h1 id=&quot;索引基础&quot;&gt;&lt;a href=&quot;#索引基础&quot; class=&quot;headerlink&quot; title=&quot;索引基础&quot;&gt;&lt;/a&gt;索引基础&lt;/h1&gt;&lt;h2 id=&quot;索引的常见模型&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis为什么那么快？</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/RedisIO%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/RedisIO%E6%A8%A1%E5%9E%8B/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T02:16:32.653Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;高性能IO模型：为什么单线程Redis能那么快？&quot;&gt;&lt;a href=&quot;#高性能IO模型：为什么单线程Redis能那么快？&quot; class=&quot;headerlink&quot; title=&quot;高性能IO模型：为什么单线程Redis能那么快？&quot;&gt;&lt;/a&gt;高性能IO模型：为什么单线程Redis能那么快？&lt;/h1&gt;&lt;p&gt;Redis 是单线程，&lt;strong&gt;主要是指 Redis 的网络 IO 和键值对读写是由一个线程来完成&lt;/strong&gt;的，这也是 Redis 对外提供键值存储服务的主要流程。但 Redis 的其他功能，比如&lt;strong&gt;持久化、异步删除、集群数据同步等，其实是由额外的线程执行的。&lt;/strong&gt;&lt;/p&gt;</summary>
@@ -36,11 +160,58 @@
   </entry>
   
   <entry>
-    <title>Redis主从复制及哨兵集群</title>
-    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
-    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/</id>
+    <title>Redis切片集群</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%88%87%E7%89%87%E9%9B%86%E7%BE%A4/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%88%87%E7%89%87%E9%9B%86%E7%BE%A4/</id>
     <published>2021-07-12T16:00:00.000Z</published>
-    <updated>2021-07-13T01:25:48.570Z</updated>
+    <updated>2021-07-13T02:41:18.658Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;切片集群：数据增多了，是该加内存还是加实例？&quot;&gt;&lt;a href=&quot;#切片集群：数据增多了，是该加内存还是加实例？&quot; class=&quot;headerlink&quot; title=&quot;切片集群：数据增多了，是该加内存还是加实例？&quot;&gt;&lt;/a&gt;切片集群：数据增多了，是该加内存还是加实例？&lt;/h1&gt;&lt;p&gt;切片集群，也叫分片集群，就是指启动多个 Redis 实例组成一个集群，然后按照一定的规则，把收到的数据划分成多份，每一份用一个实例来保存。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/793251ca784yyf6ac37fe46389094b26.jpg&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
+
+&lt;p&gt;好处：在切片集群中，实例在为 5GB 数据生成 RDB 时，数据量就小了很多，fork 子进程一般不会给主线程带来较长时间的阻塞。采用多个实例保存数据切片后，&lt;strong&gt;我们既能保存 25GB 数据，又避免了 fork 子进程阻塞主线程而导致的响应突然变慢。&lt;/strong&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis数据结构如何选择？</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%AE%9E%E6%88%98%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%AE%9E%E6%88%98%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T02:45:40.251Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;“万金油”的String，为什么不好用了？&quot;&gt;&lt;a href=&quot;#“万金油”的String，为什么不好用了？&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis主从集群及哨兵集群</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E4%B8%BB%E4%BB%8E%E9%9B%86%E7%BE%A4/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E4%B8%BB%E4%BB%8E%E9%9B%86%E7%BE%A4/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T06:48:41.856Z</updated>
     
     
       
@@ -50,59 +221,6 @@
     <summary type="html">&lt;h1 id=&quot;数据同步：主从库如何实现数据一致？&quot;&gt;&lt;a href=&quot;#数据同步：主从库如何实现数据一致？&quot; class=&quot;headerlink&quot; title=&quot;数据同步：主从库如何实现数据一致？&quot;&gt;&lt;/a&gt;数据同步：主从库如何实现数据一致？&lt;/h1&gt;&lt;p&gt;Redis</summary>
         
       
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis基本架构</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T14:33:31.671Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/79da7093ed998a99d9abe91e610b74e7.jpg&quot; alt=&quot;img&quot; style=&quot;zoom: 25%;&quot; /&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;高性能主线：&lt;/strong&gt; 包括线程模型、数据结构、持久化、网络框架；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;高可靠主线：&lt;/strong&gt;包括主从复制、哨兵机制；&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;高可扩展主线：&lt;/strong&gt;包括数据分片、负载均衡。&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis数据结构</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-13T01:25:02.497Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;a href=&quot;#数据结构：快速的Redis有哪些慢操作？&quot; class=&quot;headerlink&quot; title=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;/a&gt;数据结构：快速的&lt;code&gt;Redis&lt;/code&gt;有哪些慢操作？&lt;/h1&gt;&lt;p&gt;底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/8219f7yy651e566d47cc9f661b399f01.jpg&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
-
-&lt;p&gt;可以看到，String 类型的底层实现只有一种数据结构，也就是简单动态字符串。而 List、Hash、Set 和 Sorted Set 这四种数据类型，都有两种底层实现结构。通常情况下，我们会把这四种类型称为集合类型， &lt;strong&gt;它们的特点是一个键对应了一个集合的数据。&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;这些数据结构都是值的底层实现，键和值本身之间用什么结构组织？&lt;/li&gt;
-&lt;li&gt;为什么集合类型有那么多的底层结构，它们都是怎么组织数据的，都很快吗？&lt;/li&gt;
-&lt;li&gt;什么是简单动态字符串，和常用的字符串是一回事吗？&lt;/li&gt;
-&lt;/ul&gt;</summary>
     
     
     
@@ -169,14 +287,48 @@
   </entry>
   
   <entry>
-    <title>Redis持久化</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%8C%81%E4%B9%85%E5%8C%96/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%8C%81%E4%B9%85%E5%8C%96/</id>
+    <title>Redis基本架构</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T13:58:13.001Z</updated>
+    <updated>2021-07-12T14:33:31.671Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;AOF-日志是如何实现的？&quot;&gt;&lt;a href=&quot;#AOF-日志是如何实现的？&quot; class=&quot;headerlink&quot; title=&quot;AOF 日志是如何实现的？&quot;&gt;&lt;/a&gt;AOF 日志是如何实现的？&lt;/h1&gt;&lt;p&gt;说到日志，我们比较熟悉的是数据库的写前日志（Write Ahead Log, WAL），也就是说，在实际写数据前，先把修改的数据记到日志文件中，以便故障时进行恢复。不过，AOF 日志正好相反，它是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志，如下图所示：&lt;/p&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/79da7093ed998a99d9abe91e610b74e7.jpg&quot; alt=&quot;img&quot; style=&quot;zoom: 25%;&quot; /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;高性能主线：&lt;/strong&gt; 包括线程模型、数据结构、持久化、网络框架；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可靠主线：&lt;/strong&gt;包括主从复制、哨兵机制；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高可扩展主线：&lt;/strong&gt;包括数据分片、负载均衡。&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis数据结构</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</id>
+    <published>2021-07-11T16:00:00.000Z</published>
+    <updated>2021-07-13T01:25:02.497Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;a href=&quot;#数据结构：快速的Redis有哪些慢操作？&quot; class=&quot;headerlink&quot; title=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;/a&gt;数据结构：快速的&lt;code&gt;Redis&lt;/code&gt;有哪些慢操作？&lt;/h1&gt;&lt;p&gt;底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/8219f7yy651e566d47cc9f661b399f01.jpg&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
+
+&lt;p&gt;可以看到，String 类型的底层实现只有一种数据结构，也就是简单动态字符串。而 List、Hash、Set 和 Sorted Set 这四种数据类型，都有两种底层实现结构。通常情况下，我们会把这四种类型称为集合类型， &lt;strong&gt;它们的特点是一个键对应了一个集合的数据。&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这些数据结构都是值的底层实现，键和值本身之间用什么结构组织？&lt;/li&gt;
+&lt;li&gt;为什么集合类型有那么多的底层结构，它们都是怎么组织数据的，都很快吗？&lt;/li&gt;
+&lt;li&gt;什么是简单动态字符串，和常用的字符串是一回事吗？&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
     
     
@@ -245,22 +397,14 @@
   </entry>
   
   <entry>
-    <title>Redis并发问题</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/</id>
+    <title>Redis持久化</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T14:33:55.364Z</updated>
+    <updated>2021-07-12T13:58:13.001Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot; title=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;/a&gt;无锁的原子操作：Redis如何应对并发访问？&lt;/h1&gt;&lt;p&gt;为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;加锁：&lt;/strong&gt; 加锁是一种常用的方法，在读取数据前，客户端需要先获得锁，否则就无法进行操作。当一个客户端获得锁后，就会一直持有这把锁，直到客户端完成数据更新，才释放这把锁。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;弊端：&lt;/strong&gt; 1. 如果加锁操作多，会降低系统的并发访问性能；&lt;/p&gt;
-&lt;p&gt;​             2. 第二个是，Redis 客户端要加锁时，需要用到分布式锁，而分布式锁实现复杂，需要用额外的存储系统来提供加解锁操作&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;原子操作：&lt;/strong&gt; 原子操作是指执行过程保持原子性的操作，而且原子操作执行时并不需要再加锁，实现了无锁操作。这样一来，既能保证并发控制，还能减少对系统并发性能的影响。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;AOF-日志是如何实现的？&quot;&gt;&lt;a href=&quot;#AOF-日志是如何实现的？&quot; class=&quot;headerlink&quot; title=&quot;AOF 日志是如何实现的？&quot;&gt;&lt;/a&gt;AOF 日志是如何实现的？&lt;/h1&gt;&lt;p&gt;说到日志，我们比较熟悉的是数据库的写前日志（Write Ahead Log, WAL），也就是说，在实际写数据前，先把修改的数据记到日志文件中，以便故障时进行恢复。不过，AOF 日志正好相反，它是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志，如下图所示：&lt;/p&gt;</summary>
     
     
     
@@ -299,20 +443,21 @@
   </entry>
   
   <entry>
-    <title>Redis缓存</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</id>
+    <title>Redis并发问题</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T14:33:38.524Z</updated>
+    <updated>2021-07-12T14:33:55.364Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;旁路缓存：Redis是如何工作的？&quot;&gt;&lt;a href=&quot;#旁路缓存：Redis是如何工作的？&quot; class=&quot;headerlink&quot; title=&quot;旁路缓存：Redis是如何工作的？&quot;&gt;&lt;/a&gt;旁路缓存：&lt;code&gt;Redis&lt;/code&gt;是如何工作的？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;Redis&lt;/code&gt; 提供了高性能的数据存取功能，所以广泛应用在缓存场景中，既能有效地提升业务应用的响应速度，还可以避免把高并发大压力的请求发送到数据库层。但是，如果 &lt;code&gt;Redis&lt;/code&gt; 做缓存时出现了问题，比如说缓存失效，那么，大量请求就会直接积压到数据库层，必然会给数据库带来巨大的压力，很可能会导致数据库宕机或是故障，那么，业务应用就没有办法存取数据、响应用户请求了。这种生产事故，肯定不是我们希望看到的。&lt;/p&gt;
-&lt;p&gt;正因为 &lt;code&gt;Redis&lt;/code&gt; 用作缓存的普遍性以及它在业务应用中的重要作用，所以，我们需要系统地掌握缓存的一系列内容，包括工作原理、替换策略、异常处理和扩展机制。具体来说，我们需要解决四个关键问题：&lt;/p&gt;
+    <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot; title=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;/a&gt;无锁的原子操作：Redis如何应对并发访问？&lt;/h1&gt;&lt;p&gt;为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;Redis&lt;/code&gt; 缓存具体是怎么工作的？&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Redis&lt;/code&gt; 缓存如果满了，该怎么办？&lt;/li&gt;
-&lt;li&gt;为什么会有缓存一致性、缓存穿透、缓存雪崩、缓存击穿等异常，该如何应对？&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Redis&lt;/code&gt; 的内存毕竟有限，如果用快速的固态硬盘来保存数据，可以增加缓存的数据量，那么，&lt;code&gt;Redis&lt;/code&gt; 缓存可以使用快速固态硬盘吗？&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;加锁：&lt;/strong&gt; 加锁是一种常用的方法，在读取数据前，客户端需要先获得锁，否则就无法进行操作。当一个客户端获得锁后，就会一直持有这把锁，直到客户端完成数据更新，才释放这把锁。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;弊端：&lt;/strong&gt; 1. 如果加锁操作多，会降低系统的并发访问性能；&lt;/p&gt;
+&lt;p&gt;​             2. 第二个是，Redis 客户端要加锁时，需要用到分布式锁，而分布式锁实现复杂，需要用额外的存储系统来提供加解锁操作&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;原子操作：&lt;/strong&gt; 原子操作是指执行过程保持原子性的操作，而且原子操作执行时并不需要再加锁，实现了无锁操作。这样一来，既能保证并发控制，还能减少对系统并发性能的影响。&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;</summary>
     
     

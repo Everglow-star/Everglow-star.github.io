@@ -84,7 +84,7 @@
 <meta name="description" content="无锁的原子操作：Redis如何应对并发访问？为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。  加锁： 加锁是一种常用的方法，在读取数据前，客户端需要先获得锁，否则就无法进行操作。当一个客户端获得锁后，就会一直持有这把锁，直到客户端完成数据更新，才释放这把锁。 弊端： 1. 如果加锁操作多，会降低系统的并发访问性能； ​             2. 第二个是，Redi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis并发问题">
-<meta property="og:url" content="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:url" content="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="英伦82年雪碧">
 <meta property="og:description" content="无锁的原子操作：Redis如何应对并发访问？为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。  加锁： 加锁是一种常用的方法，在读取数据前，客户端需要先获得锁，否则就无法进行操作。当一个客户端获得锁后，就会一直持有这把锁，直到客户端完成数据更新，才释放这把锁。 弊端： 1. 如果加锁操作多，会降低系统的并发访问性能； ​             2. 第二个是，Redi">
 <meta property="og:locale">
@@ -131,7 +131,7 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/07/12/数据库/Redis并发问题/"/>
+  <link rel="canonical" href="http://example.com/2021/07/12/数据库/Redis/Redis并发问题/"/>
 
 
 
@@ -308,7 +308,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -700,8 +700,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E4%B8%93%E9%A2%98/" rel="next" title="排序">
-                <i class="fa fa-chevron-left"></i> 排序
+              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/" rel="next" title="Redis缓存">
+                <i class="fa fa-chevron-left"></i> Redis缓存
               </a>
             
           </div>
@@ -710,8 +710,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%95%A3%E5%88%97%E8%A1%A8%E4%B8%93%E9%A2%98/" rel="prev" title="散列表">
-                散列表 <i class="fa fa-chevron-right"></i>
+              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E4%B8%93%E9%A2%98/" rel="prev" title="排序">
+                排序 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -791,7 +791,7 @@
             
               <div class="site-state-item site-state-posts">
                 <a href="/archives">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -813,7 +813,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

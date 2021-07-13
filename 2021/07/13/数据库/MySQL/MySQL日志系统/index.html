@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="MySQL," />
 
 
 
@@ -81,27 +81,22 @@
 
 
 
-<meta name="description" content="链表（上）链表结构 数组需要一块 连续 的内存空间来存储，链表恰恰相反，它并 不需要一块连续 的内存空间，它通过“指针”将一组零散的内存块串联起来使用。">
+<meta name="description" content="日志系统：一条SQL更新语句是如何执行的？更新语句流程首先和查询语句流程是相似的。   与查询流程不一样的是，更新流程还涉及两个重要的日志模块，redo log（重做日志）和 binlog（归档日志）。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="链表">
-<meta property="og:url" content="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E9%93%BE%E8%A1%A8%E4%B8%93%E9%A2%98/index.html">
+<meta property="og:title" content="日志系统：一条SQL更新语句执行过程">
+<meta property="og:url" content="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="英伦82年雪碧">
-<meta property="og:description" content="链表（上）链表结构 数组需要一块 连续 的内存空间来存储，链表恰恰相反，它并 不需要一块连续 的内存空间，它通过“指针”将一组零散的内存块串联起来使用。">
+<meta property="og:description" content="日志系统：一条SQL更新语句是如何执行的？更新语句流程首先和查询语句流程是相似的。   与查询流程不一样的是，更新流程还涉及两个重要的日志模块，redo log（重做日志）和 binlog（归档日志）。">
 <meta property="og:locale">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/image-20210324155924249.png">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b93e7ade9bb927baad1348d9a806ddeb.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/452e943788bdeea462d364389bd08a17.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/86cb7dc331ea958b0a108b911f38d155.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/cbc8ab20276e2f9312030c313a9ef70b.jpg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104205.jpeg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104247.jpeg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104919.jpeg">
-<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313105116.jpeg">
-<meta property="article:published_time" content="2021-07-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-07-12T05:41:49.342Z">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/16a7950217b3f0f4ed02db5db59562a7.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/2e5bff4910ec189fe1ee6e2ecc7b4bbe.png">
+<meta property="article:published_time" content="2021-07-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-13T08:08:52.602Z">
 <meta property="article:author" content="英伦82年雪碧">
+<meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/image-20210324155924249.png">
+<meta name="twitter:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png">
 
 
 
@@ -131,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/07/12/数据结构与算法/链表专题/"/>
+  <link rel="canonical" href="http://example.com/2021/07/13/数据库/MySQL/MySQL日志系统/"/>
 
 
 
 
 
-  <title>链表 | 英伦82年雪碧</title>
+  <title>日志系统：一条SQL更新语句执行过程 | 英伦82年雪碧</title>
   
 
 
@@ -308,7 +303,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E9%93%BE%E8%A1%A8%E4%B8%93%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -325,7 +320,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">链表</h1>
+          <h1 class="post-title" itemprop="name headline">日志系统：一条SQL更新语句执行过程</h1>
         
 
         <div class="post-meta">
@@ -337,8 +332,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-12T00:00:00+08:00">
-                2021-07-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-13T00:00:00+08:00">
+                2021-07-13
               </time>
             
 
@@ -360,8 +355,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构与算法</span>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -391,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.3k words
+                  1.7k words
                 </span>
               
 
@@ -407,7 +402,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4 min
+                  6 min
                 </span>
               
             </div>
@@ -428,96 +423,54 @@
       
 
       
-        <h1 id="链表（上）"><a href="#链表（上）" class="headerlink" title="链表（上）"></a>链表（上）</h1><h2 id="链表结构"><a href="#链表结构" class="headerlink" title="链表结构"></a>链表结构</h2><ul>
-<li><p>数组需要一块 <strong>连续</strong> 的内存空间来存储，链表恰恰相反，它并 <strong>不需要一块连续</strong> 的内存空间，它通过“指针”将一组零散的内存块串联起来使用。</p>
+        <h1 id="日志系统：一条SQL更新语句是如何执行的？"><a href="#日志系统：一条SQL更新语句是如何执行的？" class="headerlink" title="日志系统：一条SQL更新语句是如何执行的？"></a>日志系统：一条SQL更新语句是如何执行的？</h1><p>更新语句流程首先和查询语句流程是相似的。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png" alt="img" style="zoom:20%;" />
+
+<p>与查询流程不一样的是，更新流程还涉及两个重要的日志模块，<strong>redo log（重做日志）和 binlog（归档日志）。</strong></p>
 <span id="more"></span>
 
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/image-20210324155924249.png" alt="image-20210324155924249" style="zoom: 50%;" /></li>
-<li><p> <strong>链表类型：</strong> 单链表、双向链表和循环链表。</p>
-</li>
-<li><p><strong>单链表：</strong> 链表通过指针将一组零散的内存块串联在一起。其中，我们把内存块称为链表的<strong>“结点”</strong>。为了将所有的结点串起来，每个链表的结点除了存储数据之外，还需要记录链上的下一个结点的地址。如图所示，我们把这个记录下个结点地址的指针叫作<strong>后继指针 next</strong>。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b93e7ade9bb927baad1348d9a806ddeb.jpg" alt="img" style="zoom:50%;" />
+<h2 id="redo-log"><a href="#redo-log" class="headerlink" title="redo log"></a>redo log</h2><p>如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。</p>
+<p><strong>MySQL使用WAL技术：</strong>Write-Ahead Logging，它的关键点就是<strong>先写日志，再写磁盘</strong></p>
+<p><strong>具体做法：</strong>当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log（粉板）里面，并更新内存，这个时候更新就算完成了。同时，InnoDB 引擎会在适当的时候，将这个操作记录更新到磁盘里面，而这个更新往往是在系统比较空闲的时候做</p>
+<p>InnoDB 的 redo log 是固定大小的，比如可以配置为一组 4 个文件，每个文件的大小是 1GB，从头开始写，写到末尾就又回到开头循环写，如下面这个图所示。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/16a7950217b3f0f4ed02db5db59562a7.png" alt="img" style="zoom:25%;" />
 
-<ul>
-<li><strong>插入，删除：</strong> 只需要考虑相邻结点的指针改变，所以对应的时间复杂度是 O(1)。</li>
-</ul>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/452e943788bdeea462d364389bd08a17.jpg" alt="img" style="zoom: 50%;" />
+<p>write pos 和 checkpoint 之间的是“粉板”上还空着的部分，可以用来记录新的操作。如果 write pos 追上 checkpoint，表示“粉板”满了，这时候不能再执行新的更新，得停下来先擦掉一些记录，把 checkpoint 推进一下。</p>
+<p><strong>crash-safe：</strong> 有了 redo log，InnoDB 就可以保证即使数据库发生异常重启，之前提交的记录都不会丢失</p>
+<h2 id="binlog"><a href="#binlog" class="headerlink" title="binlog"></a>binlog</h2><p><strong>redo log 是 InnoDB 引擎特有的日志，而 Server 层也有自己的日志，称为 binlog（归档日志）。</strong></p>
+<p><strong>为什么会有两份日志？</strong></p>
+<p>因为最开始 MySQL 里并没有 InnoDB 引擎。MySQL 自带的引擎是 MyISAM，但是 MyISAM 没有 crash-safe 的能力，binlog 日志只能用于归档。而 InnoDB 是另一个公司以插件形式引入 MySQL 的，既然只依靠 binlog 是没有 crash-safe 能力的，所以 InnoDB 使用另外一套日志系统——也就是 redo log 来实现 crash-safe 能力。</p>
+<p>不同点：</p>
+<ol>
+<li>redo log 是 InnoDB 引擎特有的；binlog 是 MySQL 的 Server 层实现的，所有引擎都可以使用。</li>
+<li>redo log 是物理日志，记录的是“在某个数据页上做了什么修改”；binlog 是逻辑日志，记录的是这个语句的原始逻辑，比如“给 ID=2 这一行的 c 字段加 1 ”。</li>
+<li>redo log 是循环写的，空间固定会用完；binlog 是可以追加写入的。“追加写”是指 binlog 文件写到一定大小后会切换到下一个，并不会覆盖以前的日志。</li>
+</ol>
+<p><strong>更新语句执行流程：</strong></p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/2e5bff4910ec189fe1ee6e2ecc7b4bbe.png" alt="img" style="zoom:25%;" />
 
+<h2 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h2><p><strong>怎样让数据库恢复到半个月内任意一秒的状态？</strong></p>
+<p>当需要恢复到指定的某一秒时，比如某天下午两点发现中午十二点有一次误删表，需要找回数据，那你可以这么做：</p>
 <ul>
-<li><strong>查找：</strong> 根据指针一个结点一个结点地依次遍历，直到找到相应的结点，<strong>需要 O(n) 的时间复杂度。</strong></li>
+<li>首先，找到最近的一次全量备份，如果你运气好，可能就是昨天晚上的一个备份，从这个备份恢复到临时库；</li>
+<li>然后，从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。</li>
 </ul>
-</li>
-<li><p><strong>循环链表：</strong> 循环链表的尾结点指针是指向链表的头结点。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/86cb7dc331ea958b0a108b911f38d155.jpg" alt="img" style="zoom:50%;" />
-
+<p>这样临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去。</p>
+<p><strong>为什么需要两阶段提交？</strong></p>
+<p>假设当前 ID=2 的行，字段 c 的值是 0，再假设执行 update 语句过程中在写完第一个日志后，第二个日志还没有写完期间发生了 crash，会出现什么情况呢？</p>
+<ol>
+<li><strong>先写 redo log 后写 binlog。</strong>假设在 redo log 写完，binlog 还没有写完的时候，MySQL 进程异常重启。由于我们前面说过的，redo log 写完之后，系统即使崩溃，仍然能够把数据恢复回来，所以恢复后这一行 c 的值是 1。但是由于 binlog 没写完就 crash 了，这时候 binlog 里面就没有记录这个语句。因此，之后备份日志的时候，存起来的 binlog 里面就没有这条语句。然后你会发现，如果需要用这个 binlog 来恢复临时库的话，由于这个语句的 binlog 丢失，这个临时库就会少了这一次更新，恢复出来的这一行 c 的值就是 0，与原库的值不同。</li>
+<li><strong>先写 binlog 后写 redo log。</strong>如果在 binlog 写完之后 crash，由于 redo log 还没写，崩溃恢复以后这个事务无效，所以这一行 c 的值是 0。但是 binlog 里面已经记录了“把 c 从 0 改成 1”这个日志。所以，在之后用 binlog 来恢复的时候就多了一个事务出来，恢复出来的这一行 c 的值就是 1，与原库的值不同。</li>
+</ol>
+<p>redo log 和 binlog 都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ol>
+<li>redo log 用于保证 crash-safe 能力。innodb_flush_log_at_trx_commit 这个参数设置成 1 的时候，表示每次事务的 redo log 都直接持久化到磁盘。这个参数建议设置成 1，这样可以保证 MySQL 异常重启之后数据不丢失。</li>
+<li>sync_binlog 这个参数设置成 1 的时候，表示每次事务的 binlog 都持久化到磁盘。这个参数建议设置成 1，这样可以保证 MySQL 异常重启之后 binlog 不丢失。</li>
+</ol>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><strong>定期全量备份的周期“取决于系统重要性，有的是一天一备，有的是一周一备”。那么在什么场景下，一天一备会比一周一备更有优势呢？或者说，它影响了这个数据库系统的哪个指标？</strong></p>
 <ul>
-<li>优点：循环链表的优点是从链尾到链头比较方便。当要处理的数据<strong>具有环型结构特点</strong>时，就特别适合采用循环链表。</li>
-</ul>
-</li>
-<li><p><strong>双向链表：</strong> 支持两个方向，每个结点不止有一个后继指针 next 指向后面的结点，还有一个前驱指针 <code>prev</code> 指向前面的结点。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/cbc8ab20276e2f9312030c313a9ef70b.jpg" alt="img" style="zoom:50%;" />
-
-<ul>
-<li>如果存储同样多的数据，双向链表要比单链表占用更多的内存空间。虽然两个指针比较浪费存储空间，但可以支持双向遍历，这样也带来了双向链表操作的灵活性，<strong>双向链表可以支持 O(1) 时间复杂度的情况下找到前驱结点</strong>，正是这样的特点，也使双向链表在某些情况下的插入、删除等操作都要比单链表简单、高效。</li>
-</ul>
-</li>
-<li><p><strong>双向循环链表：</strong></p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104205.jpeg" alt="img" style="zoom: 50%;" /></li>
-<li><p><strong>链表的删除操作：</strong>双向链表的优势</p>
-<ul>
-<li>删除结点中“值等于某个给定值”的结点：<ul>
-<li>不管是单链表还是双向链表，为了查找到值等于给定值的结点，都需要从头结点开始一个一个依次遍历对比，直到找到值等于给定值的结点，然后再通过我前面讲的指针操作将其删除。<strong>删除O(1)，查找O(n)，总时间复杂度为O(n)</strong></li>
-</ul>
-</li>
-<li>删除给定指针指向的结点：<ul>
-<li>我们已经找到了要删除的结点，但是删除某个结点 q 需要知道其前驱结点，而单链表并不支持直接获取前驱结点，所以，为了找到前驱结点，我们还是要从头结点开始遍历链表，直到 p-&gt;next=q，说明 p 是 q 的前驱结点。</li>
-<li>因为双向链表中的结点已经保存了前驱结点的指针，不需要像单链表那样遍历。所以，针对第二种情况，单链表删除操作需要 O(n) 的时间复杂度，而双向链表只需要在 O(1) 的时间复杂度内就搞定了！</li>
-<li>插入、删除操作有优势之外，对于一个有序链表，双向链表的按值查询的效率也要比单链表高一些。因为，我们可以记录上次查找的位置 p，每次查询时，根据要查找的值与 p 的大小关系，决定是往前还是往后查找，所以平均只需要查找一半的数据。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="链表-VS-数组性能大比拼"><a href="#链表-VS-数组性能大比拼" class="headerlink" title="链表 VS 数组性能大比拼"></a>链表 VS 数组性能大比拼</h2><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104247.jpeg" alt="img" style="zoom:50%;" />
-
-<h1 id="链表（下）"><a href="#链表（下）" class="headerlink" title="链表（下）"></a>链表（下）</h1><p>写链表代码注意的问题：</p>
-<ul>
-<li><p><strong>理解指针或引用的含义</strong></p>
-</li>
-<li><p><strong>将某个变量赋值给指针，实际上就是将这个变量的地址赋值给指针，或者反过来说，指针中存储了这个变量的内存地址，指向了这个变量，通过指针就能找到这个变量。</strong></p>
-</li>
-<li><p><strong>警惕指针丢失和内存泄漏</strong></p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313104919.jpeg" alt="img" style="zoom:50%;" /></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x-&gt;next = b;</span><br><span class="line">a-&gt;next = x;</span><br></pre></td></tr></table></figure>
-
-<p>删除链表结点时，也一定要记得手动释放内存空间。</p>
-<ul>
-<li><p><strong>利用哨兵简化实现难度</strong></p>
-<ul>
-<li><p>针对链表的插入、删除操作，需要对插入第一个结点和删除最后一个结点的情况进行特殊处理。</p>
-</li>
-<li><p>如果我们引入 <strong>哨兵结点</strong> ，在任何时候，不管链表是不是空，head 指针都会一直指向这个哨兵结点。我们也把这种有哨兵结点的链表叫带头链表。相反，没有哨兵结点的链表就叫作不带头链表。</p>
-<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/20210313105116.jpeg" alt="img" style="zoom:50%;" /></li>
-</ul>
-</li>
-<li><p><strong>重点留意边界条件处理</strong></p>
-<ul>
-<li>如果链表为空时，代码是否能正常工作？</li>
-<li>如果链表只包含一个结点时，代码是否能正常工作？</li>
-<li>如果链表只包含两个结点时，代码是否能正常工作？</li>
-<li>代码逻辑在处理头结点和尾结点的时候，是否能正常工作？</li>
-</ul>
-</li>
-</ul>
-<p><strong>必会代码：</strong></p>
-<ul>
-<li>实现单链表、循环链表、双向链表，支持增删操作</li>
-<li>实现单链表反转</li>
-<li>实现两个有序的链表合并为一个有序链表</li>
-<li>实现求链表的中间结点</li>
-<li>链表中环的检测</li>
-<li>删除链表倒数第 n 个结点</li>
+<li>首先，是恢复数据丢失的时间，既然需要恢复，肯定是数据丢失了。如果一天一备份的话，只要找到这天的全备，加入这天某段时间的binlog来恢复，如果一周一备份，假设是周一，而你要恢复的数据是周日某个时间点，那就，需要全备+周一到周日某个时间点的全部binlog用来恢复，时间相比前者需要增加很多；看业务能忍受的程度</li>
+<li>其次，是数据库丢失，如果一周一备份的话，需要确保整个一周的binlog都完好无损，否则将无法恢复；而一天一备，只要保证这天的binlog都完好无损；当然这个可以通过校验，或者冗余等技术来实现，相比之下，上面那点更重要</li>
 </ul>
 
       
@@ -534,6 +487,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
 
       
       
@@ -543,8 +502,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/" rel="next" title="Redis基本架构">
-                <i class="fa fa-chevron-left"></i> Redis基本架构
+              <a href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%9A%84%E9%94%81/" rel="next" title="MySQL的锁">
+                <i class="fa fa-chevron-left"></i> MySQL的锁
               </a>
             
           </div>
@@ -553,8 +512,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%A0%88%E4%B8%93%E9%A2%98/" rel="prev" title="栈">
-                栈 <i class="fa fa-chevron-right"></i>
+              <a href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/" rel="prev" title="事务隔离：为什么你改了我还看不见？">
+                事务隔离：为什么你改了我还看不见？ <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -696,7 +655,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%EF%BC%88%E4%B8%8A%EF%BC%89"><span class="nav-text">链表（上）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="nav-text">链表结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8-VS-%E6%95%B0%E7%BB%84%E6%80%A7%E8%83%BD%E5%A4%A7%E6%AF%94%E6%8B%BC"><span class="nav-text">链表 VS 数组性能大比拼</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%EF%BC%88%E4%B8%8B%EF%BC%89"><span class="nav-text">链表（下）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%EF%BC%9A%E4%B8%80%E6%9D%A1SQL%E6%9B%B4%E6%96%B0%E8%AF%AD%E5%8F%A5%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F"><span class="nav-text">日志系统：一条SQL更新语句是如何执行的？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redo-log"><span class="nav-text">redo log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binlog"><span class="nav-text">binlog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4"><span class="nav-text">两阶段提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li></ol></li></ol></div>
             
 
           </div>

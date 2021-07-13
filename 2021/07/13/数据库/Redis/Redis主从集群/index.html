@@ -83,8 +83,8 @@
 
 <meta name="description" content="数据同步：主从库如何实现数据一致？Redis 具有高可靠性有两层含义：  一是数据尽量少丢失：AOF 和 RDB   二是服务尽量少中断：增加副本冗余量，将一份数据同时保存在多个实例上。即使有一个实例出现了故障，需要过一段时间才能恢复，其他实例也可以对外提供服务，不会影响业务使用。   Redis 提供了主从库模式，以保证数据副本的一致，主从库之间采用的是读写分离的方式。  读操作：主库、从库都可">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis主从复制及哨兵集群">
-<meta property="og:url" content="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/index.html">
+<meta property="og:title" content="Redis主从集群及哨兵集群">
+<meta property="og:url" content="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E4%B8%BB%E4%BB%8E%E9%9B%86%E7%BE%A4/index.html">
 <meta property="og:site_name" content="英伦82年雪碧">
 <meta property="og:description" content="数据同步：主从库如何实现数据一致？Redis 具有高可靠性有两层含义：  一是数据尽量少丢失：AOF 和 RDB   二是服务尽量少中断：增加副本冗余量，将一份数据同时保存在多个实例上。即使有一个实例出现了故障，需要过一段时间才能恢复，其他实例也可以对外提供服务，不会影响业务使用。   Redis 提供了主从库模式，以保证数据副本的一致，主从库之间采用的是读写分离的方式。  读操作：主库、从库都可">
 <meta property="og:locale">
@@ -93,6 +93,9 @@
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/403c2ab725dca8d44439f8994959af45.jpg">
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/13f26570a1b90549e6171ea24554b737.jpg">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/20/16/20e233bd30c3dacb0221yy0c77780b16.jpg">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/3a89935297fb5b76bfc4808128aaf905.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/06/e1/06e8cb2f1af320d450a29326a876f4e1.jpg">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/9fb7a033987c7b5edc661f4de58ef093.jpg">
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/d828d7eee133cec690dc140e99e26f20.jpg">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/ef/a1/efcfa517d0f09d057be7da32a84cf2a1.jpg">
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/1945703abf16ee14e2f7559873e4e60d.jpg">
@@ -101,8 +104,11 @@
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/88fdc68eb94c44efbdf7357260091de0.jpg">
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/4e9665694a9565abbce1a63cf111f725.jpg">
 <meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/5f6ceeb9337e158cc759e23c0f375fd9.jpg">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/46a7bef9a7074b6a46978c2524f92ea4.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/13/72/1339e1bfe6d07da8477342ba5fyy9872.jpg">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/95/66/959240fa59c2bb9f5ddb7df4b318af66.jpg">
 <meta property="article:published_time" content="2021-07-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-07-13T01:25:48.570Z">
+<meta property="article:modified_time" content="2021-07-13T06:48:41.856Z">
 <meta property="article:author" content="英伦82年雪碧">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -136,13 +142,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/07/13/数据库/Redis主从复制/"/>
+  <link rel="canonical" href="http://example.com/2021/07/13/数据库/Redis/Redis主从集群/"/>
 
 
 
 
 
-  <title>Redis主从复制及哨兵集群 | 英伦82年雪碧</title>
+  <title>Redis主从集群及哨兵集群 | 英伦82年雪碧</title>
   
 
 
@@ -313,7 +319,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E4%B8%BB%E4%BB%8E%E9%9B%86%E7%BE%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -330,7 +336,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Redis主从复制及哨兵集群</h1>
+          <h1 class="post-title" itemprop="name headline">Redis主从集群及哨兵集群</h1>
         
 
         <div class="post-meta">
@@ -396,7 +402,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  8.4k words
+                  13.3k words
                 </span>
               
 
@@ -412,7 +418,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  28 min
+                  45 min
                 </span>
               
             </div>
@@ -514,6 +520,90 @@
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><strong>为什么主从库间的复制不使用 AOF 呢？</strong></p>
 <p>1、RDB文件内容是经过压缩的二进制数据（不同数据类型数据做了针对性优化），文件很小。而AOF文件记录的是每一次写操作的命令，写操作越多文件会变得很大，其中还包括很多对同一个key的多次冗余操作。在主从全量数据同步时，传输RDB文件可以尽量降低对主库机器网络带宽的消耗，从库在加载RDB文件时，一是文件小，读取整个文件的速度会很快，二是因为RDB文件存储的都是二进制数据，从库直接按照RDB协议解析还原数据即可，速度会非常快，而AOF需要依次重放每个写命令，这个过程会经历冗长的处理逻辑，恢复速度相比RDB会慢得多，所以使用RDB进行主从全量同步的成本最低。</p>
 <p>2、假设要使用AOF做全量同步，意味着必须打开AOF功能，打开AOF就要选择文件刷盘的策略，选择不当会严重影响Redis性能。而RDB只有在需要定时备份和主从全量同步数据时才会触发生成一次快照。而在很多丢失数据不敏感的业务场景，其实是不需要开启AOF的。</p>
+<h1 id="Redis主从同步与故障切换，有哪些坑？"><a href="#Redis主从同步与故障切换，有哪些坑？" class="headerlink" title="Redis主从同步与故障切换，有哪些坑？"></a>Redis主从同步与故障切换，有哪些坑？</h1><h2 id="主从数据不一致"><a href="#主从数据不一致" class="headerlink" title="主从数据不一致"></a>主从数据不一致</h2><p>主从数据不一致，就是指<strong>客户端从从库中读取到的值和主库中的最新值并不一致。</strong></p>
+<p><strong>原因：</strong> 主从库间的命令复制是异步进行的。在<strong>主从库命令传播阶段</strong>，主库收到新的写命令后，会发送给从库。但是，<strong>主库并不会等到从库实际执行完命令后，再把结果返回给客户端，而是主库自己在本地执行完命令后，就会向客户端返回结果了。</strong>如果从库还没有执行主库同步过来的命令，主从库间的数据就不一致了。</p>
+<p><strong>从库滞后执行同步命令的情况：</strong> </p>
+<ul>
+<li><strong>主从库间的网络可能会有传输延迟</strong>，所以从库不能及时地收到主库发送的命令，从库上执行同步命令的时间就会被延后。</li>
+<li>即使从库及时收到了主库的命令，但是，也可能会<strong>因为正在处理其它复杂度高的命令（例如集合操作命令）而阻塞</strong>。此时，从库需要处理完当前的命令，才能执行主库发送的命令操作，这就会造成主从数据不一致。而在主库命令被滞后处理的这段时间内，主库本身可能又执行了新的写操作。这样一来，主从库间的数据不一致程度就会进一步加剧。</li>
+</ul>
+<p><strong>如何应对？</strong></p>
+<ul>
+<li><p><strong>硬件环境配置方面：</strong>尽量保证主从库间的网络连接状况良好。例如，避免把主从库部署在不同的机房，或者是避免把网络通信密集的应用（例如数据分析应用）和 Redis 主从库部署在一起。</p>
+</li>
+<li><p><strong>开发一个外部程序来监控主从库间的复制进度。</strong></p>
+<ul>
+<li> Redis 的 INFO replication 命令可以查看主库接收写命令的进度信息（master_repl_offset）和从库复制写命令的进度信息（slave_repl_offset），所以，我们就可以开发一个监控程序，先用 INFO replication 命令查到主、从库的进度，然后，我们用 master_repl_offset 减去 slave_repl_offset，这样就能得到从库和主库间的复制进度差值了。</li>
+<li>如果某个从库的进度差值大于我们预设的阈值，我们可以让客户端不再和这个从库连接进行数据读取，这样就可以减少读到不一致数据的情况。不过，为了避免出现客户端和所有从库都不能连接的情况，我们需要把复制进度差值的阈值设置得大一些。</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/3a89935297fb5b76bfc4808128aaf905.jpg" alt="img" style="zoom:15%;" />
+
+<ul>
+<li><strong>监控程序可以一直监控着从库的复制进度</strong>，当从库的复制进度又赶上主库时，我们就允许客户端再次跟这些从库连接。</li>
+</ul>
+</li>
+</ul>
+<h2 id="读取过期数据"><a href="#读取过期数据" class="headerlink" title="读取过期数据"></a>读取过期数据</h2><p>数据 X 的过期时间是 202010240900，但是客户端在 202010240910 时，仍然可以从从库中读到数据 X。一个数据过期后，应该是被删除的，客户端不能再读取到该数据，但是，Redis 为什么还能在从库中读到过期的数据呢？</p>
+<p><strong>Redis 同时使用了两种策略来删除过期的数据，分别是惰性删除策略和定期删除策略。</strong></p>
+<ul>
+<li><strong>惰性删除策略：</strong>当一个数据的过期时间到了以后，并不会立即删除数据，而是等到再有请求来读写这个数据时，对数据进行检查，如果发现数据已经过期了，再删除这个数据。<ul>
+<li>好处：尽量减少删除操作对 CPU 资源的使用，对于用不到的数据，就不再浪费时间进行检查和删除了。</li>
+<li>坏处：会导致大量已经过期的数据留存在内存中，占用较多的内存资源。</li>
+</ul>
+</li>
+<li><strong>定期删除策略：</strong> Redis 每隔一段时间（默认 100ms），就会随机选出一定数量的数据，检查它们是否过期，并把其中过期的数据删除，这样就可以及时释放一些内存。</li>
+</ul>
+<p><strong>读取到过期数据的原因：</strong></p>
+<ol>
+<li><p>首先，虽然定期删除策略可以释放一些内存，但是，Redis 为了避免过多删除操作对性能产生影响，<strong>每次随机检查数据的数量并不多。如果过期数据很多，并且一直没有再被访问的话，这些数据就会留存在 Redis 实例中</strong>。业务应用之所以会读到过期数据，这些留存数据就是一个重要因素。</p>
+</li>
+<li><p>其次，惰性删除策略实现后，数据只有被再次访问时，才会被实际删除。如果客户端从主库上读取留存的过期数据<strong>，主库会触发删除操作，此时，客户端并不会读到过期数据</strong>。但是，<strong>从库本身不会执行删除操作</strong>，如果客户端在从库中访问留存的过期数据，从库并不会触发数据删除。那么，从库会给客户端返回过期数据吗？</p>
+<ul>
+<li>Redis 3.2 之前的版本：从库在服务读请求时，并不会判断数据是否过期，而是会返回过期数据</li>
+<li>在 3.2 版本后，Redis 做了改进，如果读取的数据已经过期了，从库虽然不会删除，但是会返回空值，这就避免了客户端读到过期数据。<strong>所以，在应用主从集群时，尽量使用 Redis 3.2 及以上版本。</strong></li>
+</ul>
+<p><strong>Redis 3.2 后的版本，还是会读到过期数据。</strong></p>
+<p>设置数据过期时间的命令一共有 4 个。</p>
+<img src="https://static001.geekbang.org/resource/image/06/e1/06e8cb2f1af320d450a29326a876f4e1.jpg" alt="img" style="zoom:20;" /></li>
+</ol>
+<p>当主从库全量同步时，<strong>如果主库接收到了一条 EXPIRE 命令，那么，主库会直接执行这条命令。这条命令会在全量同步完成后，发给从库执行。而从库在执行时，就会在当前时间的基础上加上数据的存活时间，这样一来，从库上数据的过期时间就会比主库上延后了。</strong></p>
+<blockquote>
+<p>举例：假设当前时间是 2020 年 10 月 24 日上午 9 点，主从库正在同步，主库收到了一条命令：EXPIRE testkey 60，这就表示，testkey 的过期时间就是 24 日上午 9 点 1 分，主库直接执行了这条命令。</p>
+<p>但是，主从库全量同步花费了 2 分钟才完成。等从库开始执行这条命令时，时间已经是 9 点 2 分了。而 EXPIRE 命令是把 testkey 的过期时间设置为当前时间的 60s 后，也就是 9 点 3 分。如果客户端在 9 点 2 分 30 秒时在从库上读取 testkey，仍然可以读到 testkey 的值。但是，testkey 实际上已经过期了。</p>
+</blockquote>
+<p><strong>建议</strong>：在业务应用中使用 EXPIREAT/PEXPIREAT 命令，把数据的过期时间设置为具体的时间点，避免读到过期数据。</p>
+<p><strong>小结：</strong></p>
+<ul>
+<li>主从数据不一致。Redis 采用的是异步复制，所以无法实现强一致性保证（主从数据时时刻刻保持一致），数据不一致是难以避免的。我给你提供了应对方法：保证良好网络环境，以及使用程序监控从库复制进度，一旦从库复制进度超过阈值，不让客户端连接从库。</li>
+<li>对于读到过期数据，这是可以提前规避的，一个方法是，使用 Redis 3.2 及以上版本；另外，你也可以使用 EXPIREAT/PEXPIREAT 命令设置过期时间，避免从库上的数据过期时间滞后。不过，这里有个地方需要注意下，因为 EXPIREAT/PEXPIREAT 设置的是时间点，所以，主从节点上的时钟要保持一致，具体的做法是，让主从节点和相同的 NTP 服务器（时间服务器）进行时钟同步。</li>
+</ul>
+<h2 id="不合理配置项导致的服务挂掉"><a href="#不合理配置项导致的服务挂掉" class="headerlink" title="不合理配置项导致的服务挂掉"></a>不合理配置项导致的服务挂掉</h2><p><strong>protected-mode 配置项：</strong>这个配置项的作用是限定哨兵实例能否被其他服务器访问。当这个配置项设置为 yes 时，哨兵实例只能在部署的服务器本地进行访问。当设置为 no 时，其他服务器也可以访问这个哨兵实例。</p>
+<p><strong>我们在应用主从集群时，要注意将 protected-mode 配置项设置为 no，并且将 bind 配置项设置为其它哨兵实例的 IP 地址。这样一来，只有在 bind 中设置了 IP 地址的哨兵，才可以访问当前实例，既保证了实例间能够通信进行主从切换，也保证了哨兵的安全性。</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">protected<span class="operator">-</span>mode <span class="keyword">no</span></span><br><span class="line">bind <span class="number">192.168</span><span class="number">.10</span><span class="number">.3</span> <span class="number">192.168</span><span class="number">.10</span><span class="number">.4</span> <span class="number">192.168</span><span class="number">.10</span><span class="number">.5</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>cluster-node-timeout 配置项：</strong> 当我们在 Redis Cluster 集群中为每个实例配置了“一主一从”模式时，如果主实例发生故障，从实例会切换为主实例，受网络延迟和切换操作执行的影响，切换时间可能较长，就会导致实例的心跳超时（超出 cluster-node-timeout）。实例超时后，就会被 Redis Cluster 判断为异常。而 Redis Cluster 正常运行的条件就是，有半数以上的实例都能正常运行。所以，如果执行主从切换的实例超过半数，而主从切换时间又过长的话，就可能有半数以上的实例心跳超时，从而可能导致整个集群挂掉。所以，我建议<strong>你将 cluster-node-timeout 调大些（例如 10 到 20 秒）。</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/9fb7a033987c7b5edc661f4de58ef093.jpg" alt="img" style="zoom:20%;" />
+
+<p><strong>补充：</strong> </p>
+<ul>
+<li><p>主从库设置的 maxmemory 不同：如果 slave 比 master 小，那么 slave 内存就会优先达到 maxmemroy，然后开始淘汰数据，此时主从库也会产生不一致。</p>
+</li>
+<li><p>如果主从同步的 client-output-buffer-limit 设置过小，并且 master 数据量很大，主从全量同步时可能会导致 buffer 溢出，溢出后主从全量同步就会失败。如果主从集群配置了哨兵，那么哨兵会让 slave 继续向 master 发起全量同步请求，然后 buffer 又溢出同步失败，如此反复，会形成复制风暴，这会浪费 master 大量的 CPU、内存、带宽资源，也会让 master 产生阻塞的风险。</p>
+</li>
+</ul>
+<h2 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h2><p><strong>假设让 slave 也可以自动删除过期数据，是否可以保证主从库的一致性？</strong></p>
+<p>无法保证，例如以下场景：</p>
+<ol>
+<li>主从同步存在网络延迟。例如 master 先执行 SET key 1 10，这个 key 同步到了 slave，此时 key 在主从库都是 10s 后过期，之后这个 key 还剩 1s 过期时，master 又执行了 expire key 60，重设这个 key 的过期时间。但 expire 命令向 slave 同步时，发生了网络延迟并且超过了 1s，如果 slave 可以自动删除过期 key，那么这个 key 正好达到过期时间，就会被 slave 删除了，之后 slave 再收到 expire 命令时，执行会失败。最后的结果是这个 key 在 slave 上丢失了，主从库发生了不一致。</li>
+<li>主从机器时钟不一致。同样 master 执行 SET key 1 10，然后把这个 key 同步到 slave，但是此时 slave 机器时钟如果发生跳跃，优先把这个 key 过期删除了，也会发生上面说的不一致问题。</li>
+</ol>
+<p>所以 Redis 为了保证主从同步的一致性，不会让 slave 自动删除过期 key，而只在 master 删除过期 key，之后 master 会向 slave 发送一个 DEL，slave 再把这个 key 删除掉，这种方式可以解决主从网络延迟和机器时钟不一致带来的影响。</p>
+<p><strong>slave-read-only 的作用：</strong>它主要用来控制 slave 是否可写，但是否主动删除过期 key，根据 Redis 版本不同，执行逻辑也不同。</p>
+<ol>
+<li>如果版本低于 Redis 4.0，slave-read-only 设置为 no，此时 slave 允许写入数据，但如果 key 设置了过期时间，那么这个 key 过期后，虽然在 slave 上查询不到了，但并不会在内存中删除，这些过期 key 会一直占着 Redis 内存无法释放。</li>
+<li>Redis 4.0 版本解决了上述问题，在 slave 写入带过期时间的 key，slave 会记下这些 key，并且在后台定时检测这些 key 是否已过期，过期后从内存中删除。</li>
+</ol>
+<p>但是请注意，这 2 种情况，slave 都不会主动删除由 master 同步过来带有过期时间的 key。也就是 master 带有过期时间的 key，什么时候删除由 master 自己维护，slave 不会介入。如果 slave 设置了 slave-read-only = no，而且是 4.0+ 版本，slave 也只维护直接向自己写入 的带有过期的 key，过期时只删除这些 key。</p>
 <h1 id="哨兵机制：主库挂了，如何不间断服务？"><a href="#哨兵机制：主库挂了，如何不间断服务？" class="headerlink" title="哨兵机制：主库挂了，如何不间断服务？"></a>哨兵机制：主库挂了，如何不间断服务？</h1><p>在主从库模式下，如果从库发生故障了，客户端可以继续向主库或其他从库发送请求；如果主库发生故障，那就直接会影响到从库的同步，因为从库没有相应的主库可以进行数据复制操作了。</p>
 <p>如果客户端发送的都是读操作请求，那还可以由从库继续提供服务，这在纯读的业务场景下还能被接受。但是，一旦有写操作请求了，按照主从库模式下的读写分离要求，需要由主库来完成写操作。此时，也没有实例可以来服务客户端的写操作请求了，如下图所示：</p>
 <img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/d828d7eee133cec690dc140e99e26f20.jpg" alt="img" style="zoom: 18%;" />
@@ -582,7 +672,7 @@
 </ul>
 <img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/f2e9b8830db46d959daa6a39fbf4a14c.jpg" alt="img" style="zoom:15%;" /></li>
 </ul>
-<h2 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h2><p>通过哨兵机制，可以实现主从库的自动切换，这是实现服务不间断的关键支撑，同时，主从库切换是需要一定时间的。所以，请你考虑下，在这个切换过程中，客户端能否正常地进行请求操作呢？如果想要应用程序不感知服务的中断，还需要哨兵或需要客户端再做些什么吗？</p>
+<h2 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h2><p>通过哨兵机制，可以实现主从库的自动切换，这是实现服务不间断的关键支撑，同时，主从库切换是需要一定时间的。所以，请你考虑下，在这个切换过程中，客户端能否正常地进行请求操作呢？如果想要应用程序不感知服务的中断，还需要哨兵或需要客户端再做些什么吗？</p>
 <ul>
 <li><p>如果客户端使用了<strong>读写分离</strong>，那么读请求可以在从库上正常执行，不会受到影响。但是由于此时主库已经挂了，而且哨兵还没有选出新的主库，所以在这期间写请求会失败，<strong>失败持续的时间 = 哨兵切换主从的时间 + 客户端感知到新主库 的时间。</strong></p>
 </li>
@@ -657,7 +747,7 @@
 </ul>
 <p><strong>投票依据：</strong></p>
 <p>哨兵如果没有给自己投票，就会把票投给第一个给它发送投票请求的哨兵。后续再有投票请求来，哨兵就拒接投票了。</p>
-<h2 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h2><p>假设有一个 Redis 集群，是“一主四从”，同时配置了包含 5 个哨兵实例的集群，quorum 值设为 2。在运行过程中，如果有 3 个哨兵实例都发生故障了，此时，Redis 主库如果有故障，还能正确地判断主库“客观下线”吗？如果可以的话，还能进行主从库自动切换吗？此外，哨兵实例是不是越多越好呢，如果同时调大 down-after-milliseconds 值，对减少误判是不是也有好处呢？</p>
+<h2 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h2><p>假设有一个 Redis 集群，是“一主四从”，同时配置了包含 5 个哨兵实例的集群，quorum 值设为 2。在运行过程中，如果有 3 个哨兵实例都发生故障了，此时，Redis 主库如果有故障，还能正确地判断主库“客观下线”吗？如果可以的话，还能进行主从库自动切换吗？此外，哨兵实例是不是越多越好呢，如果同时调大 down-after-milliseconds 值，对减少误判是不是也有好处呢？</p>
 <ol>
 <li><strong>哨兵集群可以判定主库“主观下线”。</strong>由于quorum=2，所以当一个哨兵判断主库“主观下线”后，询问另外一个哨兵后也会得到同样的结果，2个哨兵都判定“主观下线”，达到了quorum的值，因此，哨兵集群可以判定主库为“客观下线”。</li>
 <li><strong>但哨兵不能完成主从切换。</strong>哨兵标记主库“客观下线后”，在选举“哨兵领导者”时，一个哨兵必须拿到超过多数的选票(5/2+1=3票)。但目前只有2个哨兵活着，无论怎么投票，一个哨兵最多只能拿到2票，永远无法达到多数选票的结果。</li>
@@ -675,6 +765,47 @@
 <p>并不是，我们也看到了，哨兵在判定“主观下线”和选举“哨兵领导者”时，都需要和其他节点进行通信，交换信息，哨兵实例越多，通信的次数也就越多，而且部署多个哨兵时，<strong>会分布在不同机器上，节点越多带来的机器故障风险也会越大，这些问题都会影响到哨兵的通信和选举，出问题时也就意味着选举时间会变长，切换主从的时间变久。</strong></p>
 <p><strong>调大down-after-milliseconds值，对减少误判是不是有好处？</strong></p>
 <p>是有好处的，适当调大down-after-milliseconds值，当哨兵与主库之间网络存在短时波动时，可以降低误判的概率。但是调大down-after-milliseconds值也意味着主从切换的时间会变长，对业务的影响时间越久，我们需要根据实际场景进行权衡，设置合理的阈值。</p>
+<h1 id="脑裂：一次奇怪的数据丢失"><a href="#脑裂：一次奇怪的数据丢失" class="headerlink" title="脑裂：一次奇怪的数据丢失"></a>脑裂：一次奇怪的数据丢失</h1><p><strong>脑裂</strong>，就是指在主从集群中，同时有两个主节点，它们都能接收写请求。而脑裂最直接的影响，就是客户端不知道应该往哪个主节点写入数据，结果就是不同的客户端会往不同的主节点上写入数据。而且，严重的话，脑裂会进一步导致数据丢失。</p>
+<h2 id="为什么会发生脑裂？"><a href="#为什么会发生脑裂？" class="headerlink" title="为什么会发生脑裂？"></a>为什么会发生脑裂？</h2><p>在主从集群中，客户端发送的数据丢失了。所以，我们首先要弄明白，为什么数据会丢失？是不是数据同步出了问题？</p>
+<ul>
+<li><p><strong>第一步：确认是不是数据同步出现了问题</strong></p>
+<p>在主从集群中发生数据丢失，<strong>最常见的原因就是主库的数据还没有同步到从库，结果主库发生了故障，等从库升级为主库后，未同步的数据就丢失了。</strong></p>
+</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/46a7bef9a7074b6a46978c2524f92ea4.jpg" alt="img" style="zoom:15%;" />
+
+<p>如果是这种情况的数据丢失，<strong>我们可以通过比对主从库上的复制进度差值来进行判断</strong>，也就是计算 master_repl_offset 和 slave_repl_offset 的差值。如果从库上的 slave_repl_offset 小于原主库的 master_repl_offset，那么，我们就可以认定数据丢失是由数据同步未完成导致的。</p>
+<p>我们在部署主从集群时，也监测了主库上的 master_repl_offset，以及从库上的 slave_repl_offset。但是，当我们发现数据丢失后，我们检查了新主库升级前的 slave_repl_offset，以及原主库的 master_repl_offset，它们是一致的，也就是说，这个升级为新主库的从库，在升级时已经和原主库的数据保持一致了。那么，为什么还会出现客户端发送的数据丢失呢？</p>
+<ul>
+<li><strong>第二步：排查客户端的操作日志，发现脑裂现象</strong></li>
+</ul>
+<p>在主从切换后的一段时间内，有一个客户端仍然在和原主库通信，并没有和升级的新主库进行交互。这就相当于主从集群中同时有了两个主库。根据这个迹象，我们就想到了在分布式主从集群发生故障时会出现的一个问题：脑裂。</p>
+<p><strong>但是，不同客户端给两个主库发送数据写操作，按道理来说，只会导致新数据会分布在不同的主库上，并不会造成数据丢失。那么，为什么我们的数据仍然丢失了呢？</strong></p>
+<ul>
+<li><strong>第三步：发现是原主库假故障导致的脑裂</strong></li>
+</ul>
+<p>我们是采用哨兵机制进行主从切换的，当主从切换发生时，一定是有超过预设数量（quorum 配置项）的哨兵实例和主库的心跳都超时了，才会把主库判断为客观下线，然后，哨兵开始执行切换操作。哨兵切换完成后，客户端会和新主库进行通信，发送请求操作。</p>
+<p>但是，在切换过程中，既然客户端仍然和原主库通信，这就表明，<strong>原主库并没有真的发生故障（例如主库进程挂掉）</strong>。我们猜测，主库是由于某些原因无法处理请求，也没有响应哨兵的心跳，才被哨兵错误地判断为客观下线的。结果，在被判断下线之后，原主库又重新开始处理请求了，而此时，哨兵还没有完成主从切换，客户端仍然可以和原主库通信，客户端发送的写操作就会在原主库上写入数据了。</p>
+<p>的确，我们看到原主库所在的机器有一段时间的 CPU 利用率突然特别高，这是我们在机器上部署的一个数据采集程序导致的。因为这个程序基本把机器的 CPU 都用满了，导致 Redis 主库无法响应心跳了，在这个期间内，哨兵就把主库判断为客观下线，开始主从切换了。不过，这个数据采集程序很快恢复正常，CPU 的使用率也降下来了。此时，原主库又开始正常服务请求了。</p>
+<img src="https://static001.geekbang.org/resource/image/13/72/1339e1bfe6d07da8477342ba5fyy9872.jpg" alt="img" style="zoom:15%;" />
+
+<h2 id="为什么脑裂会导致数据丢失？"><a href="#为什么脑裂会导致数据丢失？" class="headerlink" title="为什么脑裂会导致数据丢失？"></a>为什么脑裂会导致数据丢失？</h2><p>主从切换后，从库一旦升级为新主库，哨兵就会让原主库执行 slave of 命令，和新主库重新进行全量同步。而在全量同步执行的最后阶段，原主库需要清空本地的数据，加载新主库发送的 RDB 文件，这样一来，原主库在主从切换期间保存的新写数据就丢失了。</p>
+<img src="https://static001.geekbang.org/resource/image/95/66/959240fa59c2bb9f5ddb7df4b318af66.jpg" alt="img" style="zoom:15%;" />
+
+<p>在主从切换的过程中，如果原主库只是“假故障”，它会触发哨兵启动主从切换，一旦等它从假故障中恢复后，又开始处理请求，这样一来，就会和新主库同时存在，形成脑裂。等到哨兵让原主库和新主库做全量同步后，原主库在切换期间保存的数据就丢失了。</p>
+<h2 id="如何应对脑裂问题？"><a href="#如何应对脑裂问题？" class="headerlink" title="如何应对脑裂问题？"></a>如何应对脑裂问题？</h2><p>Redis 已经提供了两个配置项来限制主库的请求处理，分别是 min-slaves-to-write 和 min-slaves-max-lag。</p>
+<ul>
+<li>min-slaves-to-write：这个配置项设置了主库能进行数据同步的最少从库数量；</li>
+<li>min-slaves-max-lag：这个配置项设置了主从库间进行数据复制时，从库给主库发送 ACK 消息的最大延迟（以秒为单位）。</li>
+</ul>
+<ol>
+<li><p>我们可以把 min-slaves-to-write 和 min-slaves-max-lag 这两个配置项搭配起来使用，分别给它们设置一定的阈值，假设为 N 和 T。这两个配置项组合后的要求是，主库连接的从库中至少有 N 个从库，和主库进行数据复制时的 ACK 消息延迟不能超过 T 秒，否则，<strong>主库就不会再接收客户端的请求了。</strong></p>
+</li>
+<li><p>即使原主库是假故障，它在假故障期间也无法响应哨兵心跳，也不能和从库进行同步，自然也就无法和从库进行 ACK 确认了。这样一来，min-slaves-to-write 和 min-slaves-max-lag 的组合要求就无法得到满足，原主库就会被限制接收客户端请求，客户端也就不能在原主库中写入新数据了。</p>
+</li>
+<li><p>等到新主库上线时，就只有新主库能接收和处理客户端请求，此时，新写的数据会被直接写到新主库中。而原主库会被哨兵降为从库，即使它的数据被清空了，也不会有新数据丢失。</p>
+</li>
+</ol>
 
       
     </div>
@@ -705,8 +836,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/" rel="next" title="Redis基本架构">
-                <i class="fa fa-chevron-left"></i> Redis基本架构
+              <a href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/" rel="next" title="二叉树">
+                <i class="fa fa-chevron-left"></i> 二叉树
               </a>
             
           </div>
@@ -715,8 +846,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/" rel="prev" title="Redis为什么那么快？">
-                Redis为什么那么快？ <i class="fa fa-chevron-right"></i>
+              <a href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%AE%9E%E6%88%98%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="prev" title="Redis数据结构如何选择？">
+                Redis数据结构如何选择？ <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -796,7 +927,7 @@
             
               <div class="site-state-item site-state-posts">
                 <a href="/archives">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -818,7 +949,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -858,7 +989,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%EF%BC%9A%E4%B8%BB%E4%BB%8E%E5%BA%93%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%EF%BC%9F"><span class="nav-text">数据同步：主从库如何实现数据一致？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%BA%93%E9%97%B4%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%90%8C%E6%AD%A5%EF%BC%9F"><span class="nav-text">主从库间如何进行第一次同步？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E7%BA%A7%E8%81%94%E6%A8%A1%E5%BC%8F%E5%88%86%E6%8B%85%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6%E6%97%B6%E7%9A%84%E4%B8%BB%E5%BA%93%E5%8E%8B%E5%8A%9B"><span class="nav-text">主从级联模式分担全量复制时的主库压力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%BA%93%E9%97%B4%E7%BD%91%E7%BB%9C%E6%96%AD%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="nav-text">主从库间网络断了怎么办？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%EF%BC%9A%E4%B8%BB%E5%BA%93%E6%8C%82%E4%BA%86%EF%BC%8C%E5%A6%82%E4%BD%95%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9C%8D%E5%8A%A1%EF%BC%9F"><span class="nav-text">哨兵机制：主库挂了，如何不间断服务？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-text">哨兵机制的基本流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A7%82%E4%B8%8B%E7%BA%BF%E5%92%8C%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="nav-text">主观下线和客观下线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E5%AE%9A%E6%96%B0%E4%B8%BB%E5%BA%93%EF%BC%9F"><span class="nav-text">如何选定新主库？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98-1"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%EF%BC%9A%E5%93%A8%E5%85%B5%E6%8C%82%E4%BA%86%EF%BC%8C%E4%B8%BB%E4%BB%8E%E5%BA%93%E8%BF%98%E8%83%BD%E5%88%87%E6%8D%A2%E5%90%97%EF%BC%9F"><span class="nav-text">哨兵集群：哨兵挂了，主从库还能切换吗？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-pub-sub-%E6%9C%BA%E5%88%B6%E7%9A%84%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E7%BB%84%E6%88%90"><span class="nav-text">基于 pub&#x2F;sub 机制的哨兵集群组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-pub-sub-%E6%9C%BA%E5%88%B6%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BA%8B%E4%BB%B6%E9%80%9A%E7%9F%A5"><span class="nav-text">基于 pub&#x2F;sub 机制的客户端事件通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B1%E5%93%AA%E4%B8%AA%E5%93%A8%E5%85%B5%E6%89%A7%E8%A1%8C%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2%EF%BC%9F"><span class="nav-text">由哪个哨兵执行主从切换？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98-2"><span class="nav-text">问题</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%EF%BC%9A%E4%B8%BB%E4%BB%8E%E5%BA%93%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%EF%BC%9F"><span class="nav-text">数据同步：主从库如何实现数据一致？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%BA%93%E9%97%B4%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%90%8C%E6%AD%A5%EF%BC%9F"><span class="nav-text">主从库间如何进行第一次同步？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E7%BA%A7%E8%81%94%E6%A8%A1%E5%BC%8F%E5%88%86%E6%8B%85%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6%E6%97%B6%E7%9A%84%E4%B8%BB%E5%BA%93%E5%8E%8B%E5%8A%9B"><span class="nav-text">主从级联模式分担全量复制时的主库压力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%BA%93%E9%97%B4%E7%BD%91%E7%BB%9C%E6%96%AD%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="nav-text">主从库间网络断了怎么办？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E4%B8%8E%E6%95%85%E9%9A%9C%E5%88%87%E6%8D%A2%EF%BC%8C%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9D%91%EF%BC%9F"><span class="nav-text">Redis主从同步与故障切换，有哪些坑？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%80%E8%87%B4"><span class="nav-text">主从数据不一致</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E8%BF%87%E6%9C%9F%E6%95%B0%E6%8D%AE"><span class="nav-text">读取过期数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%90%88%E7%90%86%E9%85%8D%E7%BD%AE%E9%A1%B9%E5%AF%BC%E8%87%B4%E7%9A%84%E6%9C%8D%E5%8A%A1%E6%8C%82%E6%8E%89"><span class="nav-text">不合理配置项导致的服务挂掉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98-1"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%EF%BC%9A%E4%B8%BB%E5%BA%93%E6%8C%82%E4%BA%86%EF%BC%8C%E5%A6%82%E4%BD%95%E4%B8%8D%E9%97%B4%E6%96%AD%E6%9C%8D%E5%8A%A1%EF%BC%9F"><span class="nav-text">哨兵机制：主库挂了，如何不间断服务？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-text">哨兵机制的基本流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A7%82%E4%B8%8B%E7%BA%BF%E5%92%8C%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="nav-text">主观下线和客观下线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E5%AE%9A%E6%96%B0%E4%B8%BB%E5%BA%93%EF%BC%9F"><span class="nav-text">如何选定新主库？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98-2"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%EF%BC%9A%E5%93%A8%E5%85%B5%E6%8C%82%E4%BA%86%EF%BC%8C%E4%B8%BB%E4%BB%8E%E5%BA%93%E8%BF%98%E8%83%BD%E5%88%87%E6%8D%A2%E5%90%97%EF%BC%9F"><span class="nav-text">哨兵集群：哨兵挂了，主从库还能切换吗？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-pub-sub-%E6%9C%BA%E5%88%B6%E7%9A%84%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E7%BB%84%E6%88%90"><span class="nav-text">基于 pub&#x2F;sub 机制的哨兵集群组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-pub-sub-%E6%9C%BA%E5%88%B6%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BA%8B%E4%BB%B6%E9%80%9A%E7%9F%A5"><span class="nav-text">基于 pub&#x2F;sub 机制的客户端事件通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B1%E5%93%AA%E4%B8%AA%E5%93%A8%E5%85%B5%E6%89%A7%E8%A1%8C%E4%B8%BB%E4%BB%8E%E5%88%87%E6%8D%A2%EF%BC%9F"><span class="nav-text">由哪个哨兵执行主从切换？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98-3"><span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%91%E8%A3%82%EF%BC%9A%E4%B8%80%E6%AC%A1%E5%A5%87%E6%80%AA%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1"><span class="nav-text">脑裂：一次奇怪的数据丢失</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%8F%91%E7%94%9F%E8%84%91%E8%A3%82%EF%BC%9F"><span class="nav-text">为什么会发生脑裂？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%84%91%E8%A3%82%E4%BC%9A%E5%AF%BC%E8%87%B4%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1%EF%BC%9F"><span class="nav-text">为什么脑裂会导致数据丢失？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9%E8%84%91%E8%A3%82%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-text">如何应对脑裂问题？</span></a></li></ol></li></ol></div>
             
 
           </div>
