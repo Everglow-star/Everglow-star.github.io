@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-12T14:01:25.460Z</updated>
+  <updated>2021-07-12T14:33:31.671Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T14:01:25.460Z</updated>
+    <updated>2021-07-12T14:33:31.671Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Redis主体&quot;&gt;&lt;a href=&quot;#Redis主体&quot; class=&quot;headerlink&quot; title=&quot;Redis主体&quot;&gt;&lt;/a&gt;&lt;code&gt;Redis&lt;/code&gt;主体&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;Redis&lt;/code&gt;知识整体框架&lt;/strong&gt;&lt;/p&gt;
@@ -38,6 +38,8 @@
     <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
   </entry>
   
   <entry>
@@ -45,7 +47,7 @@
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T14:00:52.507Z</updated>
+    <updated>2021-07-12T14:33:24.568Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;a href=&quot;#数据结构：快速的Redis有哪些慢操作？&quot; class=&quot;headerlink&quot; title=&quot;数据结构：快速的Redis有哪些慢操作？&quot;&gt;&lt;/a&gt;数据结构：快速的&lt;code&gt;Redis&lt;/code&gt;有哪些慢操作？&lt;/h1&gt;&lt;p&gt;底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。&lt;/p&gt;
@@ -62,6 +64,8 @@
     
     <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
+    
+    <category term="Redus" scheme="http://example.com/tags/Redus/"/>
     
   </entry>
   
@@ -121,14 +125,20 @@
   </entry>
   
   <entry>
-    <title>Redis持久化</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5/</id>
+    <title>Redis主从复制及哨兵集群</title>
+    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
+    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T13:58:13.001Z</updated>
+    <updated>2021-07-13T01:22:39.328Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;AOF-日志是如何实现的？&quot;&gt;&lt;a href=&quot;#AOF-日志是如何实现的？&quot; class=&quot;headerlink&quot; title=&quot;AOF 日志是如何实现的？&quot;&gt;&lt;/a&gt;AOF 日志是如何实现的？&lt;/h1&gt;&lt;p&gt;说到日志，我们比较熟悉的是数据库的写前日志（Write Ahead Log, WAL），也就是说，在实际写数据前，先把修改的数据记到日志文件中，以便故障时进行恢复。不过，AOF 日志正好相反，它是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志，如下图所示：&lt;/p&gt;</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;数据同步：主从库如何实现数据一致？&quot;&gt;&lt;a href=&quot;#数据同步：主从库如何实现数据一致？&quot; class=&quot;headerlink&quot; title=&quot;数据同步：主从库如何实现数据一致？&quot;&gt;&lt;/a&gt;数据同步：主从库如何实现数据一致？&lt;/h1&gt;&lt;p&gt;Redis</summary>
+        
+      
     
     
     
@@ -220,7 +230,7 @@
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T12:49:54.848Z</updated>
+    <updated>2021-07-12T14:33:55.364Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot; title=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;/a&gt;无锁的原子操作：Redis如何应对并发访问？&lt;/h1&gt;&lt;p&gt;为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。&lt;/p&gt;
@@ -238,7 +248,7 @@
     <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-    <category term="Redis并发控制" scheme="http://example.com/tags/Redis%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/"/>
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
     
   </entry>
   
@@ -274,7 +284,7 @@
     <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/"/>
     <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/</id>
     <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T08:52:21.894Z</updated>
+    <updated>2021-07-12T14:33:38.524Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;旁路缓存：Redis是如何工作的？&quot;&gt;&lt;a href=&quot;#旁路缓存：Redis是如何工作的？&quot; class=&quot;headerlink&quot; title=&quot;旁路缓存：Redis是如何工作的？&quot;&gt;&lt;/a&gt;旁路缓存：&lt;code&gt;Redis&lt;/code&gt;是如何工作的？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;Redis&lt;/code&gt; 提供了高性能的数据存取功能，所以广泛应用在缓存场景中，既能有效地提升业务应用的响应速度，还可以避免把高并发大压力的请求发送到数据库层。但是，如果 &lt;code&gt;Redis&lt;/code&gt; 做缓存时出现了问题，比如说缓存失效，那么，大量请求就会直接积压到数据库层，必然会给数据库带来巨大的压力，很可能会导致数据库宕机或是故障，那么，业务应用就没有办法存取数据、响应用户请求了。这种生产事故，肯定不是我们希望看到的。&lt;/p&gt;
@@ -290,6 +300,8 @@
     
     <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
     
   </entry>
   
