@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-13T01:25:48.570Z</updated>
+  <updated>2021-07-13T02:16:47.006Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis为什么那么快？</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-13T02:16:47.006Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;高性能IO模型：为什么单线程Redis能那么快？&quot;&gt;&lt;a href=&quot;#高性能IO模型：为什么单线程Redis能那么快？&quot; class=&quot;headerlink&quot; title=&quot;高性能IO模型：为什么单线程Redis能那么快？&quot;&gt;&lt;/a&gt;高性能IO模型：为什么单线程Redis能那么快？&lt;/h1&gt;&lt;p&gt;Redis 是单线程，&lt;strong&gt;主要是指 Redis 的网络 IO 和键值对读写是由一个线程来完成&lt;/strong&gt;的，这也是 Redis 对外提供键值存储服务的主要流程。但 Redis 的其他功能，比如&lt;strong&gt;持久化、异步删除、集群数据同步等，其实是由额外的线程执行的。&lt;/strong&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
   
   <entry>
     <title>Redis主从复制及哨兵集群</title>
@@ -31,25 +50,6 @@
     <summary type="html">&lt;h1 id=&quot;数据同步：主从库如何实现数据一致？&quot;&gt;&lt;a href=&quot;#数据同步：主从库如何实现数据一致？&quot; class=&quot;headerlink&quot; title=&quot;数据同步：主从库如何实现数据一致？&quot;&gt;&lt;/a&gt;数据同步：主从库如何实现数据一致？&lt;/h1&gt;&lt;p&gt;Redis</summary>
         
       
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis为什么那么快？</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-13T02:14:58.680Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;高性能IO模型：为什么单线程Redis能那么快？&quot;&gt;&lt;a href=&quot;#高性能IO模型：为什么单线程Redis能那么快？&quot; class=&quot;headerlink&quot; title=&quot;高性能IO模型：为什么单线程Redis能那么快？&quot;&gt;&lt;/a&gt;高性能IO模型：为什么单线程Redis能那么快？&lt;/h1&gt;&lt;p&gt;Redis 是单线程，&lt;strong&gt;主要是指 Redis 的网络 IO 和键值对读写是由一个线程来完成&lt;/strong&gt;的，这也是 Redis 对外提供键值存储服务的主要流程。但 Redis 的其他功能，比如&lt;strong&gt;持久化、异步删除、集群数据同步等，其实是由额外的线程执行的。&lt;/strong&gt;&lt;/p&gt;</summary>
     
     
     

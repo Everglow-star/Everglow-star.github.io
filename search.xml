@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Redis为什么那么快？</title>
-    <url>/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/</url>
+    <url>/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/RedisIO%E6%A8%A1%E5%9E%8B/</url>
     <content><![CDATA[<h1 id="高性能IO模型：为什么单线程Redis能那么快？"><a href="#高性能IO模型：为什么单线程Redis能那么快？" class="headerlink" title="高性能IO模型：为什么单线程Redis能那么快？"></a>高性能IO模型：为什么单线程Redis能那么快？</h1><p>Redis 是单线程，<strong>主要是指 Redis 的网络 IO 和键值对读写是由一个线程来完成</strong>的，这也是 Redis 对外提供键值存储服务的主要流程。但 Redis 的其他功能，比如<strong>持久化、异步删除、集群数据同步等，其实是由额外的线程执行的。</strong></p>
 <span id="more"></span>
 
