@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="MySQL," />
 
 
 
@@ -81,15 +81,32 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://example.com/tags/index.html">
+<meta name="description" content="为什么我只查一行的语句，也执行这么慢？构造表，这个表有两个字段 id 和 c，并且插入了 10 万行记录。 12345678910111213141516171819mysql&gt; CREATE TABLE &#96;t&#96; (  &#96;id&#96; int(11) NOT NULL,  &#96;c&#96; int(11) DEFAULT NULL,  PRIMARY KEY (&#96;id&#96;)) ENGINE&#x3D;InnoDB;de">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL查询性能">
+<meta property="og:url" content="http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/index.html">
 <meta property="og:site_name" content="英伦82年雪碧">
+<meta property="og:description" content="为什么我只查一行的语句，也执行这么慢？构造表，这个表有两个字段 id 和 c，并且插入了 10 万行记录。 12345678910111213141516171819mysql&gt; CREATE TABLE &#96;t&#96; (  &#96;id&#96; int(11) NOT NULL,  &#96;c&#96; int(11) DEFAULT NULL,  PRIMARY KEY (&#96;id&#96;)) ENGINE&#x3D;InnoDB;de">
 <meta property="og:locale">
-<meta property="article:published_time" content="2021-07-12T11:57:51.000Z">
-<meta property="article:modified_time" content="2021-07-12T12:38:31.309Z">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/5008d7e9e22be88a9c80916df4f4b328.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/742249a31b83f4858c51bfe106a5daca.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/74fb24ba3826e3831eeeff1670990c01.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/2d8250398bc7f8f7dce8b6b1923c3724.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/2bbc77cfdb118b0d9ef3fdd679d0a69c.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/398407014180be4146c2d088fc07357e.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/3e/75/3e68326b967701c59770612183277475.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/d8/18/d8603aeb4eaad3326699c13c46379118.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/66f26bb885401e8e460451ff6b0c0746.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/bde83e269d9fa185b27900c8aa8137d2.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/1fbb84bb392b6bfa93786fe032690b1c.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/84667a3449dc846e393142600ee7a2ff.png">
+<meta property="og:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/46bb9f5e27854678bfcaeaf0c3b8a98c.png">
+<meta property="article:published_time" content="2021-07-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-14T15:02:39.450Z">
 <meta property="article:author" content="英伦82年雪碧">
+<meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/5008d7e9e22be88a9c80916df4f4b328.png">
 
 
 
@@ -119,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/tags/"/>
+  <link rel="canonical" href="http://example.com/2021/07/14/数据库/MySQL/MySQL查询性能/"/>
 
 
 
 
 
-  <title>tags | 英伦82年雪碧</title>
+  <title>MySQL查询性能 | 英伦82年雪碧</title>
   
 
 
@@ -284,40 +301,264 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="英伦82年雪碧">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">tags</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-                目前共计 3 个标签
+          <h1 class="post-title" itemprop="name headline">MySQL查询性能</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-14T00:00:00+08:00">
+                2021-07-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  887 words
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3 min
+                </span>
+              
             </div>
-            <div class="tag-cloud-tags">
-              <a href="/tags/MySQL/" style="font-size: 21px; color: #6f6f6f">MySQL</a> <a href="/tags/Redis/" style="font-size: 30px; color: #111">Redis</a> <a href="/tags/algorithms/" style="font-size: 12px; color: #ccc">algorithms</a>
-            </div>
-          </div>
-        
-      </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h1 id="为什么我只查一行的语句，也执行这么慢？"><a href="#为什么我只查一行的语句，也执行这么慢？" class="headerlink" title="为什么我只查一行的语句，也执行这么慢？"></a>为什么我只查一行的语句，也执行这么慢？</h1><p>构造表，这个表有两个字段 id 和 c，并且插入了 10 万行记录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CREATE TABLE `t` (</span><br><span class="line">  `id` int(11) NOT NULL,</span><br><span class="line">  `c` int(11) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB;</span><br><span class="line"></span><br><span class="line">delimiter ;;</span><br><span class="line">create procedure idata()</span><br><span class="line">begin</span><br><span class="line">  declare i int;</span><br><span class="line">  set i=1;</span><br><span class="line">  while(i&lt;=100000) do</span><br><span class="line">    insert into t values(i,i);</span><br><span class="line">    set i=i+1;</span><br><span class="line">  end while;</span><br><span class="line">end;;</span><br><span class="line">delimiter ;</span><br><span class="line"></span><br><span class="line">call idata();</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="第一类：查询长时间不返回"><a href="#第一类：查询长时间不返回" class="headerlink" title="第一类：查询长时间不返回"></a>第一类：查询长时间不返回</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>一般碰到这种情况的话，大概率是表 t 被锁住了。接下来分析原因的时候，一般都是首先执行一下 show processlist 命令，看看当前语句处于什么状态。然后我们再针对每种状态，去分析它们产生的原因、如何复现，以及如何处理。</p>
+<h3 id="等-MDL-锁"><a href="#等-MDL-锁" class="headerlink" title="等 MDL 锁"></a>等 MDL 锁</h3><p>show processlist 命令查看 Waiting for table metadata lock</p>
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/5008d7e9e22be88a9c80916df4f4b328.png" alt="img"></p>
+<p>出现这个状态表示的是，<strong>现在有一个线程正在表 t 上请求或者持有 MDL 写锁，把 select 语句堵住了。</strong></p>
+<p><strong>复现场景：</strong></p>
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/742249a31b83f4858c51bfe106a5daca.png" alt="img"></p>
+<p>session A 通过 lock table 命令持有表 t 的 MDL 写锁，而 session B 的查询需要获取 MDL 读锁。所以，session B 进入等待状态。</p>
+<p><strong>解决方案：</strong></p>
+<p>找到谁持有 MDL 写锁，然后把它 kill 掉。</p>
+<p>通过查询 sys.schema_table_lock_waits 这张表，我们就可以直接找出造成阻塞的 process id，把这个连接用 kill 命令断开即可。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/74fb24ba3826e3831eeeff1670990c01.png" alt="img" style="zoom: 50%;" />
+
+<h3 id="等-flush"><a href="#等-flush" class="headerlink" title="等 flush"></a>等 flush</h3><p>在表t上执行：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> information_schema.processlist <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/2d8250398bc7f8f7dce8b6b1923c3724.png" alt="img"></p>
+<p>MySQL 里面对表做 flush 操作的用法，一般有以下两个：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">flush tables t <span class="keyword">with</span> read lock;</span><br><span class="line">flush tables <span class="keyword">with</span> read lock;</span><br></pre></td></tr></table></figure>
+
+<p>如果指定表 t 的话，代表的是只关闭表 t；如果没有指定具体的表名，则表示关闭 MySQL 里所有打开的表。</p>
+<p><strong>复现：</strong></p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/2bbc77cfdb118b0d9ef3fdd679d0a69c.png" alt="img" style="zoom: 50%;" />
+
+<p>在 session A 中，我故意每行都调用一次 sleep(1)，这样这个语句默认要执行 10 万秒，在这期间表 t 一直是被 session A“打开”着。然后，session B 的 flush tables t 命令再要去关闭表 t，就需要等 session A 的查询结束。这样，session C 要再次查询的话，就会被 flush 命令堵住了。</p>
+<p><strong>show processlist 结果</strong>，找到id并kill</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/398407014180be4146c2d088fc07357e.png" alt="img" style="zoom:50%;" />
+
+<h3 id="等行锁"><a href="#等行锁" class="headerlink" title="等行锁"></a>等行锁</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> lock <span class="keyword">in</span> share mode; </span><br></pre></td></tr></table></figure>
+
+<p><strong>复现：</strong>由于访问 id=1 这个记录时要加读锁，如果这时候已经有一个事务在这行记录上持有一个写锁，我们的 select 语句就会被堵住。</p>
+<img src="https://static001.geekbang.org/resource/image/3e/75/3e68326b967701c59770612183277475.png" alt="img" style="zoom: 50%;" />
+
+<p>怎么查出是谁占着这个写锁。如果你用的是 MySQL 5.7 版本，可以通过 <strong>sys.innodb_lock_waits</strong> 表查到。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t sys.innodb_lock_waits <span class="keyword">where</span> locked_table<span class="operator">=</span><span class="string">&#x27;`test`.`t`&#x27;</span>\G</span><br></pre></td></tr></table></figure>
+
+<img src="https://static001.geekbang.org/resource/image/d8/18/d8603aeb4eaad3326699c13c46379118.png" alt="img" style="zoom: 50%;" />
+
+<p>解决：KILL 4 ，也就是说直接断开这个连接。</p>
+<h2 id="第二类：查询慢"><a href="#第二类：查询慢" class="headerlink" title="第二类：查询慢"></a>第二类：查询慢</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> c<span class="operator">=</span><span class="number">50000</span> limit <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>由于字段 c 上没有索引，这个语句只能走 id 主键顺序扫描，因此需要扫描 5 万行。</p>
+<p>我们再看一个只扫描一行，但是执行很慢的语句。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span>；</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/66f26bb885401e8e460451ff6b0c0746.png" alt="img"></p>
+<p>再看一个很快的语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> lock <span class="keyword">in</span> share mode</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/bde83e269d9fa185b27900c8aa8137d2.png" alt="img"></p>
+<p>加锁为什么反而变慢，看下输出信息：</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/1fbb84bb392b6bfa93786fe032690b1c.png" alt="img" style="zoom: 50%;" />
+
+<p>第一个语句的查询结果里 c=1，带 lock in share mode 的语句返回的是 c=1000001。</p>
+<p>复现：</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/84667a3449dc846e393142600ee7a2ff.png" alt="img" style="zoom:50%;" />
+
+<p>带 lock in share mode 的 SQL 语句，是<strong>当前读</strong>，因此会直接读到 1000001 这个结果，所以速度很快；而 select * from t where id=1 这个语句，是<strong>一致性读</strong>，因此需要从 1000001 开始，依次执行 undo log，执行了 100 万次以后，才将 1 这个结果返回。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/46bb9f5e27854678bfcaeaf0c3b8a98c.png" alt="img" style="zoom: 33%;" />
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E4%B8%BB%E5%A4%87%E7%9B%B8%E5%85%B3/" rel="next" title="MySQL主备相关">
+                <i class="fa fa-chevron-left"></i> MySQL主备相关
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/" rel="prev" title="为什么表数据删掉一半，表文件大小不变？">
+                为什么表数据删掉一半，表文件大小不变？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -350,8 +591,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -420,6 +670,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E5%8F%AA%E6%9F%A5%E4%B8%80%E8%A1%8C%E7%9A%84%E8%AF%AD%E5%8F%A5%EF%BC%8C%E4%B9%9F%E6%89%A7%E8%A1%8C%E8%BF%99%E4%B9%88%E6%85%A2%EF%BC%9F"><span class="nav-text">为什么我只查一行的语句，也执行这么慢？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%EF%BC%9A%E6%9F%A5%E8%AF%A2%E9%95%BF%E6%97%B6%E9%97%B4%E4%B8%8D%E8%BF%94%E5%9B%9E"><span class="nav-text">第一类：查询长时间不返回</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89-MDL-%E9%94%81"><span class="nav-text">等 MDL 锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89-flush"><span class="nav-text">等 flush</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89%E8%A1%8C%E9%94%81"><span class="nav-text">等行锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%85%A2"><span class="nav-text">第二类：查询慢</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-07-13T07:50:27.423Z</updated>
+  <updated>2021-07-14T15:01:59.608Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,21 +17,63 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>基础架构：一条SQL语句查询过程</title>
-    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
-    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/</id>
-    <published>2021-07-12T16:00:00.000Z</published>
-    <updated>2021-07-13T07:50:27.423Z</updated>
+    <title>为什么表数据删掉一半，表文件大小不变？</title>
+    <link href="http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/"/>
+    <id>http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/</id>
+    <published>2021-07-13T16:00:00.000Z</published>
+    <updated>2021-07-14T15:01:59.608Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;基础架构-一条SQL语句查询过程&quot;&gt;&lt;a href=&quot;#基础架构-一条SQL语句查询过程&quot; class=&quot;headerlink&quot; title=&quot;基础架构:一条SQL语句查询过程&quot;&gt;&lt;/a&gt;基础架构:一条&lt;code&gt;SQL&lt;/code&gt;语句查询过程&lt;/h1&gt;&lt;p&gt;&lt;code&gt;SQL&lt;/code&gt; 语句在 &lt;code&gt;MySQL&lt;/code&gt; 的各个功能模块中的执行过程。&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png&quot; alt=&quot;img&quot; style=&quot;zoom: 20%;&quot; /&gt;
-
-&lt;p&gt;&lt;code&gt;MySQL&lt;/code&gt; 可以分为 Server 层和存储引擎层两部分。&lt;/p&gt;
+    <summary type="html">&lt;p&gt;一个 InnoDB 表包含两部分，即：&lt;strong&gt;表结构定义和数据&lt;/strong&gt;。在 MySQL 8.0 版本以前，表结构是存在以.frm 为后缀的文件里。而 MySQL 8.0 版本，则已经允许把表结构定义放在系统数据表中了。因为表结构定义占用的空间很小，主要讨论表数据。&lt;/p&gt;
+&lt;h2 id=&quot;参数-innodb-file-per-table&quot;&gt;&lt;a href=&quot;#参数-innodb-file-per-table&quot; class=&quot;headerlink&quot; title=&quot;参数 innodb_file_per_table&quot;&gt;&lt;/a&gt;参数 innodb_file_per_table&lt;/h2&gt;&lt;p&gt;表数据既可以存在共享表空间里，也可以是单独的文件。这个行为是由参数 innodb_file_per_table 控制的：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Server 层&lt;/strong&gt;包括连接器、查询缓存、分析器、优化器、执行器等，涵盖 &lt;code&gt;MySQL&lt;/code&gt; 的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;存储引擎层&lt;/strong&gt;负责数据的存储和提取。其架构模式是插件式的，支持 &lt;code&gt;InnoDB、MyISAM、Memory&lt;/code&gt; 等多个存储引擎。现在最常用的存储引擎是&lt;code&gt; InnoDB&lt;/code&gt;，它从 &lt;code&gt;MySQL&lt;/code&gt; 5.5.5 版本开始成为了默认存储引擎。&lt;/li&gt;
-&lt;/ul&gt;</summary>
+&lt;li&gt;这个参数设置为 OFF 表示的是，表的数据放在系统共享表空间，也就是跟数据字典放在一起；&lt;/li&gt;
+&lt;li&gt;这个参数设置为 ON 表示的是，每个 InnoDB 表数据存储在一个以 .ibd 为后缀的文件中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;建议不论使用 MySQL 的哪个版本，都将这个值设置为 ON。&lt;strong&gt;因为，一个表单独存储为一个文件更容易管理，而且在你不需要这个表的时候，通过 drop table 命令，系统就会直接删除这个文件。而如果是放在共享表空间中，即使表删掉了，空间也是不会回收的。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;以下讨论基于设置为ON的前提下。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL查询性能</title>
+    <link href="http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/"/>
+    <id>http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%9F%A5%E8%AF%A2%E6%80%A7%E8%83%BD/</id>
+    <published>2021-07-13T16:00:00.000Z</published>
+    <updated>2021-07-14T15:02:39.450Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;为什么我只查一行的语句，也执行这么慢？&quot;&gt;&lt;a href=&quot;#为什么我只查一行的语句，也执行这么慢？&quot; class=&quot;headerlink&quot; title=&quot;为什么我只查一行的语句，也执行这么慢？&quot;&gt;&lt;/a&gt;为什么我只查一行的语句，也执行这么慢？&lt;/h1&gt;&lt;p&gt;构造表，这个表有两个字段 id 和 c，并且插入了 10 万行记录。&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;mysql&amp;gt; CREATE TABLE `t` (&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  `id` int(11) NOT NULL,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  `c` int(11) DEFAULT NULL,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  PRIMARY KEY (`id`)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;) ENGINE=InnoDB;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;delimiter ;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;create procedure idata()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;begin&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  declare i int;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  set i=1;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  while(i&amp;lt;=100000) do&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    insert into t values(i,i);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    set i=i+1;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  end while;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;end;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;delimiter ;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;call idata();&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="数据" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL主备相关</title>
+    <link href="http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E4%B8%BB%E5%A4%87%E7%9B%B8%E5%85%B3/"/>
+    <id>http://example.com/2021/07/14/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E4%B8%BB%E5%A4%87%E7%9B%B8%E5%85%B3/</id>
+    <published>2021-07-13T16:00:00.000Z</published>
+    <updated>2021-07-14T15:01:40.229Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;MySQL是怎么保证主备一致的？&quot;&gt;&lt;a href=&quot;#MySQL是怎么保证主备一致的？&quot; class=&quot;headerlink&quot; title=&quot;MySQL是怎么保证主备一致的？&quot;&gt;&lt;/a&gt;MySQL是怎么保证主备一致的？&lt;/h1&gt;&lt;h2 id=&quot;MySQL-主备的基本原理&quot;&gt;&lt;a href=&quot;#MySQL-主备的基本原理&quot; class=&quot;headerlink&quot; title=&quot;MySQL 主备的基本原理&quot;&gt;&lt;/a&gt;MySQL 主备的基本原理&lt;/h2&gt;&lt;p&gt;基本的主备切换流程：&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/fd75a2b37ae6ca709b7f16fe060c2c10.png&quot; alt=&quot;img&quot; style=&quot;zoom: 50%;&quot; /&gt;
+
+&lt;p&gt;在状态 1 中，客户端的读写都直接访问节点 A，而节点 B 是 A 的备库，只是将 A 的更新都同步过来，到本地执行。这样可以保持节点 B 和 A 的数据是相同的。当需要切换的时候，就切成状态 2。这时候客户端读写访问的都是节点 B，而节点 A 是 B 的备库。&lt;/p&gt;</summary>
     
     
     
@@ -68,68 +110,21 @@
   </entry>
   
   <entry>
-    <title>日志系统：一条SQL更新语句执行过程</title>
-    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/"/>
-    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/</id>
+    <title>基础架构：一条SQL语句查询过程</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/</id>
     <published>2021-07-12T16:00:00.000Z</published>
-    <updated>2021-07-13T08:08:52.602Z</updated>
+    <updated>2021-07-13T07:50:27.423Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;日志系统：一条SQL更新语句是如何执行的？&quot;&gt;&lt;a href=&quot;#日志系统：一条SQL更新语句是如何执行的？&quot; class=&quot;headerlink&quot; title=&quot;日志系统：一条SQL更新语句是如何执行的？&quot;&gt;&lt;/a&gt;日志系统：一条SQL更新语句是如何执行的？&lt;/h1&gt;&lt;p&gt;更新语句流程首先和查询语句流程是相似的。&lt;/p&gt;
-&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
+    <summary type="html">&lt;h1 id=&quot;基础架构-一条SQL语句查询过程&quot;&gt;&lt;a href=&quot;#基础架构-一条SQL语句查询过程&quot; class=&quot;headerlink&quot; title=&quot;基础架构:一条SQL语句查询过程&quot;&gt;&lt;/a&gt;基础架构:一条&lt;code&gt;SQL&lt;/code&gt;语句查询过程&lt;/h1&gt;&lt;p&gt;&lt;code&gt;SQL&lt;/code&gt; 语句在 &lt;code&gt;MySQL&lt;/code&gt; 的各个功能模块中的执行过程。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png&quot; alt=&quot;img&quot; style=&quot;zoom: 20%;&quot; /&gt;
 
-&lt;p&gt;与查询流程不一样的是，更新流程还涉及两个重要的日志模块，&lt;strong&gt;redo log（重做日志）和 binlog（归档日志）。&lt;/strong&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL的锁</title>
-    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%9A%84%E9%94%81/"/>
-    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%9A%84%E9%94%81/</id>
-    <published>2021-07-12T16:00:00.000Z</published>
-    <updated>2021-07-13T14:22:58.719Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;全局锁和表锁-：给表加个字段怎么有这么多阻碍？&quot;&gt;&lt;a href=&quot;#全局锁和表锁-：给表加个字段怎么有这么多阻碍？&quot; class=&quot;headerlink&quot; title=&quot;全局锁和表锁 ：给表加个字段怎么有这么多阻碍？&quot;&gt;&lt;/a&gt;全局锁和表锁</summary>
-        
-      
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>深入浅出索引</title>
-    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/"/>
-    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/</id>
-    <published>2021-07-12T16:00:00.000Z</published>
-    <updated>2021-07-13T14:57:58.686Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。&lt;/p&gt;
-&lt;h1 id=&quot;索引基础&quot;&gt;&lt;a href=&quot;#索引基础&quot; class=&quot;headerlink&quot; title=&quot;索引基础&quot;&gt;&lt;/a&gt;索引基础&lt;/h1&gt;&lt;h2 id=&quot;索引的常见模型&quot;&gt;&lt;a</summary>
-        
-      
+&lt;p&gt;&lt;code&gt;MySQL&lt;/code&gt; 可以分为 Server 层和存储引擎层两部分。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Server 层&lt;/strong&gt;包括连接器、查询缓存、分析器、优化器、执行器等，涵盖 &lt;code&gt;MySQL&lt;/code&gt; 的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;存储引擎层&lt;/strong&gt;负责数据的存储和提取。其架构模式是插件式的，支持 &lt;code&gt;InnoDB、MyISAM、Memory&lt;/code&gt; 等多个存储引擎。现在最常用的存储引擎是&lt;code&gt; InnoDB&lt;/code&gt;，它从 &lt;code&gt;MySQL&lt;/code&gt; 5.5.5 版本开始成为了默认存储引擎。&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
     
     
@@ -203,6 +198,73 @@
     
     
     <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>日志系统：一条SQL更新语句执行过程</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-14T12:33:33.321Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;日志系统：一条SQL更新语句是如何执行的？&quot;&gt;&lt;a href=&quot;#日志系统：一条SQL更新语句是如何执行的？&quot; class=&quot;headerlink&quot; title=&quot;日志系统：一条SQL更新语句是如何执行的？&quot;&gt;&lt;/a&gt;日志系统：一条SQL更新语句是如何执行的？&lt;/h1&gt;&lt;p&gt;更新语句流程首先和查询语句流程是相似的。&lt;/p&gt;
+&lt;img src=&quot;http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0d2070e8f84c4801adbfa03bda1f98d9.png&quot; alt=&quot;img&quot; style=&quot;zoom:20%;&quot; /&gt;
+
+&lt;p&gt;与查询流程不一样的是，更新流程还涉及两个重要的日志模块，&lt;strong&gt;redo log（重做日志）和 binlog（归档日志）。&lt;/strong&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL的锁</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%9A%84%E9%94%81/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%9A%84%E9%94%81/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-14T15:02:51.854Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;全局锁和表锁-：给表加个字段怎么有这么多阻碍？&quot;&gt;&lt;a href=&quot;#全局锁和表锁-：给表加个字段怎么有这么多阻碍？&quot; class=&quot;headerlink&quot; title=&quot;全局锁和表锁 ：给表加个字段怎么有这么多阻碍？&quot;&gt;&lt;/a&gt;全局锁和表锁 ：给表加个字段怎么有这么多阻碍？&lt;/h1&gt;&lt;p&gt;根据加锁的范围，MySQL 里面的锁大致可以分成&lt;strong&gt;全局锁、表级锁和行锁&lt;/strong&gt;三类。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>深入浅出索引</title>
+    <link href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/"/>
+    <id>http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/</id>
+    <published>2021-07-12T16:00:00.000Z</published>
+    <updated>2021-07-14T02:15:10.111Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。&lt;/p&gt;
+&lt;h1 id=&quot;索引基础&quot;&gt;&lt;a href=&quot;#索引基础&quot; class=&quot;headerlink&quot; title=&quot;索引基础&quot;&gt;&lt;/a&gt;索引基础&lt;/h1&gt;&lt;h2 id=&quot;索引的常见模型&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
     
   </entry>
   
@@ -393,79 +455,6 @@
     
     <category term="数据结构与算法" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>Redis持久化</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T13:58:13.001Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;AOF-日志是如何实现的？&quot;&gt;&lt;a href=&quot;#AOF-日志是如何实现的？&quot; class=&quot;headerlink&quot; title=&quot;AOF 日志是如何实现的？&quot;&gt;&lt;/a&gt;AOF 日志是如何实现的？&lt;/h1&gt;&lt;p&gt;说到日志，我们比较熟悉的是数据库的写前日志（Write Ahead Log, WAL），也就是说，在实际写数据前，先把修改的数据记到日志文件中，以便故障时进行恢复。不过，AOF 日志正好相反，它是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志，如下图所示：&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>排序</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E4%B8%93%E9%A2%98/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E4%B8%93%E9%A2%98/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T05:42:37.952Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;如何分析一个排序算法？&quot;&gt;&lt;a href=&quot;#如何分析一个排序算法？&quot; class=&quot;headerlink&quot; title=&quot;如何分析一个排序算法？&quot;&gt;&lt;/a&gt;如何分析一个排序算法？&lt;/h1&gt;&lt;h2 id=&quot;1-排序算法的执行效率&quot;&gt;&lt;a href=&quot;#1-排序算法的执行效率&quot; class=&quot;headerlink&quot; title=&quot;1. 排序算法的执行效率&quot;&gt;&lt;/a&gt;1. 排序算法的执行效率&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt; &lt;strong&gt;最好情况、最坏情况、平均情况时间复杂度&lt;/strong&gt; &lt;/li&gt;
-&lt;li&gt;分别给出排序算法 &lt;strong&gt;三种情况&lt;/strong&gt; 的时间复杂度&lt;/li&gt;
-&lt;li&gt;同时给出三种情况时间复杂度对应的 &lt;strong&gt;原始数据&lt;/strong&gt; 是什么样的？&lt;/li&gt;
-&lt;li&gt; &lt;strong&gt;时间复杂度的系数、常数 、低阶&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;时间复杂度反映的是数据规模 n **很大 **的时候的一个增长趋势，所以它表示的时候会忽略系数、常数、低阶。&lt;/li&gt;
-&lt;li&gt;实际的软件开发中，我们排序的可能是 10 个、100 个、1000 个这样规模 &lt;strong&gt;很小&lt;/strong&gt; 的数据，所以，在对同一阶时间复杂度的排序算法性能对比的时候，我们就要把系数、常数、低阶也考虑进来。&lt;/li&gt;
-&lt;li&gt; &lt;strong&gt;比较次数和交换（或移动）次数&lt;/strong&gt; ：基于 &lt;strong&gt;比较&lt;/strong&gt; 的排序算法执行过程中，会涉及两种操作。&lt;/li&gt;
-&lt;li&gt; &lt;strong&gt;元素比较大小&lt;/strong&gt; &lt;/li&gt;
-&lt;li&gt; &lt;strong&gt;元素交换或移动&lt;/strong&gt; &lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="数据结构与算法" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Redis并发问题</title>
-    <link href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/</id>
-    <published>2021-07-11T16:00:00.000Z</published>
-    <updated>2021-07-12T14:33:55.364Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;a href=&quot;#无锁的原子操作：Redis如何应对并发访问？&quot; class=&quot;headerlink&quot; title=&quot;无锁的原子操作：Redis如何应对并发访问？&quot;&gt;&lt;/a&gt;无锁的原子操作：Redis如何应对并发访问？&lt;/h1&gt;&lt;p&gt;为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;加锁：&lt;/strong&gt; 加锁是一种常用的方法，在读取数据前，客户端需要先获得锁，否则就无法进行操作。当一个客户端获得锁后，就会一直持有这把锁，直到客户端完成数据更新，才释放这把锁。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;弊端：&lt;/strong&gt; 1. 如果加锁操作多，会降低系统的并发访问性能；&lt;/p&gt;
-&lt;p&gt;​             2. 第二个是，Redis 客户端要加锁时，需要用到分布式锁，而分布式锁实现复杂，需要用额外的存储系统来提供加解锁操作&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;原子操作：&lt;/strong&gt; 原子操作是指执行过程保持原子性的操作，而且原子操作执行时并不需要再加锁，实现了无锁操作。这样一来，既能保证并发控制，还能减少对系统并发性能的影响。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://example.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
     
   </entry>
   

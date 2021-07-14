@@ -295,6 +295,1274 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="英伦82年雪碧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E7%B4%A2%E5%BC%95/" itemprop="url">深入浅出索引</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-13T00:00:00+08:00">
+                2021-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  9.6k words
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  35 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>索引的出现其实就是为了提高数据查询的效率，就像书的目录一样。</p>
+<h1 id="索引基础"><a href="#索引基础" class="headerlink" title="索引基础"></a>索引基础</h1><h2 id="索引的常见模型"><a href="#索引的常见模型" class="headerlink" title="索引的常见模型"></a>索引的常见模型</h2><ul>
+<li><p>哈希表是一种以键 - 值（key-value）存储数据的结构，我们只要输入待查找的键即 key，就可以找到其对应的值即 Value。哈希的思路很简单，把值放在数组里，用一个哈希函数把 key 换算成一个确定的位置，然后把 value 放在数组的这个位置。</p>
+<ul>
+<li>哈希冲突：用链表法</li>
+<li>适用场景：<strong>哈希表这种结构适用于只有等值查询的场景</strong></li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/0c62b601afda86fe5d0fe57346ace957.png" alt="img" style="zoom: 33%;" /></li>
+<li><p><strong>有序数组</strong>在等值查询和范围查询场景中的性能就都非常优秀。查询效率O(logn)</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/bfc907a92f99cadf5493cf0afac9ca49.png" alt="img" style="zoom:33%;" />
++ **缺点**：在需要更新数据的时候就麻烦了，往中间插入一个记录就必须得挪动后面所有的记录，成本太高。
++ 适用场景：**有序数组索引只适用于静态存储引擎**</li>
+<li><p>二叉搜索树：保持平衡的情况下：查询效率O(logn)。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/04fb9d24065635a6a637c25ba9ddde68.png" alt="img" style="zoom:25%;" />
+
+<ul>
+<li>为什么不直接适用二叉树？索引不止存在内存中，还要写到磁盘上。访问数据块的数目等于树的高度，树越高，越耗时。</li>
+<li>为了让一个查询尽量少地读磁盘，就必须让查询过程访问尽量少的数据块，N 叉树由于在读写上的性能优点，以及适配磁盘的访问模式，已经被广泛应用在数据库引擎中了。</li>
+</ul>
+</li>
+</ul>
+<h2 id="InnoDB-的索引模型"><a href="#InnoDB-的索引模型" class="headerlink" title="InnoDB 的索引模型"></a>InnoDB 的索引模型</h2><p>在 InnoDB 中，表都是根据主键顺序以索引的形式存放的，这种存储方式的表称为索引组织表。<strong>每一个索引在 InnoDB 里面对应一棵 B+ 树。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table T(</span><br><span class="line">id int primary key, </span><br><span class="line">k int not null, </span><br><span class="line">name varchar(16),</span><br><span class="line">index (k))engine=InnoDB;</span><br></pre></td></tr></table></figure>
+
+<p>表中 R1~R5 的 (ID,k) 值分别为 (100,1)、(200,2)、(300,3)、(500,5) 和 (600,6)，两棵树的示例示意图如下。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/dcda101051f28502bd5c4402b292e38d.png" alt="img" style="zoom: 33%;" />
+
+<ul>
+<li>主键索引的叶子节点存的是整行数据。在 InnoDB 里，主键索引也被称为<strong>聚簇索引</strong>（clustered index）。</li>
+<li>非主键索引的叶子节点内容是主键的值。在 InnoDB 里，非主键索引也被称为<strong>二级索引</strong>（secondary index）。</li>
+</ul>
+<p><strong>基于主键索引和普通索引的查询有什么区别？</strong></p>
+<ul>
+<li>如果语句是 select * from T where ID=500，即主键查询方式，则只需要搜索 ID 这棵 B+ 树；</li>
+<li>如果语句是 select * from T where k=5，即普通索引查询方式，则需要先搜索 k 索引树，得到 ID 的值为 500，再到 ID 索引树搜索一次。这个过程称为<strong>回表</strong>。</li>
+</ul>
+<h2 id="索引维护"><a href="#索引维护" class="headerlink" title="索引维护"></a>索引维护</h2><p>B+ 树为了维护索引有序性，在插入新值的时候需要做必要的维护。</p>
+<ul>
+<li><p>以上面这个图为例，如果插入新的行 ID 值为 700，则只需要在 R5 的记录后面插入一个新记录。如果新插入的 ID 值为 400，就相对麻烦了，需要逻辑上挪动后面的数据，空出位置。</p>
+</li>
+<li><p>如果 R5 所在的数据页已经满了，根据 B+ 树的算法，这时候需要申请一个新的数据页，然后挪动部分数据过去。这个过程称为<strong>页分裂</strong>。在这种情况下，性能自然会受影响。</p>
+</li>
+</ul>
+<p>页分裂操作还影响<strong>数据页的利用率</strong>。原本放在一个页的数据，现在分到两个页中，整体空间利用率降低大约 50%。当然有分裂就有合并。当相邻两个页由于删除了数据，利用率很低之后，会将数据页做合并。合并的过程，可以认为是<strong>分裂过程的逆过程</strong>。</p>
+<p><strong>哪些场景下应该使用自增主键，而哪些场景下不应该?。</strong></p>
+<p>自增主键是指自增列上定义的主键，在建表语句中一般是这么定义的： NOT NULL PRIMARY KEY AUTO_INCREMENT。</p>
+<ul>
+<li><p><strong>性能：自增主键的插入数据模式，正符合了我们前面提到的递增插入的场景。每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。</strong></p>
+</li>
+<li><p><strong>存储空间：</strong></p>
+<blockquote>
+<p>假设你的表中确实有一个唯一字段，比如字符串类型的身份证号，那应该用身份证号做主键，还是用自增字段做主键呢？</p>
+<p>由于每个非主键索引的叶子节点上都是主键的值。如果用身份证号做主键，那么每个二级索引的叶子节点占用约 20 个字节，而如果用整型做主键，则只要 4 个字节，如果是长整型（bigint）则是 8 个字节。</p>
+<p><strong>显然，主键长度越小，普通索引的叶子节点就越小，普通索引占用的空间也就越小。</strong></p>
+</blockquote>
+</li>
+</ul>
+<p><strong>有没有什么场景适合用业务字段直接做主键的呢？</strong></p>
+<p><strong>典型的 KV 场景：</strong></p>
+<ol>
+<li>只有一个索引；</li>
+<li>该索引必须是唯一索引。由于没有其他索引，所以也就不用考虑其他索引的叶子节点大小的问题。这时候我们就要优先考虑上一段提到的“<strong>尽量使用主键查询</strong>”原则，直接将这个索引设置为主键，可以避免每次查询需要搜索两棵树。</li>
+</ol>
+<h2 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> T <span class="keyword">where</span> k <span class="keyword">between</span> <span class="number">3</span> <span class="keyword">and</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>建表语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">create</span> <span class="keyword">table</span> T (</span><br><span class="line">ID <span class="type">int</span> <span class="keyword">primary</span> key,</span><br><span class="line">k <span class="type">int</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>, </span><br><span class="line">s <span class="type">varchar</span>(<span class="number">16</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">index k(k))</span><br><span class="line">engine<span class="operator">=</span>InnoDB;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> T <span class="keyword">values</span>(<span class="number">100</span>,<span class="number">1</span>, <span class="string">&#x27;aa&#x27;</span>),(<span class="number">200</span>,<span class="number">2</span>,<span class="string">&#x27;bb&#x27;</span>),(<span class="number">300</span>,<span class="number">3</span>,<span class="string">&#x27;cc&#x27;</span>),(<span class="number">500</span>,<span class="number">5</span>,<span class="string">&#x27;ee&#x27;</span>),(<span class="number">600</span>,<span class="number">6</span>,<span class="string">&#x27;ff&#x27;</span>),(<span class="number">700</span>,<span class="number">7</span>,<span class="string">&#x27;gg&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/dcda101051f28502bd5c4402b292e38d.png" alt="img" style="zoom: 33%;" />
+
+<p>执行过程：</p>
+<ol>
+<li>在 k 索引树上找到 k=3 的记录，取得 ID = 300；</li>
+<li>再到 ID 索引树查到 ID=300 对应的 R3；</li>
+<li>在 k 索引树取下一个值 k=5，取得 ID=500；</li>
+<li>再回到 ID 索引树查到 ID=500 对应的 R4；</li>
+<li>在 k 索引树取下一个值 k=6，不满足条件，循环结束。</li>
+</ol>
+<p><strong>回表：</strong>回到主键索引树搜索的过程。</p>
+<p>如果执行的语句是 select ID from T where k between 3 and 5，这时只需要查 ID 的值，而 ID 的值已经在 k 索引树上了，因此可以直接提供查询结果，不需要回表。也就是说，在这个查询里面，索引 k 已经“覆盖了”我们的查询需求，我们称为<strong>覆盖索引</strong>。</p>
+<p><strong>由于覆盖索引可以减少树的搜索次数，显著提升查询性能，所以使用覆盖索引是一个常用的性能优化手段。</strong></p>
+<p><strong>在一个市民信息表上，是否有必要将身份证号和名字建立联合索引？</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `tuser` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `id_card` <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `age` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `ismale` tinyint(<span class="number">1</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  KEY `id_card` (`id_card`),</span><br><span class="line">  KEY `name_age` (`name`,`age`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB</span><br></pre></td></tr></table></figure>
+
+<p>我们知道，身份证号是市民的唯一标识。也就是说，如果有根据身份证号查询市民信息的需求，我们只要在身份证号字段上建立索引就够了。而再建立一个（身份证号、姓名）的联合索引，是不是浪费空间？</p>
+<p><strong>如果现在有一个高频请求，要根据市民的身份证号查询他的姓名，这个联合索引就有意义了。它可以在这个高频请求上用到覆盖索引，不再需要回表查整行记录，减少语句的执行时间。索引字段的维护总是有代价的。因此，在建立冗余索引来支持覆盖索引时就需要权衡考虑了</strong></p>
+<h2 id="最左前缀原则"><a href="#最左前缀原则" class="headerlink" title="最左前缀原则"></a>最左前缀原则</h2><p><strong>B+ 树这种索引结构，可以利用索引的“最左前缀”，来定位记录。</strong></p>
+<p>（name，age）联合索引，<strong>索引项是按照索引定义里面出现的字段顺序排序的。</strong></p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/89f74c631110cfbc83298ef27dcd6370.jpg" alt="img" style="zoom:33%;" />
+
+<p>当你的逻辑需求是查到所有名字是“张三”的人时，可以快速定位到 ID4，然后向后遍历得到所有需要的结果。<strong>这个最左前缀可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符。</strong></p>
+<p><strong>在建立联合索引的时候，如何安排索引内的字段顺序？</strong></p>
+<ul>
+<li>第一原则是，<strong>如果通过调整顺序，可以少维护一个索引，那么这个顺序往往就是需要优先考虑采用的。</strong> 当已经有了 (a,b) 这个联合索引后，一般就不需要单独在 a 上建立索引了。</li>
+</ul>
+<p>如果既有联合查询，又有基于 a、b 各自的查询呢？查询条件里面只有 b 的语句，是无法使用 (a,b) 这个联合索引的，这时候不得不维护另外一个索引，也就是说需要同时维护 (a,b)、(b) 这两个索引。</p>
+<ul>
+<li>第二原则：<strong>空间</strong>。比如上面这个市民表的情况，name 字段是比 age 字段大的 ，那我就建议创建一个（name,age) 的联合索引和一个 (age) 的单字段索引。</li>
+</ul>
+<h2 id="索引下推"><a href="#索引下推" class="headerlink" title="索引下推"></a>索引下推</h2><p><strong>满足最左前缀原则的时候，最左前缀可以用于在索引中定位记录。那些不符合最左前缀的部分，会怎么样呢？</strong></p>
+<p>以市民表的联合索引（name, age）为例。如果现在有一个需求：检索出表中“名字第一个字是张，而且年龄是 10 岁的所有男孩”。那么，SQL 语句是这么写的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tuser <span class="keyword">where</span> name <span class="keyword">like</span> <span class="string">&#x27;张%&#x27;</span> <span class="keyword">and</span> age<span class="operator">=</span><span class="number">10</span> <span class="keyword">and</span> ismale<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>根据前缀索引规则，<strong>这个语句在搜索索引树的时候，只能用 “张”，找到第一个满足条件的记录 ID3。然后再判断其他条件是否满足？</strong></p>
+<ul>
+<li><p>无索引下推执行流程</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b32aa8b1f75611e0759e52f5915539ac.jpg" alt="img" style="zoom: 33%;" /></li>
+<li><p>索引下推执行流程</p>
+<img src="https://static001.geekbang.org/resource/image/76/1b/76e385f3df5a694cc4238c7b65acfe1b.jpg" alt="img" style="zoom:33%;" /></li>
+</ul>
+<p><strong>两者区别在于：</strong></p>
+<p>InnoDB 在 (name,age) 索引内部就判断了 age 是否等于 10，对于不等于 10 的记录，直接判断并跳过。在这个例子中，只需要对 ID4、ID5 这两条记录回表取数据判断，就只需要回表 2 次。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>对于 InnoDB 表 T，如果你要重建索引 k，你的两个 SQL 语句可以这么写：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">drop</span> index k;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">add</span> index(k);</span><br></pre></td></tr></table></figure>
+
+<p>如果你要重建主键索引，也可以这么写：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">drop</span> <span class="keyword">primary</span> key;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> T <span class="keyword">add</span> <span class="keyword">primary</span> key(id);</span><br></pre></td></tr></table></figure>
+
+<p>这两种重建方法有什么区别？</p>
+<p><strong>首先解释下为什么要重建索引？</strong></p>
+<p>索引可能因为删除，或者页分裂等原因，导致数据页有空洞，重建索引的过程会创建一个新的索引，把数据按顺序插入，这样页面的利用率最高，也就是索引更紧凑、更省空间。</p>
+<p><strong>重建索引 k 的做法是合理的，可以达到省空间的目的。但是，重建主键的过程不合理。</strong> <strong>不论是删除主键还是创建主键，都会将整个表重建。</strong>所以连着执行这两个语句的话，第一个语句就白做了。这两个语句，你可以用这个语句代替 ： alter table T engine=InnoDB。在专栏的第 12 篇文章《为什么表数据删掉一半，表文件大小不变？》中，我会和你分析这条语句的执行流程。</p>
+<h1 id="普通索引和唯一索引，应该怎么选择？"><a href="#普通索引和唯一索引，应该怎么选择？" class="headerlink" title="普通索引和唯一索引，应该怎么选择？"></a>普通索引和唯一索引，应该怎么选择？</h1><p>普通索引，就是在创建索引时，不附加任何限制条件(唯一、非空等限制)。该类型的索引可以创建在任何数据类型的字段上。</p>
+<p>唯一索引，就是在创建索引时，<strong>限制索引的值必须是唯一的</strong>。通过该类型的索引可以更快速地查询某条记录。</p>
+<img src="https://static001.geekbang.org/resource/image/1e/46/1ed9536031d6698570ea175a7b7f9a46.png" alt="img" style="zoom: 33%;" />
+
+<h2 id="查询过程"><a href="#查询过程" class="headerlink" title="查询过程"></a>查询过程</h2><p>假设，执行查询的语句是 select id from T where k=5。这个查询语句在索引树上查找的过程，先是通过 B+ 树从树根开始，按层搜索到叶子节点，也就是图中右下角的这个数据页，然后可以认为数据页内部通过二分法来定位记录。</p>
+<ul>
+<li>对于普通索引来说，查找到满足条件的第一个记录 (5,500) 后，需要查找下一个记录，直到碰到第一个不满足 k=5 条件的记录。</li>
+<li>对于唯一索引来说，由于索引定义了唯一性，查找到第一个满足条件的记录后，就会停止继续检索。</li>
+</ul>
+<p>但这个性能带来的差距微乎其微。</p>
+<p><strong>InnoDB 的数据是按数据页为单位来读写的。也就是说，当需要读一条记录的时候，并不是将这个记录本身从磁盘读出来，而是以页为单位，将其整体读入内存。在 InnoDB 中，每个数据页的大小默认是 16KB。</strong></p>
+<p>因为引擎是按页读写的，所以说，当找到 k=5 的记录的时候，它所在的数据页就都在内存里了。那么，对于普通索引来说，要多做的那一次“查找和判断下一条记录”的操作，就只需要一次指针寻找和一次计算。当然，如果 k=5 这个记录刚好是这个数据页的最后一个记录，那么要取下一个记录，必须读取下一个数据页，这个操作会稍微复杂一些。但是概率很低。</p>
+<h2 id="更新过程"><a href="#更新过程" class="headerlink" title="更新过程"></a>更新过程</h2><p><strong>change buffer：</strong> </p>
+<ul>
+<li><p>当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB 会将这些更新操作缓存在 change buffer 中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行 change buffer 中与这个页有关的操作。</p>
+</li>
+<li><p>change buffer，是可以持久化的数据。也就是说，change buffer 在内存中有拷贝，也会被写入到磁盘上。</p>
+</li>
+<li><p>将 change buffer 中的操作应用到原数据页，得到最新结果的过程称为 <strong>merge</strong>。除了访问这个数据页会触发 merge 外，系统有后台线程会定期 merge。在数据库正常关闭（shutdown）的过程中，也会执行 merge 操作。</p>
+</li>
+</ul>
+<p>好处：如果能够将更新操作先记录在 change buffer，<strong>减少读磁盘，语句的执行速度会得到明显的提升</strong>。而且，<strong>数据读入内存是需要占用 buffer pool 的，所以这种方式还能够避免占用内存，提高内存利用率。</strong>change buffer虽然还是需要内存占用(记录数据更新动作)，但相比于数据页来说(默认16K)，所占的内存还是小了很多的。</p>
+<p><strong>什么条件下可以使用 change buffer 呢？</strong></p>
+<p>只有普通索引会使用change buffer，因为对于唯一索引来说，<strong>所有的更新操作都要先判断这个操作是否违反唯一性约束，而判断的前提是将数据页读入内存才能判断，直接更新内存即可，插入到change buffer显得冗余。</strong></p>
+<p>change buffer 的大小，可以通过参数 innodb_change_buffer_max_size 来动态设置。这个参数设置为 50 的时候，表示 change buffer 的大小最多只能占用 <strong>buffer pool</strong> 的 50%。</p>
+<p><strong>更新过程两种情况，如果要在这张表中插入（4，400）：</strong></p>
+<ol>
+<li><p>这个记录要更新的目标页在内存中</p>
+<ul>
+<li>对于唯一索引来说，找到 3 和 5 之间的位置，判断到没有冲突，插入这个值，语句执行结束；</li>
+<li>对于普通索引来说，找到 3 和 5 之间的位置，插入这个值，语句执行结束。</li>
+</ul>
+<p><strong>这样看来，普通索引和唯一索引对更新语句性能影响的差别，只是一个判断，只会耗费微小的 CPU 时间。</strong></p>
+</li>
+<li><p>这个记录要更新的目标页不在内存中。</p>
+<ul>
+<li>对于唯一索引来说，需要将数据页读入内存，判断到没有冲突，插入这个值，语句执行结束；</li>
+<li>对于普通索引来说，则是将更新记录在 change buffer，语句执行就结束了。</li>
+</ul>
+<p><strong>将数据从磁盘读入内存涉及随机 IO 的访问，是数据库里面成本最高的操作之一。change buffer 因为减少了随机磁盘访问，所以对更新性能的提升是会很明显的。</strong></p>
+</li>
+</ol>
+<h2 id="change-buffer-的使用场景"><a href="#change-buffer-的使用场景" class="headerlink" title="change buffer 的使用场景"></a>change buffer 的使用场景</h2><p><strong>普通索引的所有场景，使用 change buffer 都可以起到加速作用吗？</strong></p>
+<p>因为 merge 的时候是真正进行数据更新的时刻，而 change buffer 的主要目的就是将记录的变更动作缓存下来，所以在一个数据页做 merge 之前，change buffer 记录的变更越多（也就是这个页面上要更新的次数越多），收益就越大。</p>
+<ul>
+<li>对于写多读少的业务来说，页面在写完以后马上被访问到的概率比较小，此时 change buffer 的使用效果最好。这种业务模型常见的就是账单类、日志类的系统。</li>
+<li>假设一个业务的更新模式是写入之后马上会做查询，那么即使满足了条件，将更新先记录在 change buffer，但之后由于马上要访问这个数据页，会立即触发 merge 过程。这样随机访问 IO 的次数不会减少，反而增加了 change buffer 的维护代价。所以，对于这种业务模式来说，change buffer 反而起到了副作用。</li>
+</ul>
+<p>merge 的执行流程是这样的：</p>
+<ul>
+<li>从磁盘读入数据页到内存（老版本的数据页）；</li>
+<li>从 change buffer 里找出这个数据页的 change buffer 记录 (可能有多个），依次应用，得到新版数据页；</li>
+<li>写 redo log。这个 redo log 包含了数据的变更和 change buffer 的变更。</li>
+</ul>
+<p>到这里 merge 过程就结束了。这时候，<strong>数据页和内存中 change buffer 对应的磁盘位置都还没有修改，属于脏页，之后各自刷回自己的物理数据，就是另外一个过程了。</strong></p>
+<h2 id="索引选择和实践"><a href="#索引选择和实践" class="headerlink" title="索引选择和实践"></a>索引选择和实践</h2><p>这两类索引在查询能力上是没差别的，主要考虑的是对更新性能的影响。所以，<strong>尽量选择普通索引。</strong></p>
+<p>如果所有的更新后面，都马上伴随着对这个记录的查询，    应该<strong>关闭 change buffer</strong>。而在其他情况下，change buffer 都能提升更新性能。</p>
+<p>在实际使用中，你会发现，普通索引和 change buffer 的配合使用，对于数据量大的表的更新优化还是很明显的。特别地，在使用机械硬盘时，change buffer 这个机制的收效是非常显著的。所以，当你有一个类似“历史数据”的库，并且出于成本考虑用的是机械硬盘时，那你应该特别关注这些表里的索引，尽量使用普通索引，然后把 change buffer 尽量开大，以确保这个“历史数据”表的数据写入速度。</p>
+<h2 id="change-buffer-和-redo-log"><a href="#change-buffer-和-redo-log" class="headerlink" title="change buffer 和 redo log"></a>change buffer 和 redo log</h2><p>在表上执行这个语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">insert</span> <span class="keyword">into</span> t(id,k) <span class="keyword">values</span>(id1,k1),(id2,k2);</span><br></pre></td></tr></table></figure>
+
+<p>假设当前 k 索引树的状态，查找到位置后，k1 所在的数据页在内存 (InnoDB buffer pool) 中，k2 所在的数据页不在内存中。如下图所示是带 change buffer 的更新状态图。</p>
+<img src="https://static001.geekbang.org/resource/image/98/a3/980a2b786f0ea7adabef2e64fb4c4ca3.png" alt="img" style="zoom: 50%;" />
+
+<ul>
+<li>Page 1 在内存中，直接更新内存；</li>
+<li>Page 2 没有在内存中，就在内存的 change buffer 区域，记录下“我要往 Page 2 插入一行”这个信息</li>
+<li>将上述两个动作记入 redo log 中（图中 3 和 4）。</li>
+</ul>
+<p><strong>执行成本：写了两次内存（更新page1，在内存的的change buffer区域记录page2插入一行），写了一处磁盘（前述两个操作合在一起写进了磁盘），并且是将随机写合并为了顺序写。</strong> 图中的两个虚线箭头，<strong>是后台操作，不影响更新的响应时间。</strong></p>
+<p><strong>之后的读请求怎么处理？</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> k <span class="keyword">in</span> (k1, k2)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如果读语句发生在更新语句后不久，内存中的数据都还在，那么此时的这两个读操作就与系统表空间（ibdata1）和 redo log（ib_log_fileX）无关了。</p>
+<img src="https://static001.geekbang.org/resource/image/6d/8e/6dc743577af1dbcbb8550bddbfc5f98e.png" alt="img" style="zoom: 50%;" />
+
+<ul>
+<li>读 Page 1 的时候，直接从内存返回。<strong>WAL 之后如果读数据，是不是一定要读盘，是不是一定要从 redo log 里面把数据更新以后才可以返回？</strong>其实是不用的。看上图虽然磁盘上还是之前的数据，但是这里直接从内存返回结果，结果是正确的。</li>
+<li>要读 Page 2 的时候，需要把 Page 2 从磁盘读入内存中，<strong>然后应用 change buffer 里面的操作日志，生成一个正确的版本并返回结果。可以看到，直到需要读 Page 2 的时候，这个数据页才会被读入内存。</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>两者对比：</strong></p>
+<p><strong>redo log 主要节省的是随机写磁盘的 IO 消耗（转成顺序写），而 change buffer 主要节省的则是随机读磁盘的 IO 消耗。</strong></p>
+<p>解释：</p>
+<p>对于一个insert、update、delete流程来说</p>
+<ol>
+<li>从磁盘读取待变更的行所在的数据页，读取至内存页中。<strong>涉及随机读磁盘IO</strong></li>
+<li> 对内存页中的行，执行变更操作 </li>
+<li>将变更后的数据页，写入至磁盘中。<strong>涉及随机写磁盘IO</strong></li>
+</ol>
+<p>change buffer机制优化了步骤1，避免了随机都磁盘IO</p>
+<p>redo log机制优化了步骤3，避免了随机写磁盘IO，将随机写磁盘，优化为了顺序写磁盘(写redo log，确保crash-safe) </p>
+<p>在mysql innodb中， change buffer机制不是一直会被应用到，<strong>仅当待操作的数据页当前不在内存中，需要先读磁盘加载数据页时，change buffer才有用武之地。</strong> redo log机制，为了保证crash-safe，一直都会用到。</p>
+<p>有无用到change buffer机制，对于redo log这步的区别在于—— 用到了change buffer机制时，<strong>在redo log中记录的本次变更，是记录new change buffer item相关的信息，而不是直接的记录物理页的变更。</strong></p>
+<h2 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h2><p>change buffer 一开始是写内存的，那么如果这个时候机器掉电重启，会不会导致 change buffer 丢失呢？change buffer 丢失可不是小事儿，再从磁盘读入数据可就没有了 merge 过程，就等于是数据丢失了。会不会出现这种情况呢？</p>
+<p> 1.change buffer有一部分在内存有一部分在ibdata.</p>
+<p>​    <strong>做purge操作,应该就会把change buffer里相应的数据持久化到ibdata</strong></p>
+<p> 2.redo log里记录了数据页的修改以及change buffer新写入的信息<br>    <strong>如果掉电,持久化的change buffer数据已经purge,不用恢复。主要分析没有持久化的数据</strong><br>情况又分为以下几种:<br>(1) change buffer写入，redo log虽然做了fsync但未commit，binlog未fsync到磁盘,这部分数据丢失<br>(2) change buffer写入，redo log写入但没有commit，binlog以及fsync到磁盘,（这里是指第二个commit阶段失败，前两步成功（relo log写入并fsync磁盘，binglog写入并fsync磁盘））先从binlog恢复redo log，再从redo log恢复change buffer<br>(3) change buffer写入，redo log和binlog都已经fsync。那么直接从redo log里恢复。</p>
+<h1 id="MySQL为什么有时候会选错索引？"><a href="#MySQL为什么有时候会选错索引？" class="headerlink" title="MySQL为什么有时候会选错索引？"></a>MySQL为什么有时候会选错索引？</h1><p>先建一个简单的表，表里有 a、b 两个字段，并分别建上索引：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `t` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `a` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `b` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  KEY `a` (`a`),</span><br><span class="line">  KEY `b` (`b`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB；</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们表 t 中插入 10 万行记录，取值按整数递增，即：(1,1,1)，(2,2,2)，(3,3,3) 直到 (100000,100000,100000)。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">delimiter ;;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">procedure</span> idata()</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">  <span class="keyword">declare</span> i <span class="type">int</span>;</span><br><span class="line">  <span class="keyword">set</span> i<span class="operator">=</span><span class="number">1</span>;</span><br><span class="line">  while(i<span class="operator">&lt;=</span><span class="number">100000</span>)do</span><br><span class="line">    <span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(i, i, i);</span><br><span class="line">    <span class="keyword">set</span> i<span class="operator">=</span>i<span class="operator">+</span><span class="number">1</span>;</span><br><span class="line">  <span class="keyword">end</span> while;</span><br><span class="line"><span class="keyword">end</span>;;</span><br><span class="line">delimiter ;</span><br><span class="line"><span class="keyword">call</span> idata();</span><br></pre></td></tr></table></figure>
+
+<p>分析一条 SQL 语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> a <span class="keyword">between</span> <span class="number">10000</span> <span class="keyword">and</span> <span class="number">20000</span>;</span><br></pre></td></tr></table></figure>
+
+<p>a 上有索引，肯定是要使用索引 a 的。</p>
+<p>用explain查看命令执行情况。符合预期。</p>
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/2cfce769551c6eac9bfbee0563d48fe3.png" alt="img"></p>
+<p>在我们已经准备好的包含了 10 万行数据的表上，我们再做如下操作。</p>
+<img src="https://static001.geekbang.org/resource/image/1e/1e/1e5ba1c2934d3b2c0d96b210a27e1a1e.png" alt="img" style="zoom: 50%;" />
+
+<p>session A 开启了一个事务。随后，session B 把数据都删除后，又调用了 idata 这个存储过程，插入了 10 万行数据。</p>
+<p>用下述语句实验：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> long_query_time<span class="operator">=</span><span class="number">0</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> a <span class="keyword">between</span> <span class="number">10000</span> <span class="keyword">and</span> <span class="number">20000</span>; <span class="comment">/*Q1*/</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t force index(a) <span class="keyword">where</span> a <span class="keyword">between</span> <span class="number">10000</span> <span class="keyword">and</span> <span class="number">20000</span>;<span class="comment">/*Q2*/</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一句，是将慢查询日志的阈值设置为 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
+<li>第二句，Q1 是 session B 原来的查询；</li>
+<li>第三句，Q2 是加了 force index(a) 来和 session B 原来的查询语句执行情况对比。<strong>使用 force index(a) 来让优化器强制使用索引 a</strong></li>
+</ul>
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/7c58b9c71853b8bba1a8ad5e926de1f6.png" alt="img"></p>
+<p>Q1 扫描了 10 万行，显然是走了全表扫描，执行时间是 40 毫秒。Q2 扫描了 10001 行，执行了 21 毫秒。也就是说，我们在没有使用 force index 的时候，<strong>MySQL 用错了索引，导致了更长的执行时间。</strong></p>
+<h2 id="优化器的逻辑"><a href="#优化器的逻辑" class="headerlink" title="优化器的逻辑"></a>优化器的逻辑</h2><p><strong>优化器选择索引的目的，是找到一个最优的执行方案，并用最小的代价去执行语句。在数据库里面，扫描行数是影响执行代价的因素之一。扫描的行数越少，意味着访问磁盘数据的次数越少，消耗的 CPU 资源越少。</strong> 优化器还会结合是否使用临时表、是否排序等因素进行综合判断。</p>
+<p><strong>扫描行数是怎么判断的？</strong></p>
+<p>MySQL 在真正开始执行语句之前，并不能精确地知道满足这个条件的记录有多少条，而只能根据统计信息来估算记录数。这个统计信息就是索引的“区分度”。显然，一个索引上不同的值越多，这个索引的区分度就越好。而一个索引上不同的值的个数，我们称之为“基数”（cardinality）。也就是说，这个基数越大，索引的区分度越好。</p>
+<p><strong>MySQL 是怎样得到索引的基数的呢？</strong></p>
+<p>采样统计的方法。<strong>因为把整张表取出来一行行统计，虽然可以得到精确的结果，但是代价太高了，所以只能选择“采样统计”。</strong></p>
+<p>在 MySQL 中，有两种存储索引统计的方式，可以通过设置参数 innodb_stats_persistent 的值来选择：</p>
+<ul>
+<li>设置为 on 的时候，表示统计信息会持久化存储。这时，默认的 N 是 20，M 是 10。</li>
+<li>设置为 off 的时候，表示统计信息只存储在内存中。这时，默认的 N 是 8，M 是 16。</li>
+</ul>
+<p>注意：基数并不准确（cardinality列）。</p>
+<p><strong>MySQL还要预估语句的扫描行数</strong></p>
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/e2bc5f120858391d4accff05573e1289.png" alt="img"></p>
+<p><strong>那为什么优化器放着扫描 37000 行的执行计划不用，却选择了扫描行数是 100000 的执行计划呢？</strong></p>
+<p>这是因为，如果使用索引 a，每次从索引 a 上拿到一个值，<strong>都要回到主键索引上查出整行数据，这个代价优化器也要算进去的。</strong>而如果选择扫描 10 万行，是直接在主键索引上扫描的，没有额外的代价。</p>
+<p><strong>session B删除数据后，又重新插入十万行数据，此时强制用索引a的扫描行为37000，为什么不是之前的10000？</strong></p>
+<p>也就是说得到了错误的扫描行数才导致MySQL选择了10000的执行计划，<strong>因为另一个事务仍未提交，因此删除的数据只是标记删除，数据仍然在数据页中，后插入的数据需要找新的空位插入，这样查询时会扫描删除的数据+后插入的数据，同时算上回表扫描主键索引，因此扫描行数达到3万7千行</strong></p>
+<p><strong>解决方案：</strong> 重新统计索引信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">analyze <span class="keyword">table</span> t</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/209e9d3514688a3bcabbb75e54e1e49c.png" alt="img"></p>
+<p>基于表t，再看另外一个语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> (a <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">1000</span>)  <span class="keyword">and</span> (b <span class="keyword">between</span> <span class="number">50000</span> <span class="keyword">and</span> <span class="number">100000</span>) <span class="keyword">order</span> <span class="keyword">by</span> b limit <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="https://static001.geekbang.org/resource/image/1d/b9/1d037f92063e800c3bfff3f4dbf1a2b9.png" alt="img" style="zoom: 33%;" />
+
+<ul>
+<li>如果使用索引 a 进行查询，那么就是扫描索引 a 的前 1000 个值，然后取到对应的 id，再到主键索引上去查出每一行，然后根据字段 b 来过滤。显然这样需要扫描 1000 行。</li>
+<li>如果使用索引 b 进行查询，那么就是扫描索引 b 的最后 50001 个值，与上面的执行过程相同，也是需要回到主键索引上取值再判断，所以需要扫描 50001 行。</li>
+<li>所以按照预期：<strong>如果使用索引 a 的话，执行速度明显会快很多.</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> (a <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">1000</span>) <span class="keyword">and</span> (b <span class="keyword">between</span> <span class="number">50000</span> <span class="keyword">and</span> <span class="number">100000</span>) <span class="keyword">order</span> <span class="keyword">by</span> b limit <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/483bcb1ef3bb902844e80d9cbdd73ab8.png" alt="img"></p>
+<p>但是可以发现：扫描行数的估计值依然不准确；这个例子里 MySQL 又选错了索引。</p>
+<h2 id="索引选择异常和处理"><a href="#索引选择异常和处理" class="headerlink" title="索引选择异常和处理"></a>索引选择异常和处理</h2><ol>
+<li><p><strong>采用 force index 强行选择一个索引。</strong>MySQL 会根据词法解析的结果分析出可能可以使用的索引作为候选项，然后在候选列表中依次判断每个索引需要扫描多少行。如果 force index 指定的索引在候选索引列表中，就直接选择这个索引，不再评估其他索引的执行代价。</p>
+<p><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/9582401a6bed6cb8fd803c9555750b54.png" alt="img"></p>
+<p>弊端：使用 force index 最主要的问题还是变更的及时性。因为选错索引的情况还是比较少出现的，所以开发的时候通常不会先写上 force index。而是等到线上出现问题的时候，你才会再去修改 SQL 语句、加上 force index。但是修改之后还要测试和发布，对于生产系统来说，这个过程不够敏捷。</p>
+</li>
+<li><p>可以考虑修改语句，引导 MySQL 使用我们期望的索引。</p>
+<p>order by b limit 1” 改成 “order by b,a limit 1” ，语义的逻辑是相同的。</p>
+<ul>
+<li>之前优化器选择使用索引 b，是因为它认为使用索引 b 可以避免排序（b 本身是索引，已经是有序的了，如果选择索引 b 的话，不需要再做排序，只需要遍历），所以即使扫描行数多，也判定为代价更小。</li>
+<li>现在 order by b,a 这种写法，要求按照 b,a 排序，就意味着使用这两个索引都需要排序。因此，扫描行数成了影响决策的主要条件，于是此时优化器选了只需要扫描 1000 行的索引 a。</li>
+</ul>
+</li>
+<li><p>在有些场景下，<strong>我们可以新建一个更合适的索引，来提供给优化器做选择，或删掉误用的索引。</strong></p>
+</li>
+</ol>
+<h1 id="怎么给字符串字段加索引？"><a href="#怎么给字符串字段加索引？" class="headerlink" title="怎么给字符串字段加索引？"></a>怎么给字符串字段加索引？</h1><p>假设，你现在维护一个支持邮箱登录的系统，用户表是这么定义的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">create</span> <span class="keyword">table</span> SUser(</span><br><span class="line">ID <span class="type">bigint</span> unsigned <span class="keyword">primary</span> key,</span><br><span class="line">email <span class="type">varchar</span>(<span class="number">64</span>), </span><br><span class="line">... </span><br><span class="line">)engine<span class="operator">=</span>innodb; </span><br></pre></td></tr></table></figure>
+
+<p>由于要使用邮箱登录，所以业务代码中一定会出现类似于这样的语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> f1, f2 <span class="keyword">from</span> SUser <span class="keyword">where</span> email<span class="operator">=</span><span class="string">&#x27;xxx&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>建索引：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">alter</span> <span class="keyword">table</span> SUser <span class="keyword">add</span> index index1(email);</span><br><span class="line">或</span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">alter</span> <span class="keyword">table</span> SUser <span class="keyword">add</span> index index2(email(<span class="number">6</span>));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个语句创建的 index1 索引里面，包含了每个记录的整个字符串；</li>
+<li>而第二个语句创建的 index2 索引里面，对于每个记录都是只取前 6 个字节。</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/d31da662bee595991862c439a5567eb7.jpg" alt="img" style="zoom: 33%;" />
+
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/134583875561de914991fc2e192cf842.jpg" alt="img" style="zoom:33%;" />
+
+<p>执行：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> id,name,email <span class="keyword">from</span> SUser <span class="keyword">where</span> email<span class="operator">=</span><span class="string">&#x27;zhangssxyz@xxx.com&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果使用的是 index1（即 email 整个字符串的索引结构）</strong>，执行顺序是这样的：</p>
+<ol>
+<li><p>从 index1 索引树找到满足索引值是’<a href="mailto:&#122;&#104;&#x61;&#110;&#x67;&#x73;&#x73;&#120;&#121;&#122;&#64;&#120;&#x78;&#120;&#x2e;&#x63;&#x6f;&#x6d;">&#122;&#104;&#x61;&#110;&#x67;&#x73;&#x73;&#120;&#121;&#122;&#64;&#120;&#x78;&#120;&#x2e;&#x63;&#x6f;&#x6d;</a>’的这条记录，取得 ID2 的值；</p>
+</li>
+<li><p>到主键上查到主键值是 ID2 的行，判断 email 的值是正确的，将这行记录加入结果集；</p>
+</li>
+<li><p>取 index1 索引树上刚刚查到的位置的下一条记录，发现已经不满足 email=‘<a href="mailto:&#122;&#104;&#97;&#110;&#103;&#115;&#115;&#x78;&#121;&#x7a;&#x40;&#120;&#120;&#x78;&#x2e;&#x63;&#111;&#x6d;">&#122;&#104;&#97;&#110;&#103;&#115;&#115;&#x78;&#121;&#x7a;&#x40;&#120;&#120;&#x78;&#x2e;&#x63;&#111;&#x6d;</a>’的条件了，循环结束。</p>
+<p><strong>这个过程中，只需要回主键索引取一次数据，所以系统认为只扫描了一行。</strong></p>
+</li>
+</ol>
+<p><strong>如果使用的是 index2（即 email(6) 索引结构）</strong>，执行顺序是这样的：</p>
+<ol>
+<li><p>从 index2 索引树找到满足索引值是’zhangs’的记录，找到的第一个是 ID1；</p>
+</li>
+<li><p>到主键上查到主键值是 ID1 的行，判断出 email 的值不是’<a href="mailto:&#x7a;&#104;&#97;&#x6e;&#103;&#x73;&#x73;&#x78;&#x79;&#x7a;&#x40;&#120;&#x78;&#x78;&#46;&#x63;&#111;&#x6d;">&#x7a;&#104;&#97;&#x6e;&#103;&#x73;&#x73;&#x78;&#x79;&#x7a;&#x40;&#120;&#x78;&#x78;&#46;&#x63;&#111;&#x6d;</a>’，这行记录丢弃；</p>
+</li>
+<li><p>取 index2 上刚刚查到的位置的下一条记录，发现仍然是’zhangs’，取出 ID2，再到 ID 索引上取整行然后判断，这次值对了，将这行记录加入结果集；</p>
+</li>
+<li><p>重复上一步，直到在 idxe2 上取到的值不是’zhangs’时，循环结束。</p>
+<p><strong>在这个过程中，要回主键索引取 4 次数据，也就是扫描了 4 行。</strong></p>
+</li>
+</ol>
+<p><strong>使用前缀索引后，可能会导致查询语句读数据的次数变多。</strong> 但是，对于这个查询语句来说，如果你定义的 index2 不是 email(6) 而是 email(7），也就是说取 email 字段的前 7 个字节来构建索引的话，即满足前缀’zhangss’的记录只有一个，也能够直接查到 ID2，只扫描一行就结束了。</p>
+<p><strong>使用前缀索引，定义好长度，就可以做到既节省空间，又不用额外增加太多的查询成本。</strong></p>
+<p>建立索引的关注点：<strong>区分度，区分度越高越好。</strong>因为区分度越高，意味着重复的键值越少。因此，我们可以通过统计索引上有多少个不同的值来判断要使用多长的前缀。</p>
+<ol>
+<li>使用下面这个语句，算出这个列上有多少个不同的值：</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="built_in">count</span>(<span class="keyword">distinct</span> email) <span class="keyword">as</span> L <span class="keyword">from</span> SUser;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>依次选取不同长度的前缀来看这个值，比如我们要看一下 4~7 个字节的前缀索引，可以用这个语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> </span><br><span class="line">  <span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="keyword">left</span>(email,<span class="number">4</span>)）<span class="keyword">as</span> L4,</span><br><span class="line">  <span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="keyword">left</span>(email,<span class="number">5</span>)）<span class="keyword">as</span> L5,</span><br><span class="line">  <span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="keyword">left</span>(email,<span class="number">6</span>)）<span class="keyword">as</span> L6,</span><br><span class="line">  <span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="keyword">left</span>(email,<span class="number">7</span>)）<span class="keyword">as</span> L7,</span><br><span class="line"><span class="keyword">from</span> SUser;</span><br></pre></td></tr></table></figure></li>
+<li><p>当然，使用前缀索引很可能会损失区分度，所以你需要预先设定一个可以接受的损失比例，比如 5%。然后，在返回的 L4~L7 中，找出不小于 L * 95% 的值，假设这里 L6、L7 都满足，你就可以选择前缀长度为 6。</p>
+</li>
+</ol>
+<h2 id="前缀索引对覆盖索引的影响"><a href="#前缀索引对覆盖索引的影响" class="headerlink" title="前缀索引对覆盖索引的影响"></a>前缀索引对覆盖索引的影响</h2><p>两个语句对比：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span><span class="keyword">select</span> id,email <span class="keyword">from</span> SUser <span class="keyword">where</span> email<span class="operator">=</span><span class="string">&#x27;zhangssxyz@xxx.com&#x27;</span>;</span><br><span class="line"><span class="number">2.</span><span class="keyword">select</span> id,name,email <span class="keyword">from</span> SUser <span class="keyword">where</span> email<span class="operator">=</span><span class="string">&#x27;zhangssxyz@xxx.com&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>语句1只要求返回id 和 email 字段。<strong>如果使用 index1（即 email 整个字符串的索引结构）的话，可以利用覆盖索引，从 index1 查到结果后直接就返回了，不需要回到 ID 索引再去查一次。而如果使用 index2（即 email(6) 索引结构）的话，就不得不回到 ID 索引再去判断 email 字段的值。</strong></p>
+<p><strong>使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</strong></p>
+<h2 id="其他方式"><a href="#其他方式" class="headerlink" title="其他方式"></a>其他方式</h2><p>遇到前缀的区分度不够好的情况时，我们要怎么办呢？</p>
+<p>比如身份证号，一个地区的前缀都是一样的，此时增大索引长度，<strong>但是，索引选取的越长，占用的磁盘空间就越大，相同的数据页能放下的索引值就越少，搜索的效率也就会越低。</strong></p>
+<ul>
+<li><p>第一种方式是使用<strong>倒序存储。</strong>不要忘记使用 count(distinct) 方法去做个验证。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> field_list <span class="keyword">from</span> t <span class="keyword">where</span> id_card <span class="operator">=</span> reverse(<span class="string">&#x27;input_id_card_string&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>第二种方式是<strong>使用 hash 字段。</strong>你可以在表上再创建一个整数字段，来保存身份证的校验码，同时在这个字段上创建索引。然后每次插入新记录的时候，都同时用 crc32() 这个函数得到校验码填到这个新字段。由于校验码可能存在冲突，也就是说两个不同的身份证号通过 crc32() 函数得到的结果可能是相同的，所以你的查询语句 where 部分要判断 id_card 的值是否精确相同。</p>
+</li>
+</ul>
+<p><strong>使用倒序存储和使用 hash 字段这两种方法的异同点。</strong></p>
+<ol>
+<li>从占用的额外空间来看，倒序存储方式在主键索引上，不会消耗额外的存储空间，而 hash 字段方法需要增加一个字段。当然，倒序存储方式使用 4 个字节的前缀长度应该是不够的，如果再长一点，这个消耗跟额外这个 hash 字段也差不多抵消了。</li>
+<li>在 CPU 消耗方面，倒序方式每次写和读的时候，都需要额外调用一次 reverse 函数，而 hash 字段的方式需要额外调用一次 crc32() 函数。如果只从这两个函数的计算复杂度来看的话，reverse 函数额外消耗的 CPU 资源会更小些。</li>
+<li>从查询效率上看，使用 hash 字段方式的查询性能相对更稳定一些。因为 crc32 算出来的值虽然有冲突的概率，但是概率非常小，可以认为每次查询的平均扫描行数接近 1。而倒序存储方式毕竟还是用的前缀索引的方式，也就是说还是会增加扫描行数。</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>字符串字段创建索引的场景：</p>
+<ul>
+<li>直接创建完整索引，这样可能比较占用空间；</li>
+<li>创建前缀索引，节省空间，但会增加查询扫描次数，并且不能使用覆盖索引；</li>
+<li>倒序存储，再创建前缀索引，用于绕过字符串本身前缀的区分度不够的问题；</li>
+<li>创建 hash 字段索引，查询性能稳定，有额外的存储和计算消耗，跟第三种方式一样，都不支持范围扫描。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E4%B8%BB%E4%BB%8E%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="英伦82年雪碧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/13/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E4%B8%BB%E4%BB%8E%E9%9B%86%E7%BE%A4/" itemprop="url">Redis主从集群及哨兵集群</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-13T00:00:00+08:00">
+                2021-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  13.3k words
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  45 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="数据同步：主从库如何实现数据一致？"><a href="#数据同步：主从库如何实现数据一致？" class="headerlink" title="数据同步：主从库如何实现数据一致？"></a>数据同步：主从库如何实现数据一致？</h1><p>Redis 具有高可靠性有两层含义：</p>
+<ul>
+<li><p>一是数据尽量少丢失：AOF 和 RDB </p>
+</li>
+<li><p>二是服务尽量少中断：增加副本冗余量，将一份数据同时保存在多个实例上。即使有一个实例出现了故障，需要过一段时间才能恢复，其他实例也可以对外提供服务，不会影响业务使用。</p>
+</li>
+</ul>
+<p>Redis 提供了主从库模式，以保证数据副本的一致，主从库之间采用的是读写分离的方式。</p>
+<ul>
+<li><strong>读操作</strong>：主库、从库都可以接收；</li>
+<li><strong>写操作</strong>：首先到主库执行，然后，主库将写操作同步给从库</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/809d6707404731f7e493b832aa573a2f.jpg" alt="img" style="zoom:15%;" />
+
+<p><strong>为什么要采用读写分离的方式？</strong></p>
+<p>如果在上图中，不管是主库还是从库，都能接收客户端的写操作，那么，一个直接的问题就是：<strong>如果客户端对同一个数据（例如 k1）前后修改了三次，每一次的修改请求都发送到不同的实例上，在不同的实例上执行，那么，这个数据在这三个实例上的副本就不一致了（分别是 v1、v2 和 v3）</strong>。在读取这个数据的时候，就可能读取到旧的值。如果我们非要保持这个数据在三个实例上一致，就要涉及到加锁、实例间协商是否完成修改等一系列操作，但这会带来巨额的开销，当然是不太能接受的。</p>
+<p><strong>而主从库模式一旦采用了读写分离，所有数据的修改只会在主库上进行，不用协调三个实例。主库有了最新的数据后，会同步给从库，这样，主从库的数据就是一致的。</strong></p>
+<h2 id="主从库间如何进行第一次同步？"><a href="#主从库间如何进行第一次同步？" class="headerlink" title="主从库间如何进行第一次同步？"></a>主从库间如何进行第一次同步？</h2><p>Redis实例之间通过replicaof命令形成主库和从库的关系，之后会按照三个阶段完成数据的第一次同步。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/63d18fd41efc9635e7e9105ce1c33da1.jpg" alt="img" style="zoom:15%;" />
+
+<ol>
+<li><p>主从库间建立连接、协商同步的过程，主要是为全量复制做准备。在这一步，<strong>从库和主库建立起连接，并告诉主库即将进行同步，主库确认回复后，主从库间就可以开始同步了。</strong></p>
+<p>从库给主库发送 psync 命令，表示要进行数据同步，主库根据这个命令的参数来启动复制。psync 命令包含了主库的 runID 和复制进度 offset 两个参数。</p>
+<ul>
+<li>runID，是每个 Redis 实例启动时都会自动生成的一个随机 ID，用来唯一标记这个实例。当从库和主库第一次复制时，因为不知道主库的 runID，所以将 runID 设为“？”。</li>
+<li>offset，此时设为 -1，表示第一次复制。</li>
+</ul>
+<p>主库收到 psync 命令后，会用 FULLRESYNC 响应命令带上两个参数：主库 runID 和主库目前的复制进度 offset，返回给从库。从库收到响应后，会记录下这两个参数。<strong>FULLRESYNC 响应表示第一次复制采用的全量复制，也就是说，主库会把当前所有的数据都复制给从库。</strong></p>
+</li>
+<li><p><strong>主库将所有数据同步给从库。从库收到数据后，在本地完成数据加载。</strong>这个过程依赖于内存快照生成的 RDB 文件。</p>
+<p>具体来说，主库执行 bgsave 命令，生成 RDB 文件，接着将文件发给从库。从库接收到 RDB 文件后，会先清空当前数据库，然后加载 RDB 文件。这是因为从库在通过 replicaof 命令开始和主库同步前，可能保存了其他数据。<strong>为了避免之前数据的影响，从库需要先把当前数据库清空。</strong></p>
+<p>在主库将数据同步给从库的过程中，主库不会被阻塞，仍然可以正常接收请求。否则，Redis 的服务就被中断了。但是，这些请求中的写操作并没有记录到刚刚生成的 RDB 文件中。为了保证主从库的数据一致性，主库会在内存中用专门的 replication buffer，记录 RDB 文件生成后收到的所有写操作。</p>
+</li>
+<li><p>主库会把第二阶段执行过程中新收到的写命令，再发送给从库。具体的操作是，当主库完成 RDB 文件发送后，就会把此时 replication buffer 中的修改操作发给从库，从库再重新执行这些操作。这样一来，主从库就实现同步了。</p>
+</li>
+</ol>
+<h2 id="主从级联模式分担全量复制时的主库压力"><a href="#主从级联模式分担全量复制时的主库压力" class="headerlink" title="主从级联模式分担全量复制时的主库压力"></a>主从级联模式分担全量复制时的主库压力</h2><p>一次全量复制中，对于主库来说，<strong>需要完成两个耗时的操作：生成 RDB 文件和传输 RDB 文件。</strong></p>
+<p>如果从库数量很多，而且都要和主库进行全量复制的话，就会导致主库忙于 fork 子进程生成 RDB 文件，进行数据全量同步。fork 这个操作会阻塞主线程处理正常请求，从而导致主库响应应用程序的请求速度变慢。此外，传输 RDB 文件也会占用主库的网络带宽，同样会给主库的资源使用带来压力。那么，有没有好的解决方法可以分担主库压力呢？</p>
+<p><strong>解决方案</strong>： 主 - 从 - 从</p>
+<p><strong>通过“主 - 从 - 从”模式将主库生成 RDB 和传输 RDB 的压力，以级联的方式分散到从库上。</strong></p>
+<p>我们在部署主从集群的时候，可以手动选择一个从库（比如选择内存资源配置较高的从库），用于级联其他的从库。然后，我们可以再选择一些从库（例如三分之一的从库），在这些从库上执行如下命令，让它们和刚才所选的从库，建立起主从关系。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/403c2ab725dca8d44439f8994959af45.jpg" alt="img" style="zoom:18%;" />
+
+<p>一旦主从库完成了全量复制，它们之间就会一直维护一个网络连接，主库会通过这个连接将后续陆续收到的命令操作再同步给从库，这个过程也称为<strong>基于长连接的命令传播</strong>，可以避免频繁建立连接的开销。</p>
+<h2 id="主从库间网络断了怎么办？"><a href="#主从库间网络断了怎么办？" class="headerlink" title="主从库间网络断了怎么办？"></a>主从库间网络断了怎么办？</h2><p>从 Redis 2.8 开始，网络断了之后，主从库会采用增量复制的方式继续同步。听名字大概就可以猜到它和全量复制的不同：</p>
+<ul>
+<li><p><strong>全量复制</strong>是同步所有数据，</p>
+</li>
+<li><p><strong>增量复制</strong>只会把主从库网络断连期间主库收到的命令，同步给从库。</p>
+</li>
+</ul>
+<p><strong>增量复制时，主从库之间具体是怎么保持同步的呢？</strong></p>
+<p>当主从库断连后，主库会把断连期间收到的写操作命令，写入 replication buffer，同时也会把这些操作命令也写入 repl_backlog_buffer 这个缓冲区。</p>
+<p><strong>replication buffer</strong>：Redis和客户端通信也好，和从库通信也好，Redis都需要给分配一个 内存buffer进行数据交互，客户端是一个client，从库也是一个client，我们每个client连上Redis后，Redis都会分配一个client buffer，所有数据交互都是通过这个buffer进行的：Redis先把数据写到这个buffer中，然后再把buffer中的数据发到client socket中再通过网络发送出去，这样就完成了数据交互。所以主从在增量同步时，从库作为一个client，也会分配一个buffer，只不过这个buffer专门用来传播用户的写命令到从库，保证主从数据一致，我们通常把它叫做replication buffer。</p>
+<p><strong>注意：</strong> replication buffer是有内存限制的。<strong>如果主从在传播命令时，因为某些原因从库处理得非常慢，那么主库上的这个buffer就会持续增长，消耗大量的内存资源，甚至OOM。</strong>所以Redis提供了client-output-buffer-limit参数限制这个buffer的大小，如果超过限制，主库会强制断开这个client的连接，也就是说从库处理慢导致主库内存buffer的积压达到限制后，主库会强制断开从库的连接，此时主从复制会中断，中断后如果从库再次发起复制请求，那么此时可能会导致恶性循环，引发复制风暴，这种情况需要格外注意。</p>
+<p> <strong>repl_backlog_buffer</strong> ： 它是为了从库断开之后，<strong>如何找到主从差异数据而设计的环形缓冲区</strong>，从而避免全量同步带来的性能开销。如果从库断开时间太久，repl_backlog_buffer环形缓冲区被主库的写命令覆盖了，那么从库连上主库后只能乖乖地进行一次全量同步，所以repl_backlog_buffer配置尽量大一些，可以降低主从断开后全量同步的概率。</p>
+<ul>
+<li>刚开始的时候，主库和从库的写读位置在一起，随着主库不断接收新的写操作，它在缓冲区中的写位置会逐步偏离起始位置，对主库来说，对应的偏移量就是 master_repl_offset。主库接收的新写操作越多，这个值就会越大。</li>
+<li>从库在复制完写操作命令后，它在缓冲区中的读位置也开始逐步偏移刚才的起始位置，此时，从库已复制的偏移量 slave_repl_offset 也在不断增加。正常情况下，这两个偏移量基本相等。</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/13f26570a1b90549e6171ea24554b737.jpg" alt="img" style="zoom:18%;" />
+
+<ul>
+<li><p>主从库的连接恢复之后，从库首先会给主库发送 psync 命令，并把自己当前的 slave_repl_offset 发给主库，主库会判断自己的 master_repl_offset 和 slave_repl_offset 之间的差距。</p>
+</li>
+<li><p>在网络断连阶段，主库可能会收到新的写操作命令，所以，一般来说，master_repl_offset 会大于 slave_repl_offset。此时，主库只用把 master_repl_offset 和 slave_repl_offset 之间的命令操作同步给从库就行。</p>
+</li>
+</ul>
+<img src="https://static001.geekbang.org/resource/image/20/16/20e233bd30c3dacb0221yy0c77780b16.jpg" alt="img" style="zoom:15%;" />
+
+<p>因为 repl_backlog_buffer 是一个环形缓冲区，<strong>所以在缓冲区写满后，主库会继续写入，此时，就会覆盖掉之前写入的操作。如果从库的读取速度比较慢，就有可能导致从库还未读取的操作被主库新写的操作覆盖了，这会导致主从库间的数据不一致。</strong></p>
+<p><strong>如何解决？</strong> </p>
+<ul>
+<li><p>可以调整 repl_backlog_size，在实际应用中，考虑到可能存在一些突发的请求压力，我们通常需要把这个缓冲空间扩大一倍，即 repl_backlog_size = 缓冲空间大小 * 2，这也就是 repl_backlog_size 的最终值。</p>
+</li>
+<li><p>考虑使用切片集群来分担单个主库的请求压力。</p>
+</li>
+</ul>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><strong>为什么主从库间的复制不使用 AOF 呢？</strong></p>
+<p>1、RDB文件内容是经过压缩的二进制数据（不同数据类型数据做了针对性优化），文件很小。而AOF文件记录的是每一次写操作的命令，写操作越多文件会变得很大，其中还包括很多对同一个key的多次冗余操作。在主从全量数据同步时，传输RDB文件可以尽量降低对主库机器网络带宽的消耗，从库在加载RDB文件时，一是文件小，读取整个文件的速度会很快，二是因为RDB文件存储的都是二进制数据，从库直接按照RDB协议解析还原数据即可，速度会非常快，而AOF需要依次重放每个写命令，这个过程会经历冗长的处理逻辑，恢复速度相比RDB会慢得多，所以使用RDB进行主从全量同步的成本最低。</p>
+<p>2、假设要使用AOF做全量同步，意味着必须打开AOF功能，打开AOF就要选择文件刷盘的策略，选择不当会严重影响Redis性能。而RDB只有在需要定时备份和主从全量同步数据时才会触发生成一次快照。而在很多丢失数据不敏感的业务场景，其实是不需要开启AOF的。</p>
+<h1 id="Redis主从同步与故障切换，有哪些坑？"><a href="#Redis主从同步与故障切换，有哪些坑？" class="headerlink" title="Redis主从同步与故障切换，有哪些坑？"></a>Redis主从同步与故障切换，有哪些坑？</h1><h2 id="主从数据不一致"><a href="#主从数据不一致" class="headerlink" title="主从数据不一致"></a>主从数据不一致</h2><p>主从数据不一致，就是指<strong>客户端从从库中读取到的值和主库中的最新值并不一致。</strong></p>
+<p><strong>原因：</strong> 主从库间的命令复制是异步进行的。在<strong>主从库命令传播阶段</strong>，主库收到新的写命令后，会发送给从库。但是，<strong>主库并不会等到从库实际执行完命令后，再把结果返回给客户端，而是主库自己在本地执行完命令后，就会向客户端返回结果了。</strong>如果从库还没有执行主库同步过来的命令，主从库间的数据就不一致了。</p>
+<p><strong>从库滞后执行同步命令的情况：</strong> </p>
+<ul>
+<li><strong>主从库间的网络可能会有传输延迟</strong>，所以从库不能及时地收到主库发送的命令，从库上执行同步命令的时间就会被延后。</li>
+<li>即使从库及时收到了主库的命令，但是，也可能会<strong>因为正在处理其它复杂度高的命令（例如集合操作命令）而阻塞</strong>。此时，从库需要处理完当前的命令，才能执行主库发送的命令操作，这就会造成主从数据不一致。而在主库命令被滞后处理的这段时间内，主库本身可能又执行了新的写操作。这样一来，主从库间的数据不一致程度就会进一步加剧。</li>
+</ul>
+<p><strong>如何应对？</strong></p>
+<ul>
+<li><p><strong>硬件环境配置方面：</strong>尽量保证主从库间的网络连接状况良好。例如，避免把主从库部署在不同的机房，或者是避免把网络通信密集的应用（例如数据分析应用）和 Redis 主从库部署在一起。</p>
+</li>
+<li><p><strong>开发一个外部程序来监控主从库间的复制进度。</strong></p>
+<ul>
+<li> Redis 的 INFO replication 命令可以查看主库接收写命令的进度信息（master_repl_offset）和从库复制写命令的进度信息（slave_repl_offset），所以，我们就可以开发一个监控程序，先用 INFO replication 命令查到主、从库的进度，然后，我们用 master_repl_offset 减去 slave_repl_offset，这样就能得到从库和主库间的复制进度差值了。</li>
+<li>如果某个从库的进度差值大于我们预设的阈值，我们可以让客户端不再和这个从库连接进行数据读取，这样就可以减少读到不一致数据的情况。不过，为了避免出现客户端和所有从库都不能连接的情况，我们需要把复制进度差值的阈值设置得大一些。</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/3a89935297fb5b76bfc4808128aaf905.jpg" alt="img" style="zoom:15%;" />
+
+<ul>
+<li><strong>监控程序可以一直监控着从库的复制进度</strong>，当从库的复制进度又赶上主库时，我们就允许客户端再次跟这些从库连接。</li>
+</ul>
+</li>
+</ul>
+<h2 id="读取过期数据"><a href="#读取过期数据" class="headerlink" title="读取过期数据"></a>读取过期数据</h2><p>数据 X 的过期时间是 202010240900，但是客户端在 202010240910 时，仍然可以从从库中读到数据 X。一个数据过期后，应该是被删除的，客户端不能再读取到该数据，但是，Redis 为什么还能在从库中读到过期的数据呢？</p>
+<p><strong>Redis 同时使用了两种策略来删除过期的数据，分别是惰性删除策略和定期删除策略。</strong></p>
+<ul>
+<li><strong>惰性删除策略：</strong>当一个数据的过期时间到了以后，并不会立即删除数据，而是等到再有请求来读写这个数据时，对数据进行检查，如果发现数据已经过期了，再删除这个数据。<ul>
+<li>好处：尽量减少删除操作对 CPU 资源的使用，对于用不到的数据，就不再浪费时间进行检查和删除了。</li>
+<li>坏处：会导致大量已经过期的数据留存在内存中，占用较多的内存资源。</li>
+</ul>
+</li>
+<li><strong>定期删除策略：</strong> Redis 每隔一段时间（默认 100ms），就会随机选出一定数量的数据，检查它们是否过期，并把其中过期的数据删除，这样就可以及时释放一些内存。</li>
+</ul>
+<p><strong>读取到过期数据的原因：</strong></p>
+<ol>
+<li><p>首先，虽然定期删除策略可以释放一些内存，但是，Redis 为了避免过多删除操作对性能产生影响，<strong>每次随机检查数据的数量并不多。如果过期数据很多，并且一直没有再被访问的话，这些数据就会留存在 Redis 实例中</strong>。业务应用之所以会读到过期数据，这些留存数据就是一个重要因素。</p>
+</li>
+<li><p>其次，惰性删除策略实现后，数据只有被再次访问时，才会被实际删除。如果客户端从主库上读取留存的过期数据<strong>，主库会触发删除操作，此时，客户端并不会读到过期数据</strong>。但是，<strong>从库本身不会执行删除操作</strong>，如果客户端在从库中访问留存的过期数据，从库并不会触发数据删除。那么，从库会给客户端返回过期数据吗？</p>
+<ul>
+<li>Redis 3.2 之前的版本：从库在服务读请求时，并不会判断数据是否过期，而是会返回过期数据</li>
+<li>在 3.2 版本后，Redis 做了改进，如果读取的数据已经过期了，从库虽然不会删除，但是会返回空值，这就避免了客户端读到过期数据。<strong>所以，在应用主从集群时，尽量使用 Redis 3.2 及以上版本。</strong></li>
+</ul>
+<p><strong>Redis 3.2 后的版本，还是会读到过期数据。</strong></p>
+<p>设置数据过期时间的命令一共有 4 个。</p>
+<img src="https://static001.geekbang.org/resource/image/06/e1/06e8cb2f1af320d450a29326a876f4e1.jpg" alt="img" style="zoom:20;" /></li>
+</ol>
+<p>当主从库全量同步时，<strong>如果主库接收到了一条 EXPIRE 命令，那么，主库会直接执行这条命令。这条命令会在全量同步完成后，发给从库执行。而从库在执行时，就会在当前时间的基础上加上数据的存活时间，这样一来，从库上数据的过期时间就会比主库上延后了。</strong></p>
+<blockquote>
+<p>举例：假设当前时间是 2020 年 10 月 24 日上午 9 点，主从库正在同步，主库收到了一条命令：EXPIRE testkey 60，这就表示，testkey 的过期时间就是 24 日上午 9 点 1 分，主库直接执行了这条命令。</p>
+<p>但是，主从库全量同步花费了 2 分钟才完成。等从库开始执行这条命令时，时间已经是 9 点 2 分了。而 EXPIRE 命令是把 testkey 的过期时间设置为当前时间的 60s 后，也就是 9 点 3 分。如果客户端在 9 点 2 分 30 秒时在从库上读取 testkey，仍然可以读到 testkey 的值。但是，testkey 实际上已经过期了。</p>
+</blockquote>
+<p><strong>建议</strong>：在业务应用中使用 EXPIREAT/PEXPIREAT 命令，把数据的过期时间设置为具体的时间点，避免读到过期数据。</p>
+<p><strong>小结：</strong></p>
+<ul>
+<li>主从数据不一致。Redis 采用的是异步复制，所以无法实现强一致性保证（主从数据时时刻刻保持一致），数据不一致是难以避免的。我给你提供了应对方法：保证良好网络环境，以及使用程序监控从库复制进度，一旦从库复制进度超过阈值，不让客户端连接从库。</li>
+<li>对于读到过期数据，这是可以提前规避的，一个方法是，使用 Redis 3.2 及以上版本；另外，你也可以使用 EXPIREAT/PEXPIREAT 命令设置过期时间，避免从库上的数据过期时间滞后。不过，这里有个地方需要注意下，因为 EXPIREAT/PEXPIREAT 设置的是时间点，所以，主从节点上的时钟要保持一致，具体的做法是，让主从节点和相同的 NTP 服务器（时间服务器）进行时钟同步。</li>
+</ul>
+<h2 id="不合理配置项导致的服务挂掉"><a href="#不合理配置项导致的服务挂掉" class="headerlink" title="不合理配置项导致的服务挂掉"></a>不合理配置项导致的服务挂掉</h2><p><strong>protected-mode 配置项：</strong>这个配置项的作用是限定哨兵实例能否被其他服务器访问。当这个配置项设置为 yes 时，哨兵实例只能在部署的服务器本地进行访问。当设置为 no 时，其他服务器也可以访问这个哨兵实例。</p>
+<p><strong>我们在应用主从集群时，要注意将 protected-mode 配置项设置为 no，并且将 bind 配置项设置为其它哨兵实例的 IP 地址。这样一来，只有在 bind 中设置了 IP 地址的哨兵，才可以访问当前实例，既保证了实例间能够通信进行主从切换，也保证了哨兵的安全性。</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">protected<span class="operator">-</span>mode <span class="keyword">no</span></span><br><span class="line">bind <span class="number">192.168</span><span class="number">.10</span><span class="number">.3</span> <span class="number">192.168</span><span class="number">.10</span><span class="number">.4</span> <span class="number">192.168</span><span class="number">.10</span><span class="number">.5</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>cluster-node-timeout 配置项：</strong> 当我们在 Redis Cluster 集群中为每个实例配置了“一主一从”模式时，如果主实例发生故障，从实例会切换为主实例，受网络延迟和切换操作执行的影响，切换时间可能较长，就会导致实例的心跳超时（超出 cluster-node-timeout）。实例超时后，就会被 Redis Cluster 判断为异常。而 Redis Cluster 正常运行的条件就是，有半数以上的实例都能正常运行。所以，如果执行主从切换的实例超过半数，而主从切换时间又过长的话，就可能有半数以上的实例心跳超时，从而可能导致整个集群挂掉。所以，我建议<strong>你将 cluster-node-timeout 调大些（例如 10 到 20 秒）。</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/9fb7a033987c7b5edc661f4de58ef093.jpg" alt="img" style="zoom:20%;" />
+
+<p><strong>补充：</strong> </p>
+<ul>
+<li><p>主从库设置的 maxmemory 不同：如果 slave 比 master 小，那么 slave 内存就会优先达到 maxmemroy，然后开始淘汰数据，此时主从库也会产生不一致。</p>
+</li>
+<li><p>如果主从同步的 client-output-buffer-limit 设置过小，并且 master 数据量很大，主从全量同步时可能会导致 buffer 溢出，溢出后主从全量同步就会失败。如果主从集群配置了哨兵，那么哨兵会让 slave 继续向 master 发起全量同步请求，然后 buffer 又溢出同步失败，如此反复，会形成复制风暴，这会浪费 master 大量的 CPU、内存、带宽资源，也会让 master 产生阻塞的风险。</p>
+</li>
+</ul>
+<h2 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h2><p><strong>假设让 slave 也可以自动删除过期数据，是否可以保证主从库的一致性？</strong></p>
+<p>无法保证，例如以下场景：</p>
+<ol>
+<li>主从同步存在网络延迟。例如 master 先执行 SET key 1 10，这个 key 同步到了 slave，此时 key 在主从库都是 10s 后过期，之后这个 key 还剩 1s 过期时，master 又执行了 expire key 60，重设这个 key 的过期时间。但 expire 命令向 slave 同步时，发生了网络延迟并且超过了 1s，如果 slave 可以自动删除过期 key，那么这个 key 正好达到过期时间，就会被 slave 删除了，之后 slave 再收到 expire 命令时，执行会失败。最后的结果是这个 key 在 slave 上丢失了，主从库发生了不一致。</li>
+<li>主从机器时钟不一致。同样 master 执行 SET key 1 10，然后把这个 key 同步到 slave，但是此时 slave 机器时钟如果发生跳跃，优先把这个 key 过期删除了，也会发生上面说的不一致问题。</li>
+</ol>
+<p>所以 Redis 为了保证主从同步的一致性，不会让 slave 自动删除过期 key，而只在 master 删除过期 key，之后 master 会向 slave 发送一个 DEL，slave 再把这个 key 删除掉，这种方式可以解决主从网络延迟和机器时钟不一致带来的影响。</p>
+<p><strong>slave-read-only 的作用：</strong>它主要用来控制 slave 是否可写，但是否主动删除过期 key，根据 Redis 版本不同，执行逻辑也不同。</p>
+<ol>
+<li>如果版本低于 Redis 4.0，slave-read-only 设置为 no，此时 slave 允许写入数据，但如果 key 设置了过期时间，那么这个 key 过期后，虽然在 slave 上查询不到了，但并不会在内存中删除，这些过期 key 会一直占着 Redis 内存无法释放。</li>
+<li>Redis 4.0 版本解决了上述问题，在 slave 写入带过期时间的 key，slave 会记下这些 key，并且在后台定时检测这些 key 是否已过期，过期后从内存中删除。</li>
+</ol>
+<p>但是请注意，这 2 种情况，slave 都不会主动删除由 master 同步过来带有过期时间的 key。也就是 master 带有过期时间的 key，什么时候删除由 master 自己维护，slave 不会介入。如果 slave 设置了 slave-read-only = no，而且是 4.0+ 版本，slave 也只维护直接向自己写入 的带有过期的 key，过期时只删除这些 key。</p>
+<h1 id="哨兵机制：主库挂了，如何不间断服务？"><a href="#哨兵机制：主库挂了，如何不间断服务？" class="headerlink" title="哨兵机制：主库挂了，如何不间断服务？"></a>哨兵机制：主库挂了，如何不间断服务？</h1><p>在主从库模式下，如果从库发生故障了，客户端可以继续向主库或其他从库发送请求；如果主库发生故障，那就直接会影响到从库的同步，因为从库没有相应的主库可以进行数据复制操作了。</p>
+<p>如果客户端发送的都是读操作请求，那还可以由从库继续提供服务，这在纯读的业务场景下还能被接受。但是，一旦有写操作请求了，按照主从库模式下的读写分离要求，需要由主库来完成写操作。此时，也没有实例可以来服务客户端的写操作请求了，如下图所示：</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/d828d7eee133cec690dc140e99e26f20.jpg" alt="img" style="zoom: 18%;" />
+
+<p><strong>解决方案：</strong></p>
+<p>如果主库挂了，我们就需要运行一个新主库，比如说把一个从库切换为主库，把它当成主库。</p>
+<p><strong>有什么问题？</strong></p>
+<ol>
+<li>主库真的挂了吗？</li>
+<li>该选择哪个从库作为主库？</li>
+<li>怎么把新主库的相关信息通知给从库和客户端？</li>
+</ol>
+<h2 id="哨兵机制的基本流程"><a href="#哨兵机制的基本流程" class="headerlink" title="哨兵机制的基本流程"></a>哨兵机制的基本流程</h2><p>哨兵是一个运行在特殊模式下的 <strong>Redis 进程</strong>，主从库实例运行的同时，它也在运行。哨兵主要负责的就是三个任务：<strong>监控、选主（选择主库）和通知。</strong></p>
+<ul>
+<li><p><strong>监控：</strong> 哨兵进程在运行时，周期性地给所有的主从库发送 PING 命令，检测它们是否仍然在线运行。如果从库没有在规定时间内响应哨兵的 PING 命令，哨兵就会把它标记为“下线状态”；同样，如果主库也没有在规定时间内响应哨兵的 PING 命令，哨兵就会判定主库下线，然后开始<strong>自动切换主库</strong>的流程。</p>
+</li>
+<li><p><strong>选主：</strong> 主库挂了以后，哨兵就需要从很多个从库里，按照一定的规则选择一个从库实例，把它作为新的主库。</p>
+</li>
+<li><p><strong>通知：</strong> 在执行通知任务时，哨兵会把新主库的连接信息发给其他从库，让它们执行 replicaof 命令，和新主库建立连接，并进行数据复制。同时，哨兵会把新主库的连接信息通知给客户端，让它们把请求操作发到新主库上。</p>
+</li>
+</ul>
+<img src="https://static001.geekbang.org/resource/image/ef/a1/efcfa517d0f09d057be7da32a84cf2a1.jpg" alt="img" style="zoom:18%;" />
+
+<p>通知任务相对来说比较简单，哨兵只需要把新主库信息发给从库和客户端，让它们和新主库建立连接就行，并不涉及决策的逻辑。但是，在监控和选主这两个任务中，哨兵需要做出两个决策：</p>
+<ul>
+<li>在监控任务中，哨兵需要判断主库是否处于下线状态；</li>
+<li>在选主任务中，哨兵也要决定选择哪个从库实例作为主库。</li>
+</ul>
+<h2 id="主观下线和客观下线"><a href="#主观下线和客观下线" class="headerlink" title="主观下线和客观下线"></a>主观下线和客观下线</h2><p><strong>主观下线：</strong> 哨兵进程会使用 PING 命令检测它自己和主、从库的网络连接情况，用来判断实例的状态。如果哨兵发现主库或从库对 PING 命令的响应超时了，那么，哨兵就会先把它标记为“<strong>主观下线</strong>”。</p>
+<ul>
+<li><p>从库：简单标记为主观下线即可，因为从库的下线影响一般不太大，集群的对外服务不会间断。</p>
+</li>
+<li><p>主库：哨兵还不能简单地把它标记为“主观下线”，开启主从切换。因为很有可能存在这么一个情况：那就是哨兵<strong>误判</strong>了，其实主库并没有故障。可是，一旦启动了主从切换，后续的选主和通知操作都会带来额外的计算和通信开销。</p>
+</li>
+<li><p><strong>误判：</strong> 主库实际没有下线，哨兵误以为下线。误判一般会发生在集群网络压力较大、网络拥塞，或者是主库本身压力较大的情况下。</p>
+</li>
+</ul>
+<p>为了减少误判，引入哨兵集群：</p>
+<p><strong>哨兵集群：</strong> 采用多实例组成的集群模式进行部署，引入多个哨兵实例一起来判断，就可以避免单个哨兵因为自身网络状况不好，而误判主库下线的情况。同时，多个哨兵的网络同时不稳定的概率较小，由它们一起做决策，误判率也能降低。</p>
+<p>判断原则：少数服从多数，<strong>当有 N 个哨兵实例时，最好要有 N/2 + 1 个实例判断主库为“主观下线”，才能最终判定主库为“客观下线”。这样一来，就可以减少误判的概率，也能避免误判带来的无谓的主从库切换。（当然，有多少个实例做出“主观下线”的判断才可以，可以由 Redis 管理员自行设定）。</strong></p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/1945703abf16ee14e2f7559873e4e60d.jpg" alt="img" style="zoom:18%;" />
+
+<h2 id="如何选定新主库？"><a href="#如何选定新主库？" class="headerlink" title="如何选定新主库？"></a>如何选定新主库？</h2><ul>
+<li><p><strong>筛选：</strong> 我们在多个从库中，先按照一定的筛选条件，把不符合条件的从库去掉。</p>
+<ul>
+<li>检查从库的当前在线状态</li>
+<li>判断它之前的网络连接状态</li>
+<li>具体判断：使用配置项 down-after-milliseconds * 10。其中，down-after-milliseconds 是我们认定主从库断连的最大连接超时时间。如果在 down-after-milliseconds 毫秒内，主从节点都没有通过网络联系上，我们就可以认为主从节点断连了。<strong>如果发生断连的次数超过了 10 次，就说明这个从库的网络状况不好，不适合作为新主库。</strong></li>
+</ul>
+</li>
+<li><p><strong>打分：</strong> 再按照一定的规则，给剩下的从库逐个打分，将得分最高的从库选为新主库</p>
+<ul>
+<li><strong>第一轮：</strong> 优先级最高的从库得分高。<ul>
+<li>通过 slave-priority 配置项，给不同的从库设置不同优先级。</li>
+</ul>
+</li>
+<li><strong>第二轮：</strong> 和旧主库同步程度最接近的从库得分高。<ul>
+<li>依据：如果选择和旧主库同步最接近的那个从库作为主库，那么，这个新主库上就有最新的数据。</li>
+<li>如何判断：主从库同步时有个命令传播的过程。在这个过程中，主库会用 master_repl_offset 记录当前的最新写操作在 repl_backlog_buffer 中的位置，而从库会用 slave_repl_offset 这个值记录当前的复制进度。<strong>在所有从库中，有从库的 slave_repl_offset 最接近 master_repl_offset，那么它的得分就最高，可以作为新主库。</strong></li>
+</ul>
+</li>
+<li><strong>第三轮：</strong>ID 号小的从库得分高。<ul>
+<li>Redis 在选主库时，有一个默认的规定：在优先级和复制进度都相同的情况下，ID 号最小的从库得分最高，会被选为新主库。</li>
+</ul>
+</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/f2e9b8830db46d959daa6a39fbf4a14c.jpg" alt="img" style="zoom:15%;" /></li>
+</ul>
+<h2 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h2><p>通过哨兵机制，可以实现主从库的自动切换，这是实现服务不间断的关键支撑，同时，主从库切换是需要一定时间的。所以，请你考虑下，在这个切换过程中，客户端能否正常地进行请求操作呢？如果想要应用程序不感知服务的中断，还需要哨兵或需要客户端再做些什么吗？</p>
+<ul>
+<li><p>如果客户端使用了<strong>读写分离</strong>，那么读请求可以在从库上正常执行，不会受到影响。但是由于此时主库已经挂了，而且哨兵还没有选出新的主库，所以在这期间写请求会失败，<strong>失败持续的时间 = 哨兵切换主从的时间 + 客户端感知到新主库 的时间。</strong></p>
+</li>
+<li><p>如果不想让业务感知到异常，<strong>客户端只能把写失败的请求先缓存起来或写入消息队列中间件中</strong>，等哨兵切换完主从后，再把这些写请求发给新的主库，但这种场景只适合对写入请求返回值不敏感的业务，而且还需要业务层做适配，另外<strong>主从切换时间过长，也会导致客户端或消息队列中间件缓存写请求过多，切换完成之后重放这些请求的时间变长。</strong></p>
+</li>
+<li><p>哨兵检测主库多久没有响应就提升从库为新的主库，这个时间是可以配置的（down-after-milliseconds参数）。</p>
+<ul>
+<li>配置的时间越短，哨兵越敏感，哨兵集群认为主库在短时间内连不上就会发起主从切换，这种配置很可能因为网络拥塞但主库正常而发生不必要的切换，当然，当主库真正故障时，因为切换得及时，对业务的影响最小。</li>
+<li>如果配置的时间比较长，哨兵越保守，这种情况可以减少哨兵误判的概率，但是主库故障发生时，业务写失败的时间也会比较久，缓存写请求数据量越多。</li>
+</ul>
+</li>
+</ul>
+<p><strong>应用程序不感知服务的中断，还需要哨兵和客户端做些什么？</strong></p>
+<p>当哨兵完成主从切换后，客户端需要及时感知到主库发生了变更，然后把缓存的写请求写入到新库中，保证后续写请求不会再受到影响，具体做法如下：</p>
+<ul>
+<li><p>哨兵提升一个从库为新主库后，哨兵会把新主库的地址写入自己实例的pubsub（switch-master）中。客户端需要订阅这个pubsub，当这个pubsub有数据时，客户端就能感知到主库发生变更，同时可以拿到最新的主库地址，然后把写请求写到这个新主库即可，这种机制属于哨兵主动通知客户端。</p>
+</li>
+<li><p>如果客户端因为某些原因错过了哨兵的通知，或者哨兵通知后客户端处理失败了，安全起见，客户端也需要支持主动去获取最新主从的地址进行访问。</p>
+</li>
+<li><p>所以，客户端需要访问主从库时，不能直接写死主从库的地址了，而是需要从哨兵集群中获取最新的地址（sentinel get-master-addr-by-name命令），这样当实例异常时，哨兵切换后或者客户端断开重连，都可以从哨兵集群中拿到最新的实例地址。</p>
+</li>
+</ul>
+<h1 id="哨兵集群：哨兵挂了，主从库还能切换吗？"><a href="#哨兵集群：哨兵挂了，主从库还能切换吗？" class="headerlink" title="哨兵集群：哨兵挂了，主从库还能切换吗？"></a>哨兵集群：哨兵挂了，主从库还能切换吗？</h1><p>一旦多个实例组成了哨兵集群，即使有哨兵实例出现故障挂掉了，其他哨兵还能继续协作完成主从库切换的工作，包括判定主库是不是处于下线状态，选择新主库，以及通知从库和客户端。</p>
+<p>配置哨兵的信息：设置主库的 IP 和端口，<strong>并没有配置其他哨兵的连接信息。那怎么获得其他哨兵的信息组成集群呢？</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor <span class="operator">&lt;</span>master<span class="operator">-</span>name<span class="operator">&gt;</span> <span class="operator">&lt;</span>ip<span class="operator">&gt;</span> <span class="operator">&lt;</span>redis<span class="operator">-</span>port<span class="operator">&gt;</span> <span class="operator">&lt;</span>quorum<span class="operator">&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<h2 id="基于-pub-sub-机制的哨兵集群组成"><a href="#基于-pub-sub-机制的哨兵集群组成" class="headerlink" title="基于 pub/sub 机制的哨兵集群组成"></a>基于 pub/sub 机制的哨兵集群组成</h2><ul>
+<li><p>哨兵只要和主库建立起了连接，就可以在主库上发布消息了，比如说发布它自己的连接信息（IP 和端口）。同时，它也可以从主库上订阅消息，获得其他哨兵发布的连接信息。<strong>当多个哨兵实例都在主库上做了发布和订阅操作后，它们之间就能知道彼此的 IP 地址和端口。</strong></p>
+</li>
+<li><p><strong>我们自己编写的应用程序也可以通过 Redis 进行消息的发布和订阅。</strong></p>
+</li>
+</ul>
+<p>为了区分不同应用的消息，Redis 会以频道的形式，对这些消息进行分门别类的管理。所谓的频道，实际上就是消息的类别。当消息类别相同时，它们就属于同一个频道。反之，就属于不同的频道。<strong>只有订阅了同一个频道的应用，才能通过发布的消息进行信息交换。</strong></p>
+<p>在主从集群中，主库上有一个名为“<strong>sentinel</strong>:hello”的频道，不同哨兵就是通过它来相互发现，实现互相通信的。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/ca42698128aa4c8a374efbc575ea22b1.jpg" alt="img" style="zoom:18%;" />
+
+<p>哨兵除了彼此之间建立起连接形成集群外，还需要和从库建立连接。这是因为，在哨兵的监控任务中，它需要对主从库都进行心跳判断，而且在主从库切换完成后，它还需要通知从库，让它们和新主库进行同步。</p>
+<p><strong>哨兵是如何知道从库的 IP 地址和端口的？</strong></p>
+<p>哨兵向主库发送 INFO 命令来完成：哨兵 2 给主库发送 INFO 命令，主库接受到这个命令后，就会把从库列表返回给哨兵。接着，哨兵就可以根据从库列表中的连接信息，和每个从库建立连接，并在这个连接上持续地对从库进行监控。哨兵 1 和 3 可以通过相同的方法和从库建立连接。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/88fdc68eb94c44efbdf7357260091de0.jpg" alt="img" style="zoom:18%;" />
+
+<p><strong>如何在客户端通过监控了解哨兵进行主从切换的过程呢？比如说，主从切换进行到哪一步了？这其实就是要求，客户端能够获取到哨兵集群在监控、选主、切换这个过程中发生的各种事件。</strong></p>
+<h2 id="基于-pub-sub-机制的客户端事件通知"><a href="#基于-pub-sub-机制的客户端事件通知" class="headerlink" title="基于 pub/sub 机制的客户端事件通知"></a>基于 pub/sub 机制的客户端事件通知</h2><p>从本质上说，哨兵就是一个运行在特定模式下的 Redis 实例，只不过它并不服务请求操作，只是完成监控、选主和通知的任务。所以，每个哨兵实例也提供 pub/sub 机制，客户端可以从哨兵订阅消息。哨兵提供的消息订阅频道有很多，不同频道包含了主从库切换过程中的不同关键事件。</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/4e9665694a9565abbce1a63cf111f725.jpg" alt="img" style="zoom:18%;" />
+
+<p><strong>客户端通过频道订阅信息：</strong>客户端读取哨兵的配置文件后，可以获得哨兵的地址和端口，和哨兵建立网络连接。然后，我们可以在客户端执行订阅命令，来获取不同的事件消息。</p>
+<p>比如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">订阅“所有实例进入客观下线状态的事件”</span><br><span class="line">SUBSCRIBE <span class="operator">+</span>odown</span><br><span class="line">订阅所有的事件：</span><br><span class="line">PSUBSCRIBE  <span class="operator">*</span></span><br><span class="line">当哨兵把新主库选择出来后，客户端就会看到下面的 switch<span class="operator">-</span>master 事件。这个事件表示主库已经切换了，新主库的 IP 地址和端口信息已经有了</span><br><span class="line">switch<span class="operator">-</span>master <span class="operator">&lt;</span>master name<span class="operator">&gt;</span> <span class="operator">&lt;</span>oldip<span class="operator">&gt;</span> <span class="operator">&lt;</span>oldport<span class="operator">&gt;</span> <span class="operator">&lt;</span>newip<span class="operator">&gt;</span> <span class="operator">&lt;</span>newport<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="由哪个哨兵执行主从切换？"><a href="#由哪个哨兵执行主从切换？" class="headerlink" title="由哪个哨兵执行主从切换？"></a>由哪个哨兵执行主从切换？</h2><p><strong>判断过程：</strong></p>
+<ol>
+<li>任何一个实例只要自身判断主库“主观下线”后，就会给其他实例发送 is-master-down-by-addr 命令。</li>
+<li>其他实例会根据自己和主库的连接情况，做出 Y 或 N 的响应，Y 相当于赞成票，N 相当于反对票。</li>
+<li>一个哨兵获得了仲裁所需的赞成票数后，就可以标记主库为“客观下线”。<ul>
+<li>赞成票数是通过哨兵配置文件中的 quorum 配置项设定的。（赞成票包括自己的一票）</li>
+</ul>
+</li>
+<li>这个哨兵就可以再给其他哨兵发送命令，表明希望由自己来执行主从切换，并让所有其他哨兵进行投票。这个投票过程称为“Leader 选举”。</li>
+</ol>
+<p><strong>在投票过程中，任何一个想成为 Leader 的哨兵，要满足两个条件：第一，拿到半数以上的赞成票；第二，拿到的票数同时还需要大于等于哨兵配置文件中的 quorum 值。以 3 个哨兵为例，假设此时的 quorum 设置为 2，那么，任何一个想成为 Leader 的哨兵只要拿到 2 张赞成票，就可以了。</strong></p>
+<p>举例：</p>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/5f6ceeb9337e158cc759e23c0f375fd9.jpg" alt="img" style="zoom:18%;" />
+
+<p>在例子中有个问题就是哨兵投票的依据是什么？如果s2也投给自己岂不是死循环？</p>
+<ul>
+<li><p>要发生S1、S2和S3同时同自己投票的情况，这需要这三个哨兵基本同时判定了主库客观下线。但是，不同哨兵的网络连接、系统压力不完全一样，接收到下线协商消息的时间也可能不同，所以，它们同时做出主库客观下线判定的概率较小，一般都有个先后关系。例子中，<strong>就是S1、S3先判定，S2一直没有判定。</strong></p>
+</li>
+<li><p>哨兵对主从库进行的在线状态检查等操作，是属于一种时间事件，用一个定时器来完成，一般来说每100ms执行一次这些事件。每个哨兵的定时器执行周期都会加上一个小小的随机时间偏移，目的是让每个哨兵执行上述操作的时间能稍微错开些，也是为了避免它们都同时判定主库下线，同时选举Leader。</p>
+</li>
+<li><p>即使出现了都投给自己一票的情况，导致无法选出Leader，哨兵会停一段时间（一般是故障转移超时时间failover_timeout的2倍），然后再可以进行下一轮投票。</p>
+</li>
+</ul>
+<p><strong>投票依据：</strong></p>
+<p>哨兵如果没有给自己投票，就会把票投给第一个给它发送投票请求的哨兵。后续再有投票请求来，哨兵就拒接投票了。</p>
+<h2 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h2><p>假设有一个 Redis 集群，是“一主四从”，同时配置了包含 5 个哨兵实例的集群，quorum 值设为 2。在运行过程中，如果有 3 个哨兵实例都发生故障了，此时，Redis 主库如果有故障，还能正确地判断主库“客观下线”吗？如果可以的话，还能进行主从库自动切换吗？此外，哨兵实例是不是越多越好呢，如果同时调大 down-after-milliseconds 值，对减少误判是不是也有好处呢？</p>
+<ol>
+<li><strong>哨兵集群可以判定主库“主观下线”。</strong>由于quorum=2，所以当一个哨兵判断主库“主观下线”后，询问另外一个哨兵后也会得到同样的结果，2个哨兵都判定“主观下线”，达到了quorum的值，因此，哨兵集群可以判定主库为“客观下线”。</li>
+<li><strong>但哨兵不能完成主从切换。</strong>哨兵标记主库“客观下线后”，在选举“哨兵领导者”时，一个哨兵必须拿到超过多数的选票(5/2+1=3票)。但目前只有2个哨兵活着，无论怎么投票，一个哨兵最多只能拿到2票，永远无法达到多数选票的结果。</li>
+</ol>
+<p><strong>但是投票选举过程的细节并不是大家认为的：每个哨兵各自1票，这个情况是不一定的。下面具体说一下：</strong></p>
+<ul>
+<li><p>场景a：哨兵A先判定主库“主观下线”，然后马上询问哨兵B（注意，此时哨兵B只是被动接受询问，并没有去询问哨兵A，也就是它还没有进入判定“客观下线”的流程），哨兵B回复主库已“主观下线”，达到quorum=2后哨兵A此时可以判定主库“客观下线”。此时，哨兵A马上可以向其他哨兵发起成为“哨兵领导者”的投票，哨兵B收到投票请求后，由于自己还没有询问哨兵A进入判定“客观下线”的流程，所以哨兵B是可以给哨兵A投票确认的，这样哨兵A就已经拿到2票了。等稍后哨兵B也判定“主观下线”后想成为领导者时，因为它已经给别人投过票了，所以这一轮自己就不能再成为领导者了。</p>
+</li>
+<li><p>场景b：哨兵A和哨兵B同时判定主库“主观下线”，然后同时询问对方后都得到可以“客观下线”的结论，此时它们各自给自己投上1票后，然后向其他哨兵发起投票请求，但是因为各自都给自己投过票了，因此各自都拒绝了对方的投票请求，这样2个哨兵各自持有1票。</p>
+</li>
+</ul>
+<p>场景a是1个哨兵拿到2票，场景b是2个哨兵各自有1票，这2种情况都不满足大多数选票(3票)的结果，因此无法完成主从切换。</p>
+<p><strong>经过测试发现，场景b发生的概率非常小，只有2个哨兵同时进入判定“主观下线”的流程时才可以发生。我测试几次后发现，都是复现的场景a。</strong></p>
+<p><strong>哨兵实例是不是越多越好？</strong></p>
+<p>并不是，我们也看到了，哨兵在判定“主观下线”和选举“哨兵领导者”时，都需要和其他节点进行通信，交换信息，哨兵实例越多，通信的次数也就越多，而且部署多个哨兵时，<strong>会分布在不同机器上，节点越多带来的机器故障风险也会越大，这些问题都会影响到哨兵的通信和选举，出问题时也就意味着选举时间会变长，切换主从的时间变久。</strong></p>
+<p><strong>调大down-after-milliseconds值，对减少误判是不是有好处？</strong></p>
+<p>是有好处的，适当调大down-after-milliseconds值，当哨兵与主库之间网络存在短时波动时，可以降低误判的概率。但是调大down-after-milliseconds值也意味着主从切换的时间会变长，对业务的影响时间越久，我们需要根据实际场景进行权衡，设置合理的阈值。</p>
+<h1 id="脑裂：一次奇怪的数据丢失"><a href="#脑裂：一次奇怪的数据丢失" class="headerlink" title="脑裂：一次奇怪的数据丢失"></a>脑裂：一次奇怪的数据丢失</h1><p><strong>脑裂</strong>，就是指在主从集群中，同时有两个主节点，它们都能接收写请求。而脑裂最直接的影响，就是客户端不知道应该往哪个主节点写入数据，结果就是不同的客户端会往不同的主节点上写入数据。而且，严重的话，脑裂会进一步导致数据丢失。</p>
+<h2 id="为什么会发生脑裂？"><a href="#为什么会发生脑裂？" class="headerlink" title="为什么会发生脑裂？"></a>为什么会发生脑裂？</h2><p>在主从集群中，客户端发送的数据丢失了。所以，我们首先要弄明白，为什么数据会丢失？是不是数据同步出了问题？</p>
+<ul>
+<li><p><strong>第一步：确认是不是数据同步出现了问题</strong></p>
+<p>在主从集群中发生数据丢失，<strong>最常见的原因就是主库的数据还没有同步到从库，结果主库发生了故障，等从库升级为主库后，未同步的数据就丢失了。</strong></p>
+</li>
+</ul>
+<img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/46a7bef9a7074b6a46978c2524f92ea4.jpg" alt="img" style="zoom:15%;" />
+
+<p>如果是这种情况的数据丢失，<strong>我们可以通过比对主从库上的复制进度差值来进行判断</strong>，也就是计算 master_repl_offset 和 slave_repl_offset 的差值。如果从库上的 slave_repl_offset 小于原主库的 master_repl_offset，那么，我们就可以认定数据丢失是由数据同步未完成导致的。</p>
+<p>我们在部署主从集群时，也监测了主库上的 master_repl_offset，以及从库上的 slave_repl_offset。但是，当我们发现数据丢失后，我们检查了新主库升级前的 slave_repl_offset，以及原主库的 master_repl_offset，它们是一致的，也就是说，这个升级为新主库的从库，在升级时已经和原主库的数据保持一致了。那么，为什么还会出现客户端发送的数据丢失呢？</p>
+<ul>
+<li><strong>第二步：排查客户端的操作日志，发现脑裂现象</strong></li>
+</ul>
+<p>在主从切换后的一段时间内，有一个客户端仍然在和原主库通信，并没有和升级的新主库进行交互。这就相当于主从集群中同时有了两个主库。根据这个迹象，我们就想到了在分布式主从集群发生故障时会出现的一个问题：脑裂。</p>
+<p><strong>但是，不同客户端给两个主库发送数据写操作，按道理来说，只会导致新数据会分布在不同的主库上，并不会造成数据丢失。那么，为什么我们的数据仍然丢失了呢？</strong></p>
+<ul>
+<li><strong>第三步：发现是原主库假故障导致的脑裂</strong></li>
+</ul>
+<p>我们是采用哨兵机制进行主从切换的，当主从切换发生时，一定是有超过预设数量（quorum 配置项）的哨兵实例和主库的心跳都超时了，才会把主库判断为客观下线，然后，哨兵开始执行切换操作。哨兵切换完成后，客户端会和新主库进行通信，发送请求操作。</p>
+<p>但是，在切换过程中，既然客户端仍然和原主库通信，这就表明，<strong>原主库并没有真的发生故障（例如主库进程挂掉）</strong>。我们猜测，主库是由于某些原因无法处理请求，也没有响应哨兵的心跳，才被哨兵错误地判断为客观下线的。结果，在被判断下线之后，原主库又重新开始处理请求了，而此时，哨兵还没有完成主从切换，客户端仍然可以和原主库通信，客户端发送的写操作就会在原主库上写入数据了。</p>
+<p>的确，我们看到原主库所在的机器有一段时间的 CPU 利用率突然特别高，这是我们在机器上部署的一个数据采集程序导致的。因为这个程序基本把机器的 CPU 都用满了，导致 Redis 主库无法响应心跳了，在这个期间内，哨兵就把主库判断为客观下线，开始主从切换了。不过，这个数据采集程序很快恢复正常，CPU 的使用率也降下来了。此时，原主库又开始正常服务请求了。</p>
+<img src="https://static001.geekbang.org/resource/image/13/72/1339e1bfe6d07da8477342ba5fyy9872.jpg" alt="img" style="zoom:15%;" />
+
+<h2 id="为什么脑裂会导致数据丢失？"><a href="#为什么脑裂会导致数据丢失？" class="headerlink" title="为什么脑裂会导致数据丢失？"></a>为什么脑裂会导致数据丢失？</h2><p>主从切换后，从库一旦升级为新主库，哨兵就会让原主库执行 slave of 命令，和新主库重新进行全量同步。而在全量同步执行的最后阶段，原主库需要清空本地的数据，加载新主库发送的 RDB 文件，这样一来，原主库在主从切换期间保存的新写数据就丢失了。</p>
+<img src="https://static001.geekbang.org/resource/image/95/66/959240fa59c2bb9f5ddb7df4b318af66.jpg" alt="img" style="zoom:15%;" />
+
+<p>在主从切换的过程中，如果原主库只是“假故障”，它会触发哨兵启动主从切换，一旦等它从假故障中恢复后，又开始处理请求，这样一来，就会和新主库同时存在，形成脑裂。等到哨兵让原主库和新主库做全量同步后，原主库在切换期间保存的数据就丢失了。</p>
+<h2 id="如何应对脑裂问题？"><a href="#如何应对脑裂问题？" class="headerlink" title="如何应对脑裂问题？"></a>如何应对脑裂问题？</h2><p>Redis 已经提供了两个配置项来限制主库的请求处理，分别是 min-slaves-to-write 和 min-slaves-max-lag。</p>
+<ul>
+<li>min-slaves-to-write：这个配置项设置了主库能进行数据同步的最少从库数量；</li>
+<li>min-slaves-max-lag：这个配置项设置了主从库间进行数据复制时，从库给主库发送 ACK 消息的最大延迟（以秒为单位）。</li>
+</ul>
+<ol>
+<li><p>我们可以把 min-slaves-to-write 和 min-slaves-max-lag 这两个配置项搭配起来使用，分别给它们设置一定的阈值，假设为 N 和 T。这两个配置项组合后的要求是，主库连接的从库中至少有 N 个从库，和主库进行数据复制时的 ACK 消息延迟不能超过 T 秒，否则，<strong>主库就不会再接收客户端的请求了。</strong></p>
+</li>
+<li><p>即使原主库是假故障，它在假故障期间也无法响应哨兵心跳，也不能和从库进行同步，自然也就无法和从库进行 ACK 确认了。这样一来，min-slaves-to-write 和 min-slaves-max-lag 的组合要求就无法得到满足，原主库就会被限制接收客户端请求，客户端也就不能在原主库中写入新数据了。</p>
+</li>
+<li><p>等到新主库上线时，就只有新主库能接收和处理客户端请求，此时，新写的数据会被直接写到新主库中。而原主库会被哨兵降为从库，即使它的数据被清空了，也不会有新数据丢失。</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/header.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="英伦82年雪碧">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/" itemprop="url">二叉树</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-12T00:00:00+08:00">
+                2021-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.1k words
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11 min
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><img src="http://lihuitao-picture.oss-cn-beijing.aliyuncs.com/img/b7043bf29a253bb36221eaec62b2e129.jpg" alt="img" style="zoom:50%;" />
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%A0%88%E4%B8%93%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1544,555 +2812,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/header.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="英伦82年雪碧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/" itemprop="url">Redis持久化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-12T00:00:00+08:00">
-                2021-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  4.9k words
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  17 min
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="AOF-日志是如何实现的？"><a href="#AOF-日志是如何实现的？" class="headerlink" title="AOF 日志是如何实现的？"></a>AOF 日志是如何实现的？</h1><p>说到日志，我们比较熟悉的是数据库的写前日志（Write Ahead Log, WAL），也就是说，在实际写数据前，先把修改的数据记到日志文件中，以便故障时进行恢复。不过，AOF 日志正好相反，它是写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志，如下图所示：</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E6%8C%81%E4%B9%85%E5%8C%96/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E4%B8%93%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/header.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="英伦82年雪碧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E4%B8%93%E9%A2%98/" itemprop="url">排序</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-12T00:00:00+08:00">
-                2021-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构与算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  7.7k words
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  31 min
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="如何分析一个排序算法？"><a href="#如何分析一个排序算法？" class="headerlink" title="如何分析一个排序算法？"></a>如何分析一个排序算法？</h1><h2 id="1-排序算法的执行效率"><a href="#1-排序算法的执行效率" class="headerlink" title="1. 排序算法的执行效率"></a>1. 排序算法的执行效率</h2><ul>
-<li> <strong>最好情况、最坏情况、平均情况时间复杂度</strong> </li>
-<li>分别给出排序算法 <strong>三种情况</strong> 的时间复杂度</li>
-<li>同时给出三种情况时间复杂度对应的 <strong>原始数据</strong> 是什么样的？</li>
-<li> <strong>时间复杂度的系数、常数 、低阶</strong></li>
-<li>时间复杂度反映的是数据规模 n **很大 **的时候的一个增长趋势，所以它表示的时候会忽略系数、常数、低阶。</li>
-<li>实际的软件开发中，我们排序的可能是 10 个、100 个、1000 个这样规模 <strong>很小</strong> 的数据，所以，在对同一阶时间复杂度的排序算法性能对比的时候，我们就要把系数、常数、低阶也考虑进来。</li>
-<li> <strong>比较次数和交换（或移动）次数</strong> ：基于 <strong>比较</strong> 的排序算法执行过程中，会涉及两种操作。</li>
-<li> <strong>元素比较大小</strong> </li>
-<li> <strong>元素交换或移动</strong> </li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E4%B8%93%E9%A2%98/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/header.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="英伦82年雪碧">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/" itemprop="url">Redis并发问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-12T00:00:00+08:00">
-                2021-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  8.7k words
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  31 min
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="无锁的原子操作：Redis如何应对并发访问？"><a href="#无锁的原子操作：Redis如何应对并发访问？" class="headerlink" title="无锁的原子操作：Redis如何应对并发访问？"></a>无锁的原子操作：Redis如何应对并发访问？</h1><p>为了保证并发访问的正确性，Redis 提供了两种方法，分别是加锁和原子操作。</p>
-<ul>
-<li><p><strong>加锁：</strong> 加锁是一种常用的方法，在读取数据前，客户端需要先获得锁，否则就无法进行操作。当一个客户端获得锁后，就会一直持有这把锁，直到客户端完成数据更新，才释放这把锁。</p>
-<p><strong>弊端：</strong> 1. 如果加锁操作多，会降低系统的并发访问性能；</p>
-<p>​             2. 第二个是，Redis 客户端要加锁时，需要用到分布式锁，而分布式锁实现复杂，需要用额外的存储系统来提供加解锁操作</p>
-</li>
-<li><p><strong>原子操作：</strong> 原子操作是指执行过程保持原子性的操作，而且原子操作执行时并不需要再加锁，实现了无锁操作。这样一来，既能保证并发控制，还能减少对系统并发性能的影响。</p>
-</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2021/07/12/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/Redis%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2145,7 +2864,7 @@
             
               <div class="site-state-item site-state-posts">
                 <a href="/archives">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2156,7 +2875,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
